@@ -1,0 +1,25 @@
+# Example single-host deployment. Put TLS termination (nginx/Caddy) in front of port 8080.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: invoicego
+      POSTGRES_USER: invoicego
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on: [db]
+    env_file: server/.env
+    environment:
+      DATABASE_URL: postgresql://invoicego:${POSTGRES_PASSWORD}@db:5432/invoicego
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - backups:/var/lib/invoicego/backups
+volumes:
+  pgdata:
+  backups:
