@@ -1,0 +1,1918 @@
+{
+ "source": "DI API Technical Specification v1.12 (PRAL, last updated 24-Jul-2025) §10 Applicable Scenarios based on Business Activity (pp.47-51)",
+ "rows": [
+  {
+   "sr": 1,
+   "businessActivity": "Manufacturer",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024",
+   "sourcePage": 47
+  },
+  {
+   "sr": 2,
+   "businessActivity": "Manufacturer",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN003",
+    "SN004",
+    "SN011"
+   ],
+   "rawText": "SN003, SN004, SN011",
+   "sourcePage": 47
+  },
+  {
+   "sr": 3,
+   "businessActivity": "Manufacturer",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN008",
+   "sourcePage": 47
+  },
+  {
+   "sr": 4,
+   "businessActivity": "Manufacturer",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN009"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN009",
+   "sourcePage": 47
+  },
+  {
+   "sr": 5,
+   "businessActivity": "Manufacturer",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN010"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN010",
+   "sourcePage": 47
+  },
+  {
+   "sr": 6,
+   "businessActivity": "Manufacturer",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN012"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN012",
+   "sourcePage": 47
+  },
+  {
+   "sr": 7,
+   "businessActivity": "Manufacturer",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN013"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN013",
+   "sourcePage": 47
+  },
+  {
+   "sr": 8,
+   "businessActivity": "Manufacturer",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN014"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN014",
+   "sourcePage": 47
+  },
+  {
+   "sr": 9,
+   "businessActivity": "Manufacturer",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN018, SN019",
+   "sourcePage": 47
+  },
+  {
+   "sr": 10,
+   "businessActivity": "Manufacturer",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN020"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN020",
+   "sourcePage": 47
+  },
+  {
+   "sr": 11,
+   "businessActivity": "Manufacturer",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN023"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN023",
+   "sourcePage": 47
+  },
+  {
+   "sr": 12,
+   "businessActivity": "Manufacturer",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024",
+   "sourcePage": 47
+  },
+  {
+   "sr": 13,
+   "businessActivity": "Manufacturer",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 47
+  },
+  {
+   "sr": 16,
+   "businessActivity": "Importer",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024",
+   "sourcePage": 47
+  },
+  {
+   "sr": 17,
+   "businessActivity": "Importer",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN003",
+    "SN004",
+    "SN011"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN003, SN004, SN011",
+   "sourcePage": 47
+  },
+  {
+   "sr": 18,
+   "businessActivity": "Importer",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN008",
+   "sourcePage": 47
+  },
+  {
+   "sr": 19,
+   "businessActivity": "Importer",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN009"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN009",
+   "sourcePage": 47
+  },
+  {
+   "sr": 20,
+   "businessActivity": "Importer",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN010"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN010",
+   "sourcePage": 47
+  },
+  {
+   "sr": 21,
+   "businessActivity": "Importer",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN012"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN012",
+   "sourcePage": 47
+  },
+  {
+   "sr": 22,
+   "businessActivity": "Importer",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN013"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN013",
+   "sourcePage": 47
+  },
+  {
+   "sr": 23,
+   "businessActivity": "Importer",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN014"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN014",
+   "sourcePage": 47
+  },
+  {
+   "sr": 24,
+   "businessActivity": "Importer",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN018, SN019",
+   "sourcePage": 48
+  },
+  {
+   "sr": 25,
+   "businessActivity": "Importer",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN020"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN020",
+   "sourcePage": 48
+  },
+  {
+   "sr": 26,
+   "businessActivity": "Importer",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN023"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN023",
+   "sourcePage": 48
+  },
+  {
+   "sr": 27,
+   "businessActivity": "Importer",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN025"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN025",
+   "sourcePage": 48
+  },
+  {
+   "sr": 28,
+   "businessActivity": "Importer",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 31,
+   "businessActivity": "Distributor",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 32,
+   "businessActivity": "Distributor",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN003",
+    "SN004",
+    "SN011",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN003, SN004, SN011, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 33,
+   "businessActivity": "Distributor",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN008",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN008, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 34,
+   "businessActivity": "Distributor",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN009",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN009, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 35,
+   "businessActivity": "Distributor",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN010",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN010, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 36,
+   "businessActivity": "Distributor",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN012",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN012, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 37,
+   "businessActivity": "Distributor",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN013",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN013, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 38,
+   "businessActivity": "Distributor",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN014",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN014, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 39,
+   "businessActivity": "Distributor",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN018",
+    "SN019",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN018, SN019, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 40,
+   "businessActivity": "Distributor",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN020",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN020, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 41,
+   "businessActivity": "Distributor",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN023",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN023, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 42,
+   "businessActivity": "Distributor",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN025",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN025, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 43,
+   "businessActivity": "Distributor",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 46,
+   "businessActivity": "Wholesaler",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 47,
+   "businessActivity": "Wholesaler",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN003",
+    "SN004",
+    "SN011",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN003, SN004, SN011, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 48,
+   "businessActivity": "Wholesaler",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN008",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN008, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 49,
+   "businessActivity": "Wholesaler",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN009",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN009, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 50,
+   "businessActivity": "Wholesaler",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN010",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN010, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 51,
+   "businessActivity": "Wholesaler",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN012",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN012, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 52,
+   "businessActivity": "Wholesaler",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN013",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN013, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 53,
+   "businessActivity": "Wholesaler",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN014",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN014, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 54,
+   "businessActivity": "Wholesaler",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN018",
+    "SN019",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN018, SN019, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 55,
+   "businessActivity": "Wholesaler",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN020",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN020, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 56,
+   "businessActivity": "Wholesaler",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN023",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN023, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 57,
+   "businessActivity": "Wholesaler",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN025",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN025, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 58,
+   "businessActivity": "Wholesaler",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN026, SN027, SN028, SN008",
+   "sourcePage": 48
+  },
+  {
+   "sr": 61,
+   "businessActivity": "Exporter",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024",
+   "sourcePage": 48
+  },
+  {
+   "sr": 62,
+   "businessActivity": "Exporter",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN003",
+    "SN004",
+    "SN011"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN003, SN004, SN011",
+   "sourcePage": 49
+  },
+  {
+   "sr": 63,
+   "businessActivity": "Exporter",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 64,
+   "businessActivity": "Exporter",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN009"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN009",
+   "sourcePage": 49
+  },
+  {
+   "sr": 65,
+   "businessActivity": "Exporter",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN010"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN010",
+   "sourcePage": 49
+  },
+  {
+   "sr": 66,
+   "businessActivity": "Exporter",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN012"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN012",
+   "sourcePage": 49
+  },
+  {
+   "sr": 67,
+   "businessActivity": "Exporter",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN013"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN013",
+   "sourcePage": 49
+  },
+  {
+   "sr": 68,
+   "businessActivity": "Exporter",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN014"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN014",
+   "sourcePage": 49
+  },
+  {
+   "sr": 69,
+   "businessActivity": "Exporter",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN018, SN019",
+   "sourcePage": 49
+  },
+  {
+   "sr": 70,
+   "businessActivity": "Exporter",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN020"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN020",
+   "sourcePage": 49
+  },
+  {
+   "sr": 71,
+   "businessActivity": "Exporter",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN023"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN023",
+   "sourcePage": 49
+  },
+  {
+   "sr": 72,
+   "businessActivity": "Exporter",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN025"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN025",
+   "sourcePage": 49
+  },
+  {
+   "sr": 73,
+   "businessActivity": "Exporter",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 76,
+   "businessActivity": "Retailer",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 77,
+   "businessActivity": "Retailer",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN003",
+    "SN004",
+    "SN011"
+   ],
+   "rawText": "SN003, SN004, SN011",
+   "sourcePage": 49
+  },
+  {
+   "sr": 78,
+   "businessActivity": "Retailer",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 79,
+   "businessActivity": "Retailer",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN009",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN009, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 80,
+   "businessActivity": "Retailer",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN010",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN010, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 81,
+   "businessActivity": "Retailer",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN012",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN012, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 82,
+   "businessActivity": "Retailer",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN013",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN013, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 83,
+   "businessActivity": "Retailer",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN014",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN014, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 84,
+   "businessActivity": "Retailer",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN018",
+    "SN019",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN018, SN019, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 85,
+   "businessActivity": "Retailer",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN020",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN020, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 86,
+   "businessActivity": "Retailer",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN023",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN023, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 87,
+   "businessActivity": "Retailer",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN025",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN025, SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 88,
+   "businessActivity": "Retailer",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN026, SN027, SN028, SN008",
+   "sourcePage": 49
+  },
+  {
+   "sr": 91,
+   "businessActivity": "Service Provider",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN018, SN019",
+   "sourcePage": 49
+  },
+  {
+   "sr": 92,
+   "businessActivity": "Service Provider",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN003",
+    "SN004",
+    "SN011",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN003, SN004, SN011, SN018, SN019",
+   "sourcePage": 49
+  },
+  {
+   "sr": 93,
+   "businessActivity": "Service Provider",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN008",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN008, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 94,
+   "businessActivity": "Service Provider",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN009",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN009, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 95,
+   "businessActivity": "Service Provider",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN010",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN010, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 96,
+   "businessActivity": "Service Provider",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN012",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN012, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 97,
+   "businessActivity": "Service Provider",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN013",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN013, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 98,
+   "businessActivity": "Service Provider",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN014",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN014, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 99,
+   "businessActivity": "Service Provider",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 100,
+   "businessActivity": "Service Provider",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN020",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN020, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 101,
+   "businessActivity": "Service Provider",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN023",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN023, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 102,
+   "businessActivity": "Service Provider",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN025",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN025, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 103,
+   "businessActivity": "Service Provider",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN026, SN027, SN028, SN008, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 106,
+   "businessActivity": "Other",
+   "sector": "All Other Sectors",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024",
+   "sourcePage": 50
+  },
+  {
+   "sr": 107,
+   "businessActivity": "Other",
+   "sector": "Steel",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN003",
+    "SN004",
+    "SN011"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN003, SN004, SN011",
+   "sourcePage": 50
+  },
+  {
+   "sr": 108,
+   "businessActivity": "Other",
+   "sector": "FMCG",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN008",
+   "sourcePage": 50
+  },
+  {
+   "sr": 109,
+   "businessActivity": "Other",
+   "sector": "Textile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN009"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN009",
+   "sourcePage": 50
+  },
+  {
+   "sr": 110,
+   "businessActivity": "Other",
+   "sector": "Telecom",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN010"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN010",
+   "sourcePage": 50
+  },
+  {
+   "sr": 111,
+   "businessActivity": "Other",
+   "sector": "Petroleum",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN012"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN012",
+   "sourcePage": 50
+  },
+  {
+   "sr": 112,
+   "businessActivity": "Other",
+   "sector": "Electricity Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN013"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN013",
+   "sourcePage": 50
+  },
+  {
+   "sr": 113,
+   "businessActivity": "Other",
+   "sector": "Gas Distribution",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN014"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN014",
+   "sourcePage": 50
+  },
+  {
+   "sr": 114,
+   "businessActivity": "Other",
+   "sector": "Services",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN018",
+    "SN019"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN018, SN019",
+   "sourcePage": 50
+  },
+  {
+   "sr": 115,
+   "businessActivity": "Other",
+   "sector": "Automobile",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN020"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN020",
+   "sourcePage": 50
+  },
+  {
+   "sr": 116,
+   "businessActivity": "Other",
+   "sector": "CNG Stations",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN023"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN023",
+   "sourcePage": 50
+  },
+  {
+   "sr": 117,
+   "businessActivity": "Other",
+   "sector": "Pharmaceuticals",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN025"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN025",
+   "sourcePage": 51
+  },
+  {
+   "sr": 118,
+   "businessActivity": "Other",
+   "sector": "Wholesale / Retails",
+   "scenarioIdsRaw": [
+    "SN001",
+    "SN002",
+    "SN005",
+    "SN006",
+    "SN007",
+    "SN015",
+    "SN016",
+    "SN017",
+    "SN021",
+    "SN022",
+    "SN024",
+    "SN026",
+    "SN027",
+    "SN028",
+    "SN008"
+   ],
+   "rawText": "SN001, SN002, SN005, SN006, SN007, SN015, SN016, SN017, SN021, SN022, SN024, SN026, SN027, SN028, SN008",
+   "sourcePage": 51
+  }
+ ],
+ "rowNumberGaps": [
+  14,
+  15,
+  29,
+  30,
+  44,
+  45,
+  59,
+  60,
+  74,
+  75,
+  89,
+  90,
+  104,
+  105
+ ],
+ "anomalies": [
+  {
+   "sr": 33,
+   "type": "DUPLICATE_SCENARIO_IN_ROW",
+   "detail": [
+    "SN008"
+   ]
+  },
+  {
+   "sr": 48,
+   "type": "DUPLICATE_SCENARIO_IN_ROW",
+   "detail": [
+    "SN008"
+   ]
+  },
+  {
+   "sr": 12,
+   "type": "PHARMA_ROW_WITHOUT_SN025",
+   "detail": "Other activities + Pharmaceuticals include SN025; this row does not."
+  }
+ ],
+ "businessActivities": [
+  "Distributor",
+  "Exporter",
+  "Importer",
+  "Manufacturer",
+  "Other",
+  "Retailer",
+  "Service Provider",
+  "Wholesaler"
+ ],
+ "sectors": [
+  "All Other Sectors",
+  "Steel",
+  "FMCG",
+  "Textile",
+  "Telecom",
+  "Petroleum",
+  "Electricity Distribution",
+  "Gas Distribution",
+  "Services",
+  "Automobile",
+  "CNG Stations",
+  "Pharmaceuticals",
+  "Wholesale / Retails"
+ ]
+}

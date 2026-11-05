@@ -1,0 +1,25 @@
+{
+ "source": "SANDBOX SIMPLE JASON FORMAT.docx (client supplied)",
+ "sandboxTemplateRaw": "    {\n      \"hsCode\": \"0000.0000\",\n      \"productDescription\": \"\",\n      \"rate\": \"0%\",\n      \"uoM\": \"\",\n      \"quantity\": 0,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxApplicable\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": \"\",\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"\",\n      \"sroItemSerialNo\": \"\"\n    }",
+ "sandboxTemplate": {
+  "hsCode": "0000.0000",
+  "productDescription": "",
+  "rate": "0%",
+  "uoM": "",
+  "quantity": 0,
+  "totalValues": 0,
+  "valueSalesExcludingST": 0,
+  "fixedNotifiedValueOrRetailPrice": 0,
+  "salesTaxApplicable": 0,
+  "salesTaxWithheldAtSource": 0,
+  "extraTax": "",
+  "furtherTax": 0,
+  "sroScheduleNo": "",
+  "fedPayable": 0,
+  "discount": 0,
+  "saleType": "",
+  "sroItemSerialNo": ""
+ },
+ "productionSampleRaw": "{\n\"invoiceType\": \"Sale Invoice\",\n \"invoiceDate\": \"2025-04-21\",\n \"sellerNTNCNIC\": \"….7 or 13 digit of seller NTN/CNIC….\",\n \"sellerBusinessName\": \"Company 8\",\n \"sellerProvince\": \"Sindh\",\n \"sellerAddress\": \"Karachi\",\n \"buyerNTNCNIC\": \"….7 or 13 digit of buyer NTN/CNIC….\",\n \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n \"buyerProvince\": \"Sindh\",\n \"buyerAddress\": \"Karachi\",\n \"buyerRegistrationType\": \"Unregistered\",\n \"invoiceRefNo\": \"\",\n \"items\": [\n {\n \"hsCode\": \"0101.2100\",\n \"productDescription\": \"product Description\",\n \"rate\": \"18%\",\n \"uoM\": \"Numbers, pieces, units\",\n \"quantity\": 1.0000,\n \"totalValues\": 0.00,\n \"valueSalesExcludingST\": 1000.00,\n \"fixedNotifiedValueOrRetailPrice\": 0.00,\n \"salesTaxApplicable\": 180.00,\n \"salesTaxWithheldAtSource\": 0.00,\n \"extraTax\": 0.00,\n\"furtherTax\": 120.00,\n \"sroScheduleNo\": \"SRO123\",\n \"fedPayable\": 0.00,\n \"discount\": 0.00,\n \"saleType\": \"Goods at standard rate (default)\",\n \"sroItemSerialNo\": \"\"\n }\n ]\n}",
+ "productionSampleNote": "Sample contains placeholder text for NTN/CNIC and is not valid JSON for a real request."
+}

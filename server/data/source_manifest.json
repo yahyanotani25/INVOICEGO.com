@@ -1,0 +1,72 @@
+{
+ "specVersion": "DI API Technical Specification v1.12 (PRAL, last updated 24-Jul-2025)",
+ "manualVersion": "DI User Manual v1.5 (29-Jul-2025)",
+ "files": [
+  {
+   "key": "spec",
+   "file": "FBR API DOCUMENTATUIN (2).pdf",
+   "bytes": 2687438,
+   "sha256": "7cb61c51f640c761fd223b5b271296664ed928c2e8a7454d72f75022101cf402"
+  },
+  {
+   "key": "manual",
+   "file": "USER MANUAL.pdf",
+   "bytes": 3667910,
+   "sha256": "a60f85678a5faa27b2808b0932e10e59302585d071db16f7d6ef1b07e87cd90f"
+  },
+  {
+   "key": "details",
+   "file": "DETAILS.docx",
+   "bytes": 490767,
+   "sha256": "813ce09e8d5095f1dac05dab24a2db3073340f01e36f7db72ec595bed902d13d"
+  },
+  {
+   "key": "sandbox_format",
+   "file": "SANDBOX SIMPLE JASON FORMAT.docx",
+   "bytes": 21119,
+   "sha256": "e8900f1c79df8053b9ed31e1f48843743c3ddcf5591f8cf2626996be5b3634c3"
+  },
+  {
+   "key": "scenario_data",
+   "file": "Scenario Data.docx",
+   "bytes": 34794,
+   "sha256": "c5fccd5498aa08a167da61e2221cb4e52a3d44941442ac51c37c8d6a893596e7"
+  },
+  {
+   "key": "pct",
+   "file": "PCT Codes (1).docx",
+   "bytes": 179729,
+   "sha256": "472623c37d25be20e5e8c1778b90f12ba1ccb0ee9935905f69e6684037dce0ed"
+  },
+  {
+   "key": "hs_pdf",
+   "file": "HS CODE WITH DISCRIPTION.pdf",
+   "bytes": 1158246,
+   "sha256": "4bc78b8ce60784f861c3aeea923a287c5bae1677538f28c4ba4b6f184cce5f22"
+  },
+  {
+   "key": "sales_errors",
+   "file": "Sales Error Codes from API Documentation.pdf",
+   "bytes": 1131116,
+   "sha256": "64d77b0db9bda3f4051337b673e0b773b7ac86a8e4f71df1d53f870fc59e60fb"
+  },
+  {
+   "key": "purchase_errors",
+   "file": "Purchases Error Codes from API Documentation.pdf",
+   "bytes": 1102221,
+   "sha256": "6d6fccefab320e7d9c88148f3de60744894a799c0c1de8e444597425dac2f48f"
+  },
+  {
+   "key": "scenarios_pdf",
+   "file": "Scenarios for Sandbox Testing from API documentation.pdf",
+   "bytes": 1055576,
+   "sha256": "b24095abb0ad4659659b9758dc6aef208ec1baf822a0103eb1717377b4f1fd2a"
+  },
+  {
+   "key": "applicability_pdf",
+   "file": "Applicable Scenarios based on Business Activity from API Documentation.pdf",
+   "bytes": 1114629,
+   "sha256": "285a7227d66dfacbf34e2e5f50122b9afa2e95e6cfdcd2d2ee58dcf897e570b2"
+  }
+ ]
+}

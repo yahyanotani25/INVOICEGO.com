@@ -1,0 +1,154 @@
+{
+ "source": "DI API Technical Specification v1.12 (PRAL, last updated 24-Jul-2025) §9 Scenarios for Sandbox Testing (p.46)",
+ "note": "Scenarios ID 26,27 & 28 are applicable only if registered as retailer in sales tax profile.",
+ "retailerOnly": [
+  "SN026",
+  "SN027",
+  "SN028"
+ ],
+ "purchaseType": [
+  "SN009"
+ ],
+ "scenarios": [
+  {
+   "scenarioId": "SN001",
+   "description": "Goods at standard rate to registered buyers",
+   "saleTypeLabel": "Goods at Standard Rate (default)"
+  },
+  {
+   "scenarioId": "SN002",
+   "description": "Goods at standard rate to unregistered buyers",
+   "saleTypeLabel": "Goods at Standard Rate (default)"
+  },
+  {
+   "scenarioId": "SN003",
+   "description": "Sale of Steel (Melted and Re-Rolled)",
+   "saleTypeLabel": "Steel Melting and re-rolling"
+  },
+  {
+   "scenarioId": "SN004",
+   "description": "Sale by Ship Breakers",
+   "saleTypeLabel": "Ship breaking"
+  },
+  {
+   "scenarioId": "SN005",
+   "description": "Reduced rate sale",
+   "saleTypeLabel": "Goods at Reduced Rate"
+  },
+  {
+   "scenarioId": "SN006",
+   "description": "Exempt goods sale",
+   "saleTypeLabel": "Exempt Goods"
+  },
+  {
+   "scenarioId": "SN007",
+   "description": "Zero rated sale",
+   "saleTypeLabel": "Goods at zero-rate"
+  },
+  {
+   "scenarioId": "SN008",
+   "description": "Sale of 3rd schedule goods",
+   "saleTypeLabel": "3rd Schedule Goods"
+  },
+  {
+   "scenarioId": "SN009",
+   "description": "Cotton Spinners purchase from Cotton Ginners (Textile Sector)",
+   "saleTypeLabel": "Cotton Ginners"
+  },
+  {
+   "scenarioId": "SN010",
+   "description": "Telecom services rendered or provided",
+   "saleTypeLabel": "Telecommunication services"
+  },
+  {
+   "scenarioId": "SN011",
+   "description": "Toll Manufacturing sale by Steel sector",
+   "saleTypeLabel": "Toll Manufacturing"
+  },
+  {
+   "scenarioId": "SN012",
+   "description": "Sale of Petroleum products",
+   "saleTypeLabel": "Petroleum Products"
+  },
+  {
+   "scenarioId": "SN013",
+   "description": "Electricity Supply to Retailers",
+   "saleTypeLabel": "Electricity Supply to Retailers"
+  },
+  {
+   "scenarioId": "SN014",
+   "description": "Sale of Gas to CNG stations",
+   "saleTypeLabel": "Gas to CNG stations"
+  },
+  {
+   "scenarioId": "SN015",
+   "description": "Sale of mobile phones",
+   "saleTypeLabel": "Mobile Phones"
+  },
+  {
+   "scenarioId": "SN016",
+   "description": "Processing / Conversion of Goods",
+   "saleTypeLabel": "Processing/ Conversion of Goods"
+  },
+  {
+   "scenarioId": "SN017",
+   "description": "Sale of Goods where FED is charged in ST mode",
+   "saleTypeLabel": "Goods (FED in ST Mode)"
+  },
+  {
+   "scenarioId": "SN018",
+   "description": "Services rendered or provided where FED is charged in ST mode",
+   "saleTypeLabel": "Services (FED in ST Mode)"
+  },
+  {
+   "scenarioId": "SN019",
+   "description": "Services rendered or provided",
+   "saleTypeLabel": "Services"
+  },
+  {
+   "scenarioId": "SN020",
+   "description": "Sale of Electric Vehicles",
+   "saleTypeLabel": "Electric Vehicle"
+  },
+  {
+   "scenarioId": "SN021",
+   "description": "Sale of Cement /Concrete Block",
+   "saleTypeLabel": "Cement /Concrete Block"
+  },
+  {
+   "scenarioId": "SN022",
+   "description": "Sale of Potassium Chlorate",
+   "saleTypeLabel": "Potassium Chlorate"
+  },
+  {
+   "scenarioId": "SN023",
+   "description": "Sale of CNG",
+   "saleTypeLabel": "CNG Sales"
+  },
+  {
+   "scenarioId": "SN024",
+   "description": "Goods sold that are listed in SRO 297(1)/2023",
+   "saleTypeLabel": "Goods as per SRO.297(|)/2023"
+  },
+  {
+   "scenarioId": "SN025",
+   "description": "Drugs sold at fixed ST rate under serial 81 of Eighth Schedule Table 1",
+   "saleTypeLabel": "Non-Adjustable Supplies"
+  },
+  {
+   "scenarioId": "SN026",
+   "description": "Sale to End Consumer by retailers",
+   "saleTypeLabel": "Goods at Standard Rate (default)"
+  },
+  {
+   "scenarioId": "SN027",
+   "description": "Sale to End Consumer by retailers",
+   "saleTypeLabel": "3rd Schedule Goods"
+  },
+  {
+   "scenarioId": "SN028",
+   "description": "Sale to End Consumer by retailers",
+   "saleTypeLabel": "Goods at Reduced Rate"
+  }
+ ]
+}

@@ -1,0 +1,1262 @@
+{
+ "source": "Scenario Data.docx (client supplied)",
+ "templates": [
+  {
+   "label": "SN001",
+   "title": "Sale of Standard Rate Goods to Registered Buyers.",
+   "scenarioId": "SN001",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-10\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"2046004\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN001\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 400,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1000,\n      \"fixedNotifiedValueOrRetailPrice\": 0.0,\n      \"salesTaxApplicable\": 180,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": \"\",\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Goods at standard rate (default)\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-10",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerNTNCNIC": "8885801",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "2046004",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN001",
+    "buyerRegistrationType": "Registered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 400,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1000,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 180,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": "",
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Goods at standard rate (default)",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Item 1: extraTax is an empty string (contract type is Number)"
+   ]
+  },
+  {
+   "label": "SN002",
+   "title": "Sale of Standard Rate Goods to Unregistered Buyers.",
+   "scenarioId": "SN002",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-10\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1234567\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN002\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 400,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1000,\n      \"fixedNotifiedValueOrRetailPrice\": 0.0,\n      \"salesTaxApplicable\": 180,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": \"\",\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Goods at standard rate (default)\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-10",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerNTNCNIC": "8885801",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1234567",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN002",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 400,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1000,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 180,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": "",
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Goods at standard rate (default)",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Item 1: extraTax is an empty string (contract type is Number)"
+   ]
+  },
+  {
+   "label": "SN003",
+   "title": "Sale of Steel (Melted and Re-Rolled) (Billets, Ingots and Long Bars).",
+   "scenarioId": "SN003",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerBusinessName\": \"Company 7\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"3710505701479\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"sellerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"0\",\n  \"scenarioId\": \"SN003\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"7214.1010\",\n      \"productDescription\": \"\",\n      \"rate\": \"18%\",\n      \"uoM\": \"MT\",\n      \"quantity\": 1,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 205000.0,\n      \"fixedNotifiedValueOrRetailPrice\": 0.0,\n      \"salesTaxApplicable\": 36900,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Steel melting and re-rolling\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerBusinessName": "Company 7",
+    "sellerNTNCNIC": "8885801",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "3710505701479",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "sellerAddress": "Karachi",
+    "invoiceRefNo": "0",
+    "scenarioId": "SN003",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "7214.1010",
+      "productDescription": "",
+      "rate": "18%",
+      "uoM": "MT",
+      "quantity": 1,
+      "totalValues": 0,
+      "valueSalesExcludingST": 205000.0,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 36900,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Steel melting and re-rolling",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": []
+  },
+  {
+   "label": "SN004",
+   "title": "Sale of Steel Scrap by Ship Breakers:",
+   "scenarioId": "SN004",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-26\",\n  \"sellerNTNCNIC\": \"4130276175937\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerAddress\": \"Karachi\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"3710505701479\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"scenarioId\": \"SN004\",\n  \"items\": [\n    {\n      \"hsCode\": \"7204.1010\",\n      \"productDescription\": \"\",\n      \"rate\": \"18%\",\n      \"uoM\": \"MT\",\n      \"quantity\": 1,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 175000,\n      \"salesTaxApplicable\": 31500,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Ship breaking\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-26",
+    "sellerNTNCNIC": "4130276175937",
+    "sellerBusinessName": "Company 8",
+    "sellerAddress": "Karachi",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "3710505701479",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250421-001",
+    "scenarioId": "SN004",
+    "items": [
+     {
+      "hsCode": "7204.1010",
+      "productDescription": "",
+      "rate": "18%",
+      "uoM": "MT",
+      "quantity": 1,
+      "totalValues": 0,
+      "valueSalesExcludingST": 175000,
+      "salesTaxApplicable": 31500,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Ship breaking",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Missing contract header field(s): buyerRegistrationType"
+   ]
+  },
+  {
+   "label": "SN005",
+   "title": "Sales of Reduced Rate Goods (Eighth Schedule):",
+   "scenarioId": "SN005",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-06-30\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"B2\",\n  \"sellerAddress\": \"Karachi\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN005\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0102.2930\",\n      \"productDescription\": \"product Description41\",\n      \"rate\": \"1%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1.0,\n      \"totalValues\": 0.00,\n      \"valueSalesExcludingST\": 1000.00,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 10,\n      \"salesTaxWithheldAtSource\": 50.23,\n      \"extraTax\": \"\",\n      \"furtherTax\": 120.00,\n      \"sroScheduleNo\": \"EIGHTH SCHEDULE Table 1\",\n      \"fedPayable\": 50.36,\n      \"discount\": 56.36,\n      \"saleType\": \"Goods at Reduced Rate\",\n      \"sroItemSerialNo\": \"82\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-06-30",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "B2",
+    "sellerAddress": "Karachi",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN005",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0102.2930",
+      "productDescription": "product Description41",
+      "rate": "1%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1.0,
+      "totalValues": 0.0,
+      "valueSalesExcludingST": 1000.0,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 10,
+      "salesTaxWithheldAtSource": 50.23,
+      "extraTax": "",
+      "furtherTax": 120.0,
+      "sroScheduleNo": "EIGHTH SCHEDULE Table 1",
+      "fedPayable": 50.36,
+      "discount": 56.36,
+      "saleType": "Goods at Reduced Rate",
+      "sroItemSerialNo": "82"
+     }
+    ]
+   },
+   "anomalies": [
+    "Item 1: extraTax is an empty string (contract type is Number)"
+   ]
+  },
+  {
+   "label": "SN006",
+   "title": "Sale of Exempt Goods (Sixth Schedule):",
+   "scenarioId": "SN006",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-07-01\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"2046004\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN006\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0102.2930\",\n      \"productDescription\": \"product Description41\",\n      \"rate\": \"Exempt\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1.0,\n      \"totalValues\": 0.00,\n      \"valueSalesExcludingST\": 10,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 0,\n      \"salesTaxWithheldAtSource\": 50.23,\n      \"extraTax\": \"\",\n      \"furtherTax\": 120.00,\n      \"sroScheduleNo\": \"6th Schd Table I\",\n      \"fedPayable\": 50.36,\n      \"discount\": 56.36,\n      \"saleType\": \"Exempt goods\",\n      \"sroItemSerialNo\": \"100\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-07-01",
+    "sellerBusinessName": "Company 8",
+    "sellerNTNCNIC": "8885801",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "2046004",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN006",
+    "buyerRegistrationType": "Registered",
+    "items": [
+     {
+      "hsCode": "0102.2930",
+      "productDescription": "product Description41",
+      "rate": "Exempt",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1.0,
+      "totalValues": 0.0,
+      "valueSalesExcludingST": 10,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 0,
+      "salesTaxWithheldAtSource": 50.23,
+      "extraTax": "",
+      "furtherTax": 120.0,
+      "sroScheduleNo": "6th Schd Table I",
+      "fedPayable": 50.36,
+      "discount": 56.36,
+      "saleType": "Exempt goods",
+      "sroItemSerialNo": "100"
+     }
+    ]
+   },
+   "anomalies": [
+    "Item 1: extraTax is an empty string (contract type is Number)"
+   ]
+  },
+  {
+   "label": "SN007",
+   "title": "Sale Of Zero-Rated Goods (Fifth Schedule):",
+   "scenarioId": "SN007",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerBusinessName\": \"Company 7\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"3710505701479\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"sellerAddress\": \"Karachi\",\n  \"scenarioId\": \"SN007\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"invoiceRefNo\": \"0\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"0%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 100,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 100,\n      \"salesTaxApplicable\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"327(I)/2008\",\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Goods at zero-rate\",\n      \"sroItemSerialNo\": \"1\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerBusinessName": "Company 7",
+    "sellerNTNCNIC": "8885801",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "3710505701479",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "sellerAddress": "Karachi",
+    "scenarioId": "SN007",
+    "buyerRegistrationType": "Unregistered",
+    "invoiceRefNo": "0",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "0%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 100,
+      "totalValues": 0,
+      "valueSalesExcludingST": 100,
+      "salesTaxApplicable": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "327(I)/2008",
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Goods at zero-rate",
+      "sroItemSerialNo": "1"
+     }
+    ]
+   },
+   "anomalies": []
+  },
+  {
+   "label": "SN008",
+   "title": "Sale of 3rd Schedule Goods:",
+   "scenarioId": "SN008",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 7\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"3710505701479\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"sellerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"0\",\n  \"scenarioId\": \"SN008\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 100,\n      \"totalValues\": 145,\n      \"valueSalesExcludingST\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 1000,\n      \"salesTaxApplicable\": 180,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"3rd Schedule Goods\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 7",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "3710505701479",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "sellerAddress": "Karachi",
+    "invoiceRefNo": "0",
+    "scenarioId": "SN008",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 100,
+      "totalValues": 145,
+      "valueSalesExcludingST": 0,
+      "fixedNotifiedValueOrRetailPrice": 1000,
+      "salesTaxApplicable": 180,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "3rd Schedule Goods",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": []
+  },
+  {
+   "label": "SN009",
+   "title": "Purchase From Registered Cotton Ginners.",
+   "scenarioId": "SN009",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"2046004\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN009\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 0,\n      \"totalValues\": 2500,\n      \"valueSalesExcludingST\": 2500,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 450,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Cotton ginners\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "2046004",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN009",
+    "buyerRegistrationType": "Registered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 0,
+      "totalValues": 2500,
+      "valueSalesExcludingST": 2500,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 450,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Cotton ginners",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": []
+  },
+  {
+   "label": "SN0010",
+   "title": "Sale Of Telecom Services by Mobile Operators.",
+   "scenarioId": "SN010",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN010\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"17%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1000,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 100,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 17,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Telecommunication services\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerBusinessName": "Company 8",
+    "sellerNTNCNIC": "8885801",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN010",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "17%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1000,
+      "totalValues": 0,
+      "valueSalesExcludingST": 100,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 17,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Telecommunication services",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0010' differs from embedded scenarioId 'SN010'"
+   ]
+  },
+  {
+   "label": "SN0011",
+   "title": "Sale of Steel through Toll Manufacturing (Billets, Ingots and Long Bars).",
+   "scenarioId": "SN011",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-26\",\n  \"sellerNTNCNIC\": \"4130276175937\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerAddress\": \"Karachi\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"3710505701479\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"dataSource\": \"\",\n  \"scenarioId\": \"SN011\",\n  \"items\": [\n    {\n      \"hsCode\": \"7214.9990\",\n      \"productDescription\": \"\",\n      \"rate\": \"18%\",\n      \"uoM\": \"MT\",\n      \"quantity\": 1,\n      \"totalValues\": 205000,\n      \"valueSalesExcludingST\": 205000,\n      \"salesTaxApplicable\": 36900,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Toll Manufacturing\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-26",
+    "sellerNTNCNIC": "4130276175937",
+    "sellerBusinessName": "Company 8",
+    "sellerAddress": "Karachi",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "3710505701479",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "dataSource": "",
+    "scenarioId": "SN011",
+    "items": [
+     {
+      "hsCode": "7214.9990",
+      "productDescription": "",
+      "rate": "18%",
+      "uoM": "MT",
+      "quantity": 1,
+      "totalValues": 205000,
+      "valueSalesExcludingST": 205000,
+      "salesTaxApplicable": 36900,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Toll Manufacturing",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0011' differs from embedded scenarioId 'SN011'",
+    "Non-contract header field(s): dataSource",
+    "Missing contract header field(s): buyerRegistrationType"
+   ]
+  },
+  {
+   "label": "N0012",
+   "title": "Sale Of Petroleum Products.",
+   "scenarioId": "SN012",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN012\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"1.43%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"totalValues\": 132,\n      \"valueSalesExcludingST\": 100,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 1.43,\n      \"salesTaxWithheldAtSource\": 2,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"1450(I)/2021\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Petroleum Products\",\n      \"sroItemSerialNo\": \"4\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN012",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "1.43%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "totalValues": 132,
+      "valueSalesExcludingST": 100,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 1.43,
+      "salesTaxWithheldAtSource": 2,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "1450(I)/2021",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Petroleum Products",
+      "sroItemSerialNo": "4"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'N0012' differs from embedded scenarioId 'SN012'"
+   ]
+  },
+  {
+   "label": "SN0013",
+   "title": "Sale Of Electricity to Retailers.",
+   "scenarioId": "SN013",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN013\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"5%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"totalValues\": 212,\n      \"valueSalesExcludingST\": 1000,\n      \"fixedNotifiedValueOrRetailPrice\": 0.00,\n      \"salesTaxApplicable\": 50,\n      \"salesTaxWithheldAtSource\": 11,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"1450(I)/2021\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Electricity Supply to Retailers\",\n      \"sroItemSerialNo\": \"4\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN013",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "5%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "totalValues": 212,
+      "valueSalesExcludingST": 1000,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 50,
+      "salesTaxWithheldAtSource": 11,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "1450(I)/2021",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Electricity Supply to Retailers",
+      "sroItemSerialNo": "4"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0013' differs from embedded scenarioId 'SN013'"
+   ]
+  },
+  {
+   "label": "SN0014",
+   "title": "Sale of Gas to CNG Stations.",
+   "scenarioId": "SN014",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN014\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1000,\n      \"salesTaxApplicable\": 180,\n      \"salesTaxWithheldAtSource\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Gas to CNG stations\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN014",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1000,
+      "salesTaxApplicable": 180,
+      "salesTaxWithheldAtSource": 0,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Gas to CNG stations",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0014' differs from embedded scenarioId 'SN014'"
+   ]
+  },
+  {
+   "label": "SN0015",
+   "title": "Sale of Mobile Phones.",
+   "scenarioId": "SN015",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-15\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250515-001\",\n  \"scenarioId\": \"SN015\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"additional1\": \"\",\n  \"additional2\": \"\",\n  \"additional3\": \"\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1234,\n      \"salesTaxApplicable\": 222.12,\n      \"salesTaxWithheldAtSource\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"NINTH SCHEDULE\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Mobile Phones\",\n      \"sroItemSerialNo\": \"1(A)\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-15",
+    "sellerBusinessName": "Company 8",
+    "sellerNTNCNIC": "8885801",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250515-001",
+    "scenarioId": "SN015",
+    "buyerRegistrationType": "Unregistered",
+    "additional1": "",
+    "additional2": "",
+    "additional3": "",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1234,
+      "salesTaxApplicable": 222.12,
+      "salesTaxWithheldAtSource": 0,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "NINTH SCHEDULE",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Mobile Phones",
+      "sroItemSerialNo": "1(A)"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0015' differs from embedded scenarioId 'SN015'",
+    "Non-contract header field(s): additional1, additional2, additional3"
+   ]
+  },
+  {
+   "label": "SN0016",
+   "title": "Processing / Conversion of Goods.",
+   "scenarioId": "SN016",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-16\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000078\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN016\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"5%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 100,\n      \"salesTaxApplicable\": 5,\n      \"salesTaxWithheldAtSource\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Processing/Conversion of Goods\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-16",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000078",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN016",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "5%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "totalValues": 0,
+      "valueSalesExcludingST": 100,
+      "salesTaxApplicable": 5,
+      "salesTaxWithheldAtSource": 0,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Processing/Conversion of Goods",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0016' differs from embedded scenarioId 'SN016'"
+   ]
+  },
+  {
+   "label": "SN0017",
+   "title": "Sale of Goods Where FED Is Charged in ST Mode.",
+   "scenarioId": "SN017",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-10\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"7000009\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN017\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"8%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"valueSalesExcludingST\": 100,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxApplicable\": 8,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Goods (FED in ST Mode)\",\n      \"sroScheduleNo\": \"\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-10",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "7000009",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "scenarioId": "SN017",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "8%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "valueSalesExcludingST": 100,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxApplicable": 8,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Goods (FED in ST Mode)",
+      "sroScheduleNo": "",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0017' differs from embedded scenarioId 'SN017'"
+   ]
+  },
+  {
+   "label": "SN0018",
+   "title": "Sale Of Services Where FED Is Charged in ST Mode.",
+   "scenarioId": "SN018",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-06-14\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000056\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"scenarioId\": \"SN018\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"8%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 20,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1000,\n      \"salesTaxApplicable\": 80,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Services (FED in ST Mode)\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-06-14",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000056",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250421-001",
+    "scenarioId": "SN018",
+    "buyerRegistrationType": "Unregistered",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "8%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 20,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1000,
+      "salesTaxApplicable": 80,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Services (FED in ST Mode)",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0018' differs from embedded scenarioId 'SN018'"
+   ]
+  },
+  {
+   "label": "SN0019",
+   "title": "Sale of Services (as per ICT Ordinance).",
+   "scenarioId": "SN019",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN019\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2900\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"5%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 100,\n      \"salesTaxApplicable\": 5,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"ICTO TABLE I\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Services\",\n      \"sroItemSerialNo\": \"1(ii)(ii)(a)\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250421-001",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN019",
+    "items": [
+     {
+      "hsCode": "0101.2900",
+      "productDescription": "TEST",
+      "rate": "5%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "totalValues": 0,
+      "valueSalesExcludingST": 100,
+      "salesTaxApplicable": 5,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "ICTO TABLE I",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Services",
+      "sroItemSerialNo": "1(ii)(ii)(a)"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0019' differs from embedded scenarioId 'SN019'"
+   ]
+  },
+  {
+   "label": "SN0020",
+   "title": "Sale of Electric Vehicles.",
+   "scenarioId": "SN020",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN020\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2900\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"1%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 122,\n      \"totalValues\": 0,\n      \"valueSalesExcludingST\": 1000,\n      \"salesTaxApplicable\": 10,\n      \"salesTaxWithheldAtSource\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"6th Schd Table III\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"saleType\": \"Electric Vehicle\",\n      \"sroItemSerialNo\": \"20\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN020",
+    "invoiceRefNo": "SI-20250421-001",
+    "items": [
+     {
+      "hsCode": "0101.2900",
+      "productDescription": "TEST",
+      "rate": "1%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 122,
+      "totalValues": 0,
+      "valueSalesExcludingST": 1000,
+      "salesTaxApplicable": 10,
+      "salesTaxWithheldAtSource": 0,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "6th Schd Table III",
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Electric Vehicle",
+      "sroItemSerialNo": "20"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0020' differs from embedded scenarioId 'SN020'"
+   ]
+  },
+  {
+   "label": "SN0021",
+   "title": "Sale of Cement /Concrete Block.",
+   "scenarioId": "SN021",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN021\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"Rs.3 per unit\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 12,\n      \"valueSalesExcludingST\": 123,\n      \"salesTaxApplicable\": 36,\n      \"fixedNotifiedValueOrRetailPrice\": 3,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Cement /Concrete Block\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "SI-20250421-001",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN021",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "Rs.3 per unit",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 12,
+      "valueSalesExcludingST": 123,
+      "salesTaxApplicable": 36,
+      "fixedNotifiedValueOrRetailPrice": 3,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Cement /Concrete Block",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0021' differs from embedded scenarioId 'SN021'"
+   ]
+  },
+  {
+   "label": "SN0022",
+   "title": "Sale of Potassium Chlorate.",
+   "scenarioId": "SN022",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN022\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"items\": [\n    {\n      \"hsCode\": \"3104.2000\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"18% + Rs.60/kg\",\n      \"uoM\": \"KG\",\n      \"quantity\": 1,\n      \"valueSalesExcludingST\": 100,\n      \"fixedNotifiedValueOrRetailPrice\": 60,\n      \"salesTaxApplicable\": 78,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"EIGHTH SCHEDULE Table 1\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Potassium Chlorate\",\n      \"sroItemSerialNo\": \"56\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN022",
+    "invoiceRefNo": "SI-20250421-001",
+    "items": [
+     {
+      "hsCode": "3104.2000",
+      "productDescription": "TEST",
+      "rate": "18% + Rs.60/kg",
+      "uoM": "KG",
+      "quantity": 1,
+      "valueSalesExcludingST": 100,
+      "fixedNotifiedValueOrRetailPrice": 60,
+      "salesTaxApplicable": 78,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "EIGHTH SCHEDULE Table 1",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Potassium Chlorate",
+      "sroItemSerialNo": "56"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0022' differs from embedded scenarioId 'SN022'"
+   ]
+  },
+  {
+   "label": "SN0023",
+   "title": "Sale of CNG.",
+   "scenarioId": "SN023",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN023\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"Rs.200/unit\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"valueSalesExcludingST\": 234,\n      \"fixedNotifiedValueOrRetailPrice\": 200,\n      \"salesTaxApplicable\": 24600,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"581(1)/2024\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"CNG Sales\",\n      \"sroItemSerialNo\": \"Region-I\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN023",
+    "invoiceRefNo": "SI-20250421-001",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "Rs.200/unit",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "valueSalesExcludingST": 234,
+      "fixedNotifiedValueOrRetailPrice": 200,
+      "salesTaxApplicable": 24600,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "581(1)/2024",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "CNG Sales",
+      "sroItemSerialNo": "Region-I"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0023' differs from embedded scenarioId 'SN023'"
+   ]
+  },
+  {
+   "label": "SN0024",
+   "title": "Sale Of Goods Listed in SRO 297(1)/2023.",
+   "scenarioId": "SN024",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-04-21\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"scenarioId\": \"SN024\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"25%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"valueSalesExcludingST\": 1000,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxApplicable\": 250,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"297(I)/2023-Table-I\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Goods as per SRO.297(I)/2023\",\n      \"sroItemSerialNo\": \"12\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-04-21",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Unregistered",
+    "scenarioId": "SN024",
+    "invoiceRefNo": "SI-20250421-001",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "25%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "valueSalesExcludingST": 1000,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxApplicable": 250,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "297(I)/2023-Table-I",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Goods as per SRO.297(I)/2023",
+      "sroItemSerialNo": "12"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0024' differs from embedded scenarioId 'SN024'"
+   ]
+  },
+  {
+   "label": "SN0025",
+   "title": "Drugs Sold at Fixed ST Rate Under Serial 81 Of Eighth Schedule Table 1.",
+   "scenarioId": "SN025",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-16\",\n  \"sellerNTNCNIC\": \"8885801\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerAddress\": \"Karachi\",\n  \"sellerProvince\": \"Sindh\",\n  \"buyerNTNCNIC\": \"1000000000078\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Unregistered\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN025\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"0%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"valueSalesExcludingST\": 100,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxApplicable\": 0,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"EIGHTH SCHEDULE Table 1\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Non-Adjustable Supplies\",\n      \"sroItemSerialNo\": \"81\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-16",
+    "sellerNTNCNIC": "8885801",
+    "sellerBusinessName": "Company 8",
+    "sellerAddress": "Karachi",
+    "sellerProvince": "Sindh",
+    "buyerNTNCNIC": "1000000000078",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Unregistered",
+    "invoiceRefNo": "",
+    "scenarioId": "SN025",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "0%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "valueSalesExcludingST": 100,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxApplicable": 0,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "EIGHTH SCHEDULE Table 1",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Non-Adjustable Supplies",
+      "sroItemSerialNo": "81"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0025' differs from embedded scenarioId 'SN025'"
+   ]
+  },
+  {
+   "label": "SN0026",
+   "title": "Sale Of Goods at Standard Rate to End Consumers by Retailers.",
+   "scenarioId": "SN026",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-16\",\n  \"sellerNTNCNIC\": \"7000008\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000078\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"scenarioId\": \"SN026\",\n  \"invoiceRefNo\": \"SI-20250421-001\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 123,\n      \"valueSalesExcludingST\": 1000,\n      \"fixedNotifiedValueOrRetailPrice\": 0,\n      \"salesTaxApplicable\": 180,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"Goods at standard rate (default)\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-16",
+    "sellerNTNCNIC": "7000008",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000078",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Registered",
+    "scenarioId": "SN026",
+    "invoiceRefNo": "SI-20250421-001",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 123,
+      "valueSalesExcludingST": 1000,
+      "fixedNotifiedValueOrRetailPrice": 0,
+      "salesTaxApplicable": 180,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "Goods at standard rate (default)",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0026' differs from embedded scenarioId 'SN026'"
+   ]
+  },
+  {
+   "label": "SN0027",
+   "title": "Sale Of 3rd Schedule Goods to End Consumers by Retailers.",
+   "scenarioId": "SN027",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-10\",\n  \"sellerNTNCNIC\": \"7000008\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"7000006\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"invoiceRefNo\": \"\",\n  \"scenarioId\": \"SN027\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"test\",\n      \"rate\": \"18%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"valueSalesExcludingST\": 0,\n      \"fixedNotifiedValueOrRetailPrice\": 100,\n      \"salesTaxApplicable\": 18,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 0,\n      \"saleType\": \"3rd Schedule Goods\",\n      \"sroItemSerialNo\": \"\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-10",
+    "sellerNTNCNIC": "7000008",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "7000006",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "buyerRegistrationType": "Registered",
+    "invoiceRefNo": "",
+    "scenarioId": "SN027",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "test",
+      "rate": "18%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "valueSalesExcludingST": 0,
+      "fixedNotifiedValueOrRetailPrice": 100,
+      "salesTaxApplicable": 18,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 0,
+      "saleType": "3rd Schedule Goods",
+      "sroItemSerialNo": ""
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0027' differs from embedded scenarioId 'SN027'"
+   ]
+  },
+  {
+   "label": "SN0028",
+   "title": "Sale of Goods at Reduced Rate to End Consumers by Retailers.",
+   "scenarioId": "SN028",
+   "raw": "{\n  \"invoiceType\": \"Sale Invoice\",\n  \"invoiceDate\": \"2025-05-16\",\n  \"sellerNTNCNIC\": \"7000008\",\n  \"sellerBusinessName\": \"Company 8\",\n  \"sellerProvince\": \"Sindh\",\n  \"sellerAddress\": \"Karachi\",\n  \"buyerNTNCNIC\": \"1000000000000\",\n  \"buyerBusinessName\": \"FERTILIZER MANUFAC IRS NEW\",\n  \"buyerProvince\": \"Sindh\",\n  \"buyerAddress\": \"Karachi\",\n  \"invoiceRefNo\": \"\",\n  \"buyerRegistrationType\": \"Registered\",\n  \"scenarioId\": \"SN028\",\n  \"items\": [\n    {\n      \"hsCode\": \"0101.2100\",\n      \"productDescription\": \"TEST\",\n      \"rate\": \"1%\",\n      \"uoM\": \"Numbers, pieces, units\",\n      \"quantity\": 1,\n      \"valueSalesExcludingST\": 99.01,\n      \"fixedNotifiedValueOrRetailPrice\": 100,\n      \"salesTaxApplicable\": 0.99,\n      \"salesTaxWithheldAtSource\": 0,\n      \"extraTax\": 0,\n      \"furtherTax\": 0,\n      \"sroScheduleNo\": \"EIGHTH SCHEDULE Table 1\",\n      \"fedPayable\": 0,\n      \"discount\": 0,\n      \"totalValues\": 100,\n      \"saleType\": \"Goods at Reduced Rate\",\n      \"sroItemSerialNo\": \"70\"\n    }\n  ]\n}",
+   "json": {
+    "invoiceType": "Sale Invoice",
+    "invoiceDate": "2025-05-16",
+    "sellerNTNCNIC": "7000008",
+    "sellerBusinessName": "Company 8",
+    "sellerProvince": "Sindh",
+    "sellerAddress": "Karachi",
+    "buyerNTNCNIC": "1000000000000",
+    "buyerBusinessName": "FERTILIZER MANUFAC IRS NEW",
+    "buyerProvince": "Sindh",
+    "buyerAddress": "Karachi",
+    "invoiceRefNo": "",
+    "buyerRegistrationType": "Registered",
+    "scenarioId": "SN028",
+    "items": [
+     {
+      "hsCode": "0101.2100",
+      "productDescription": "TEST",
+      "rate": "1%",
+      "uoM": "Numbers, pieces, units",
+      "quantity": 1,
+      "valueSalesExcludingST": 99.01,
+      "fixedNotifiedValueOrRetailPrice": 100,
+      "salesTaxApplicable": 0.99,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": "EIGHTH SCHEDULE Table 1",
+      "fedPayable": 0,
+      "discount": 0,
+      "totalValues": 100,
+      "saleType": "Goods at Reduced Rate",
+      "sroItemSerialNo": "70"
+     }
+    ]
+   },
+   "anomalies": [
+    "Heading label 'SN0028' differs from embedded scenarioId 'SN028'"
+   ]
+  }
+ ]
+}

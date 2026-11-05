@@ -1,0 +1,2298 @@
+{
+ "source": "DI API Technical Specification v1.12 (PRAL, last updated 24-Jul-2025) §7 Sales Error Codes (pp.36-41), §8 Purchase Error Codes (pp.42-45)",
+ "rawRowCount": 150,
+ "rawRows": [
+  {
+   "code": "0001",
+   "category": "SALES",
+   "messageDesc": "Seller not registered for sales tax, please provide valid registration/NTN.",
+   "briefMsgDesc": "Seller is not registered for sales tax, please provide valid seller registration/NTN.",
+   "sourcePage": 36
+  },
+  {
+   "code": "0002",
+   "category": "SALES",
+   "messageDesc": "Invalid Buyer Registration No or NTN :",
+   "briefMsgDesc": "Buyer Registration Number or NTN is not in proper format, please provide buyer registration number in 13 digits or NTN in 7 or 9 digits",
+   "sourcePage": 36
+  },
+  {
+   "code": "0003",
+   "category": "SALES",
+   "messageDesc": "Provide proper invoice type.",
+   "briefMsgDesc": "Invoice type is not valid or empty, please provide valid invoice type",
+   "sourcePage": 36
+  },
+  {
+   "code": "0005",
+   "category": "SALES",
+   "messageDesc": "please provide date in valid format 01-DEC-2021",
+   "briefMsgDesc": "Invoice date is not in proper format, please provide invoice date in \"YYYY-MM-DD\" format. For example: 2025-05-25",
+   "sourcePage": 36
+  },
+  {
+   "code": "0006",
+   "category": "SALES",
+   "messageDesc": "Sale invoice not exist.",
+   "briefMsgDesc": "Sales invoice does not exist against STWH",
+   "sourcePage": 36
+  },
+  {
+   "code": "0007",
+   "category": "SALES",
+   "messageDesc": "Wrong Sale type is selected with invoice no (Invoice no)",
+   "briefMsgDesc": "Selected invoice type is not associated with proper registration number, please select actual invoice type",
+   "sourcePage": 36
+  },
+  {
+   "code": "0008",
+   "category": "SALES",
+   "messageDesc": "ST withheld at source should either be zero or same as sales tax/fed in st mode.",
+   "briefMsgDesc": "ST withheld at source is not equal to zero or sales tax, please enter ST withheld at source zero or equal to sales tax",
+   "sourcePage": 36
+  },
+  {
+   "code": "0009",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer registration No.",
+   "briefMsgDesc": "Buyer Registration Number cannot be empty, please provide proper buyer registration number",
+   "sourcePage": 36
+  },
+  {
+   "code": "0010",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePage": 36
+  },
+  {
+   "code": "0012",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer Registration Type",
+   "briefMsgDesc": "Buyer Registration type cannot be empty, please provide valid Buyer Registration type",
+   "sourcePage": 36
+  },
+  {
+   "code": "0011",
+   "category": "SALES",
+   "messageDesc": "Provide invoice type.",
+   "briefMsgDesc": "Invoice type cannot be empty, please provide valid invoice type",
+   "sourcePage": 36
+  },
+  {
+   "code": "0013",
+   "category": "SALES",
+   "messageDesc": "Provide valid Sale type.",
+   "briefMsgDesc": "Sale type cannot be empty/null, please provide valid sale type",
+   "sourcePage": 36
+  },
+  {
+   "code": "0018",
+   "category": "SALES",
+   "messageDesc": "Please provide Sales Tax/FED in ST Mode",
+   "briefMsgDesc": "Sales Tax/FED cannot be empty, please valid provide Sales Tax/FED",
+   "sourcePage": 36
+  },
+  {
+   "code": "0019",
+   "category": "SALES",
+   "messageDesc": "Please provide HSCode",
+   "briefMsgDesc": "HS Code cannot be empty, please provide valid HS Code",
+   "sourcePage": 36
+  },
+  {
+   "code": "0020",
+   "category": "SALES",
+   "messageDesc": "Please provide Rate",
+   "briefMsgDesc": "Rate field cannot be empty, please provide Rate",
+   "sourcePage": 36
+  },
+  {
+   "code": "0021",
+   "category": "SALES",
+   "messageDesc": "Please provide Value of Sales Excl. ST /Quantity",
+   "briefMsgDesc": "Value of Sales Excl. ST /Quantity cannot be empty, Please provide valid Value of Sales Excl. ST /Quantity",
+   "sourcePage": 36
+  },
+  {
+   "code": "0022",
+   "category": "SALES",
+   "messageDesc": "Please provide ST withheld at Source or STS Withheld",
+   "briefMsgDesc": "ST withheld at Source or STS Withheld cannot be empty, Please provide valid ST withheld at Source or STS Withheld",
+   "sourcePage": 37
+  },
+  {
+   "code": "0023",
+   "category": "SALES",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, Please provide valid Sales Tax",
+   "sourcePage": 37
+  },
+  {
+   "code": "0024",
+   "category": "SALES",
+   "messageDesc": "Please provide ST withheld",
+   "briefMsgDesc": "Sales Tax withheld cannot be empty, Please provide valid Sales Tax withheld",
+   "sourcePage": 37
+  },
+  {
+   "code": "0026",
+   "category": "SALES",
+   "messageDesc": "Invoice Reference No. is required.",
+   "briefMsgDesc": "Invoice Reference No. is mandatory requirement for debit/credit note. Please provide valid Invoice Reference No.",
+   "sourcePage": 37
+  },
+  {
+   "code": "0027",
+   "category": "SALES",
+   "messageDesc": "Reason is required.",
+   "briefMsgDesc": "Reason is mandatory requirement for debit/credit note. Please provide valid reason for debit/credit note",
+   "sourcePage": 37
+  },
+  {
+   "code": "0028",
+   "category": "SALES",
+   "messageDesc": "Reason Remarks are required.",
+   "briefMsgDesc": "Reason is selected as \"Others\". Please provide valid remarks against this reason",
+   "sourcePage": 37
+  },
+  {
+   "code": "0029",
+   "category": "SALES",
+   "messageDesc": "Invoice date must be greater or equal to original invoice no.",
+   "briefMsgDesc": "Debit/Credit note date should be equal or greater from original invoice date",
+   "sourcePage": 37
+  },
+  {
+   "code": "0030",
+   "category": "SALES",
+   "messageDesc": "Unregistered distributer type not allowed before date",
+   "briefMsgDesc": "Unregistered distributer type not allowed before system cut of date",
+   "sourcePage": 37
+  },
+  {
+   "code": "0031",
+   "category": "SALES",
+   "messageDesc": "Provide Sales Tax",
+   "briefMsgDesc": "Sales Tax is not mentioned, please provide Sales Tax",
+   "sourcePage": 37
+  },
+  {
+   "code": "0032",
+   "category": "SALES",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without sales invoice.",
+   "sourcePage": 37
+  },
+  {
+   "code": "0034",
+   "category": "SALES",
+   "messageDesc": "{0} only allowed within {1} days of invoice date of the original invoice",
+   "briefMsgDesc": "Debit/Credit note can only be added within 180 days of original invoice date",
+   "sourcePage": 37
+  },
+  {
+   "code": "0035",
+   "category": "SALES",
+   "messageDesc": "{0} date must be greater or equal to original invoice date.",
+   "briefMsgDesc": "Note Date must be greater or equal to original invoice date",
+   "sourcePage": 37
+  },
+  {
+   "code": "0036",
+   "category": "SALES",
+   "messageDesc": "Total {1} value of {0} invoice(s) is greater than {1} of original invoice. Value of Sales",
+   "briefMsgDesc": "Credit Note Value of Sale must be less or equal to the value of Sale in original invoice.",
+   "sourcePage": 37
+  },
+  {
+   "code": "0037",
+   "category": "SALES",
+   "messageDesc": "Total {1} value of {0} invoice(s) is greater than {1} of original invoice.ST Withheld as WH Agent",
+   "briefMsgDesc": "Credit Note Value of ST Withheld must be less or equal to the value of ST Withheld in original invoice.",
+   "sourcePage": 37
+  },
+  {
+   "code": "0039",
+   "category": "SALES",
+   "messageDesc": "Sale invoice not exist.",
+   "briefMsgDesc": "For registered users, STWH invoice fields must be same as sale invoice",
+   "sourcePage": 37
+  },
+  {
+   "code": "0041",
+   "category": "SALES",
+   "messageDesc": "Provide invoice No.",
+   "briefMsgDesc": "Invoice number cannot be empty, please provide invoice number.",
+   "sourcePage": 37
+  },
+  {
+   "code": "0042",
+   "category": "SALES",
+   "messageDesc": "Provide invoice date.",
+   "briefMsgDesc": "Invoice date cannot be empty, please provide invoice date.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0043",
+   "category": "SALES",
+   "messageDesc": "Provide valid Date.",
+   "briefMsgDesc": "Invoice date is not valid, please provide valid invoice date.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0044",
+   "category": "SALES",
+   "messageDesc": "Provide HS Code.",
+   "briefMsgDesc": "HS Code cannot be empty, please provide HS Code",
+   "sourcePage": 38
+  },
+  {
+   "code": "0046",
+   "category": "SALES",
+   "messageDesc": "Provide rate.",
+   "briefMsgDesc": "Rate cannot be empty, please provide valid rate as per selected Sales Type.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0050",
+   "category": "SALES",
+   "messageDesc": "Please provide valid Sales Tax withheld. For sale type 'Cotton ginners', Sales Tax Withheld must be equal to Sales Tax or zero",
+   "briefMsgDesc": "Please provide valid Sales Tax withheld. For sale type 'Cotton ginners', Sales Tax Withheld must be equal to Sales Tax or zero",
+   "sourcePage": 38
+  },
+  {
+   "code": "0052",
+   "category": "SALES",
+   "messageDesc": "Please provide valid HS Code against invoice no:",
+   "briefMsgDesc": "HS Code that does not match with provided sale type, Please provide valid HS Code against sale type",
+   "sourcePage": 38
+  },
+  {
+   "code": "0053",
+   "category": "SALES",
+   "messageDesc": "Provided buyer registration type is invalid",
+   "briefMsgDesc": "Buyer Registration Type is invalid, please provide valid Buyer Registration Type",
+   "sourcePage": 38
+  },
+  {
+   "code": "0055",
+   "category": "SALES",
+   "messageDesc": "Please Provide ST Withheld as WH Agent",
+   "briefMsgDesc": "Sales tax withheld cannot be empty or invalid format. Please provide valid sales tax withheld.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0056",
+   "category": "SALES",
+   "messageDesc": "Buyer not exists in steel sector.",
+   "briefMsgDesc": "Buyer does not exist in steel sector",
+   "sourcePage": 38
+  },
+  {
+   "code": "0057",
+   "category": "SALES",
+   "messageDesc": "Reference Invoice does not exist.",
+   "briefMsgDesc": "Reference invoice for debit/ credit note does not exists. Please provide valid Invoice Reference No.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0058",
+   "category": "SALES",
+   "messageDesc": "Self-invoicing not allowed",
+   "briefMsgDesc": "Buyer and Seller Registration number are same, this type of invoice is not allowed",
+   "sourcePage": 38
+  },
+  {
+   "code": "0064",
+   "category": "SALES",
+   "messageDesc": "Reference invoice already exist.",
+   "briefMsgDesc": "Credit note is already added to a invoice",
+   "sourcePage": 38
+  },
+  {
+   "code": "0067",
+   "category": "SALES",
+   "messageDesc": "{1} of {0} invoice is greater than {1} of original invoice.",
+   "briefMsgDesc": "Sales Tax value of Debit Note is greater than original invoice's sales tax",
+   "sourcePage": 38
+  },
+  {
+   "code": "0068",
+   "category": "SALES",
+   "messageDesc": "{1} of {0} invoice is less than {1} of original invoice.",
+   "briefMsgDesc": "Sales Tax value of Credit Note is less than original invoice's sales tax according to the rate.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0070",
+   "category": "SALES",
+   "messageDesc": "STWH cannot be created for unregistered buyers.",
+   "briefMsgDesc": "User is not registered, STWH is allowed only for registered user",
+   "sourcePage": 38
+  },
+  {
+   "code": "0071",
+   "category": "SALES",
+   "messageDesc": "Entry of {0} against the declared invoice is not allowed.",
+   "briefMsgDesc": "Credit note allowed to add only for specific users",
+   "sourcePage": 38
+  },
+  {
+   "code": "0073",
+   "category": "SALES",
+   "messageDesc": "Provide Sale Origination Province of Supplier",
+   "briefMsgDesc": "Sale Origination Province of Supplier cannot be empty, please provide valid Sale Origination Province of Supplier.",
+   "sourcePage": 38
+  },
+  {
+   "code": "0074",
+   "category": "SALES",
+   "messageDesc": "Provide Destination of Supply",
+   "briefMsgDesc": "Destination of Supply cannot be empty, please provide valid Destination of Supply",
+   "sourcePage": 38
+  },
+  {
+   "code": "0077",
+   "category": "SALES",
+   "messageDesc": "Provide SRO/Schedule No.",
+   "briefMsgDesc": "SRO/Schedule Number cannot be empty, please provide valid SRO/Schedule Number",
+   "sourcePage": 39
+  },
+  {
+   "code": "0078",
+   "category": "SALES",
+   "messageDesc": "Provide Item Sr. No.",
+   "briefMsgDesc": "Item serial number cannot be empty, please provide valid item serial number",
+   "sourcePage": 39
+  },
+  {
+   "code": "0079",
+   "category": "SALES",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If sales value is greater than 20,000 than rate 5% is not allowed",
+   "sourcePage": 39
+  },
+  {
+   "code": "0080",
+   "category": "SALES",
+   "messageDesc": "Please provide Further Tax",
+   "briefMsgDesc": "Further Tax' cannot be empty, please provide valid Further Tax",
+   "sourcePage": 39
+  },
+  {
+   "code": "0081",
+   "category": "SALES",
+   "messageDesc": "Please provide Input Credit not Allowed",
+   "briefMsgDesc": "'Input Credit not Allowed' cannot be empty, please provide ‘Input Credit not Allowed'",
+   "sourcePage": 39
+  },
+  {
+   "code": "0082",
+   "category": "SALES",
+   "messageDesc": "The Seller is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Seller is not registered for sales tax. Please provide a valid registration/NTN.",
+   "sourcePage": 39
+  },
+  {
+   "code": "0083",
+   "category": "SALES",
+   "messageDesc": "Mismatch Seller Registration No.",
+   "briefMsgDesc": "Seller Reg No. doesn’t match. Please provide valid Seller Registration Number",
+   "sourcePage": 39
+  },
+  {
+   "code": "0085",
+   "category": "SALES",
+   "messageDesc": "Please provide Total Value of Sales (In case of PFAD only)",
+   "briefMsgDesc": "Total Value of Sales is not provided, please provide valid Total Value of Sales (In case of PFAD only)",
+   "sourcePage": 39
+  },
+  {
+   "code": "0086",
+   "category": "SALES",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePage": 39
+  },
+  {
+   "code": "0087",
+   "category": "SALES",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePage": 39
+  },
+  {
+   "code": "0088",
+   "category": "SALES",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePage": 39
+  },
+  {
+   "code": "0089",
+   "category": "SALES",
+   "messageDesc": "Please provide FED Charged",
+   "briefMsgDesc": "FED Charged cannot be empty, please provide valid FED Charged",
+   "sourcePage": 39
+  },
+  {
+   "code": "0090",
+   "category": "SALES",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePage": 39
+  },
+  {
+   "code": "0091",
+   "category": "SALES",
+   "messageDesc": "Extra tax must be empty.",
+   "briefMsgDesc": "Extra tax must be empty.",
+   "sourcePage": 39
+  },
+  {
+   "code": "0092",
+   "category": "SALES",
+   "messageDesc": "Provide Valid Sale Type.",
+   "briefMsgDesc": "Purchase type cannot be empty, please provide valid purchase type",
+   "sourcePage": 39
+  },
+  {
+   "code": "0093",
+   "category": "SALES",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Selected Sale is are not allowed to Manufacturer. Please select proper sale type",
+   "sourcePage": 39
+  },
+  {
+   "code": "0095",
+   "category": "SALES",
+   "messageDesc": "Please provide Extra Tax",
+   "briefMsgDesc": "Extra Tax cannot be empty, please provide valid extra tax",
+   "sourcePage": 39
+  },
+  {
+   "code": "0096",
+   "category": "SALES",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePage": 40
+  },
+  {
+   "code": "0097",
+   "category": "SALES",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePage": 40
+  },
+  {
+   "code": "0098",
+   "category": "SALES",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePage": 40
+  },
+  {
+   "code": "0099",
+   "category": "SALES",
+   "messageDesc": "Provide uom.",
+   "briefMsgDesc": "UOM is not valid. UOM must be according to given HS Code",
+   "sourcePage": 40
+  },
+  {
+   "code": "0100",
+   "category": "SALES",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Registered user cannot add sale invoice. Only cotton ginner sale type is allowed for registered users.",
+   "sourcePage": 40
+  },
+  {
+   "code": "0101",
+   "category": "SALES",
+   "messageDesc": "Please Use Toll Manufacturing Sale Type for Steel Sector.",
+   "briefMsgDesc": "Sale type is not selected properly, please use Toll Manufacturing Sale Type for Steel Sector.",
+   "sourcePage": 40
+  },
+  {
+   "code": "0102",
+   "category": "SALES",
+   "messageDesc": "Calculated tax not matched in 3rd schedule",
+   "briefMsgDesc": "The calculated sales tax not calculated as per 3rd schedule calculation formula",
+   "sourcePage": 40
+  },
+  {
+   "code": "0103",
+   "category": "SALES",
+   "messageDesc": "The calculated tax for Potassium Chlorate does not match.",
+   "briefMsgDesc": "Calculated tax not matched for potassium chlorate. Calculated value doesn’t match according to potassium chlorate for sales potassium invoices.",
+   "sourcePage": 40
+  },
+  {
+   "code": "0104",
+   "category": "SALES",
+   "messageDesc": "The calculated percentage sales tax does not match.",
+   "briefMsgDesc": "Calculated percentage of sales tax not matched. Calculation must be correct with respect to provided rate",
+   "sourcePage": 40
+  },
+  {
+   "code": "0105",
+   "category": "SALES",
+   "messageDesc": "The calculated sales tax for the quantity is incorrect.",
+   "briefMsgDesc": "The calculated sales tax for the quantity is incorrect.",
+   "sourcePage": 40
+  },
+  {
+   "code": "0106",
+   "category": "SALES",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "sourcePage": 40
+  },
+  {
+   "code": "0107",
+   "category": "SALES",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePage": 40
+  },
+  {
+   "code": "0108",
+   "category": "SALES",
+   "messageDesc": "Invalid Seller Registration No or NTN",
+   "briefMsgDesc": "Seller Reg No. is not valid. Please provide valid Seller Registration Number/NTN",
+   "sourcePage": 40
+  },
+  {
+   "code": "0109",
+   "category": "SALES",
+   "messageDesc": "Wrong invoice type is selected in invoice no",
+   "briefMsgDesc": "Invoice type is not selected properly, please select proper invoice type",
+   "sourcePage": 40
+  },
+  {
+   "code": "0111",
+   "category": "SALES",
+   "messageDesc": "Wrong purchase type is selected with invoice no",
+   "briefMsgDesc": "Purchase type is not selected properly, please provide proper purchase type",
+   "sourcePage": 40
+  },
+  {
+   "code": "0113",
+   "category": "SALES",
+   "messageDesc": "System is unable to parse date. Please provide date in valid format dd-MMM-yy.",
+   "briefMsgDesc": "Date is not in proper format, please provide date in \"YYYY-MM-DD\" format. For example: 2025-05-25",
+   "sourcePage": 40
+  },
+  {
+   "code": "0300",
+   "category": "SALES",
+   "messageDesc": "Provided decimal value is not valid at field",
+   "briefMsgDesc": "Discount Value is not valid at item 1 | Total Value is not valid at item 1 | Fed Payable Value is not valid at item 1 | Extra Tax Value is not valid at item 1 | Further Tax Value is not valid at item 1 | SalesTaxWithheldAtSource Value is not valid at item 1 | Quantity Value is not valid at item 1",
+   "sourcePage": 40
+  },
+  {
+   "code": "0401",
+   "category": "SALES",
+   "messageDesc": "The provided seller NTN/CNIC does not have a valid or authorized access token",
+   "briefMsgDesc": "Unauthorized access: Provided seller registration number is not 13 digits (CNIC) or 7 digits (NTN) or the authorized token does not exist against seller registration number",
+   "sourcePage": 41
+  },
+  {
+   "code": "0402",
+   "category": "SALES",
+   "messageDesc": "The provided buyer NTN/CNIC does not have a valid or authorized access token",
+   "briefMsgDesc": "Unauthorized access: Provided buyer registration number is not 13 digits (CNIC) or 7 digits (NTN) or the authorized token does not exist against buyer registration number",
+   "sourcePage": 41
+  },
+  {
+   "code": "0156",
+   "category": "PURCHASE",
+   "messageDesc": "Invalid NTN / Reg No. provided.",
+   "briefMsgDesc": "NTN/Reg. No is invalid/Null, please provide valid NTN/Reg. No.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0157",
+   "category": "PURCHASE",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide valid Registration/NTN.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0158",
+   "category": "PURCHASE",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePage": 42
+  },
+  {
+   "code": "0159",
+   "category": "PURCHASE",
+   "messageDesc": "FTN holder as seller not allowed for purchases.",
+   "briefMsgDesc": "FTN Holder as Seller is not allowed for purchases",
+   "sourcePage": 42
+  },
+  {
+   "code": "0160",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePage": 42
+  },
+  {
+   "code": "0161",
+   "category": "PURCHASE",
+   "messageDesc": "Invoice Date must be greater or equal to {0}",
+   "briefMsgDesc": "Invoice Date must be greater or equal to original sale invoice date",
+   "sourcePage": 42
+  },
+  {
+   "code": "0162",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Sale Type.",
+   "briefMsgDesc": "Sale Type cannot be empty/Invalid, please provide valid Sale Type",
+   "sourcePage": 42
+  },
+  {
+   "code": "0163",
+   "category": "PURCHASE",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Provided Sale Type is not allowed for Manufacturer.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0164",
+   "category": "PURCHASE",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePage": 42
+  },
+  {
+   "code": "0165",
+   "category": "PURCHASE",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePage": 42
+  },
+  {
+   "code": "0166",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePage": 42
+  },
+  {
+   "code": "0167",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Value of Sales Excl. ST",
+   "briefMsgDesc": "Value of Sales Excl. ST cannot be empty/Invalid, please provide valid Value of Sales Excl. ST",
+   "sourcePage": 42
+  },
+  {
+   "code": "0168",
+   "category": "PURCHASE",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Only cotton ginner purchase type is allowed for registered users.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0169",
+   "category": "PURCHASE",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without purchase invoice.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0170",
+   "category": "PURCHASE",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If Value of Sales Excl. ST greater than 20000 than rate 5% is not allowed.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0171",
+   "category": "PURCHASE",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePage": 42
+  },
+  {
+   "code": "0172",
+   "category": "PURCHASE",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePage": 43
+  },
+  {
+   "code": "0173",
+   "category": "PURCHASE",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePage": 43
+  },
+  {
+   "code": "0174",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, please provide valid Sales Tax",
+   "sourcePage": 43
+  },
+  {
+   "code": "0175",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePage": 43
+  },
+  {
+   "code": "0176",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide ST withheld at Source",
+   "briefMsgDesc": "ST withheld at Source cannot be empty, please provide valid ST withheld at Source",
+   "sourcePage": 43
+  },
+  {
+   "code": "0177",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Further Tax",
+   "briefMsgDesc": "Further Tax cannot be empty, please provide valid further tax",
+   "sourcePage": 43
+  },
+  {
+   "code": "0156",
+   "category": "PURCHASE",
+   "messageDesc": "Invalid NTN / Reg No. provided.",
+   "briefMsgDesc": "NTN/Reg. No is invalid/Null, please provide valid NTN/Reg. No.",
+   "sourcePage": 43
+  },
+  {
+   "code": "0157",
+   "category": "PURCHASE",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN..",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide valid Registration/NTN.",
+   "sourcePage": 43
+  },
+  {
+   "code": "0158",
+   "category": "PURCHASE",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePage": 43
+  },
+  {
+   "code": "0159",
+   "category": "PURCHASE",
+   "messageDesc": "FTN holder as seller not allowed for purchases.",
+   "briefMsgDesc": "FTN Holder as Seller is not allowed for purchases",
+   "sourcePage": 43
+  },
+  {
+   "code": "0160",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePage": 43
+  },
+  {
+   "code": "0161",
+   "category": "PURCHASE",
+   "messageDesc": "Invoice Date must be greater or equal to {0}",
+   "briefMsgDesc": "Invoice Date must be greater or equal to original sale invoice date",
+   "sourcePage": 43
+  },
+  {
+   "code": "0162",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Sale Type.",
+   "briefMsgDesc": "Sale Type cannot be empty/Invalid, please provide valid Sale Type",
+   "sourcePage": 43
+  },
+  {
+   "code": "0163",
+   "category": "PURCHASE",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Provided Sale Type is not allowed for Manufacturer.",
+   "sourcePage": 43
+  },
+  {
+   "code": "0164",
+   "category": "PURCHASE",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePage": 43
+  },
+  {
+   "code": "0165",
+   "category": "PURCHASE",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePage": 43
+  },
+  {
+   "code": "0166",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePage": 44
+  },
+  {
+   "code": "0167",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Value of Sales Excl. ST",
+   "briefMsgDesc": "Value of Sales Excl. ST cannot be empty/Invalid, please provide valid Value of Sales Excl. ST",
+   "sourcePage": 44
+  },
+  {
+   "code": "0168",
+   "category": "PURCHASE",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Only cotton ginner purchase type is allowed for registered users.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0169",
+   "category": "PURCHASE",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without purchase invoice.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0170",
+   "category": "PURCHASE",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If Value of Sales Excl. ST greater than 20000 than rate 5% is not allowed.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0171",
+   "category": "PURCHASE",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0172",
+   "category": "PURCHASE",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePage": 44
+  },
+  {
+   "code": "0173",
+   "category": "PURCHASE",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePage": 44
+  },
+  {
+   "code": "0174",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, please provide valid Sales Tax",
+   "sourcePage": 44
+  },
+  {
+   "code": "0175",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePage": 44
+  },
+  {
+   "code": "0176",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide ST withheld at Source",
+   "briefMsgDesc": "ST withheld at Source cannot be empty, please provide valid ST withheld at Source",
+   "sourcePage": 44
+  },
+  {
+   "code": "0177",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Further Tax",
+   "briefMsgDesc": "Further Tax cannot be empty, please provide valid further tax",
+   "sourcePage": 44
+  },
+  {
+   "code": "0156",
+   "category": "PURCHASE",
+   "messageDesc": "Invalid NTN / Reg No. provided.",
+   "briefMsgDesc": "NTN/Reg. No is invalid/Null, please provide valid NTN/Reg. No.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0157",
+   "category": "PURCHASE",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN..",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide valid Registration/NTN.",
+   "sourcePage": 44
+  },
+  {
+   "code": "0158",
+   "category": "PURCHASE",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePage": 44
+  },
+  {
+   "code": "0159",
+   "category": "PURCHASE",
+   "messageDesc": "FTN holder as seller not allowed for purchases.",
+   "briefMsgDesc": "FTN Holder as Seller is not allowed for purchases",
+   "sourcePage": 44
+  },
+  {
+   "code": "0160",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePage": 45
+  },
+  {
+   "code": "0161",
+   "category": "PURCHASE",
+   "messageDesc": "Invoice Date must be greater or equal to {0}",
+   "briefMsgDesc": "Invoice Date must be greater or equal to original sale invoice date",
+   "sourcePage": 45
+  },
+  {
+   "code": "0162",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Sale Type.",
+   "briefMsgDesc": "Sale Type cannot be empty/Invalid, please provide valid Sale Type",
+   "sourcePage": 45
+  },
+  {
+   "code": "0163",
+   "category": "PURCHASE",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Provided Sale Type is not allowed for Manufacturer.",
+   "sourcePage": 45
+  },
+  {
+   "code": "0164",
+   "category": "PURCHASE",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePage": 45
+  },
+  {
+   "code": "0165",
+   "category": "PURCHASE",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePage": 45
+  },
+  {
+   "code": "0166",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePage": 45
+  },
+  {
+   "code": "0167",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Value of Sales Excl. ST",
+   "briefMsgDesc": "Value of Sales Excl. ST cannot be empty/Invalid, please provide valid Value of Sales Excl. ST",
+   "sourcePage": 45
+  },
+  {
+   "code": "0168",
+   "category": "PURCHASE",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Only cotton ginner purchase type is allowed for registered users.",
+   "sourcePage": 45
+  },
+  {
+   "code": "0169",
+   "category": "PURCHASE",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without purchase invoice.",
+   "sourcePage": 45
+  },
+  {
+   "code": "0170",
+   "category": "PURCHASE",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If Value of Sales Excl. ST greater than 20000 than rate 5% is not allowed.",
+   "sourcePage": 45
+  },
+  {
+   "code": "0171",
+   "category": "PURCHASE",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePage": 45
+  },
+  {
+   "code": "0172",
+   "category": "PURCHASE",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePage": 45
+  },
+  {
+   "code": "0173",
+   "category": "PURCHASE",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePage": 45
+  },
+  {
+   "code": "0174",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, please provide valid Sales Tax",
+   "sourcePage": 45
+  },
+  {
+   "code": "0175",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePage": 45
+  }
+ ],
+ "entries": [
+  {
+   "code": "0001",
+   "category": "SALES",
+   "messageDesc": "Seller not registered for sales tax, please provide valid registration/NTN.",
+   "briefMsgDesc": "Seller is not registered for sales tax, please provide valid seller registration/NTN.",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0002",
+   "category": "SALES",
+   "messageDesc": "Invalid Buyer Registration No or NTN :",
+   "briefMsgDesc": "Buyer Registration Number or NTN is not in proper format, please provide buyer registration number in 13 digits or NTN in 7 or 9 digits",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0003",
+   "category": "SALES",
+   "messageDesc": "Provide proper invoice type.",
+   "briefMsgDesc": "Invoice type is not valid or empty, please provide valid invoice type",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0005",
+   "category": "SALES",
+   "messageDesc": "please provide date in valid format 01-DEC-2021",
+   "briefMsgDesc": "Invoice date is not in proper format, please provide invoice date in \"YYYY-MM-DD\" format. For example: 2025-05-25",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0006",
+   "category": "SALES",
+   "messageDesc": "Sale invoice not exist.",
+   "briefMsgDesc": "Sales invoice does not exist against STWH",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0007",
+   "category": "SALES",
+   "messageDesc": "Wrong Sale type is selected with invoice no (Invoice no)",
+   "briefMsgDesc": "Selected invoice type is not associated with proper registration number, please select actual invoice type",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0008",
+   "category": "SALES",
+   "messageDesc": "ST withheld at source should either be zero or same as sales tax/fed in st mode.",
+   "briefMsgDesc": "ST withheld at source is not equal to zero or sales tax, please enter ST withheld at source zero or equal to sales tax",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0009",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer registration No.",
+   "briefMsgDesc": "Buyer Registration Number cannot be empty, please provide proper buyer registration number",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0010",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0012",
+   "category": "SALES",
+   "messageDesc": "Provide Buyer Registration Type",
+   "briefMsgDesc": "Buyer Registration type cannot be empty, please provide valid Buyer Registration type",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0011",
+   "category": "SALES",
+   "messageDesc": "Provide invoice type.",
+   "briefMsgDesc": "Invoice type cannot be empty, please provide valid invoice type",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0013",
+   "category": "SALES",
+   "messageDesc": "Provide valid Sale type.",
+   "briefMsgDesc": "Sale type cannot be empty/null, please provide valid sale type",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0018",
+   "category": "SALES",
+   "messageDesc": "Please provide Sales Tax/FED in ST Mode",
+   "briefMsgDesc": "Sales Tax/FED cannot be empty, please valid provide Sales Tax/FED",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0019",
+   "category": "SALES",
+   "messageDesc": "Please provide HSCode",
+   "briefMsgDesc": "HS Code cannot be empty, please provide valid HS Code",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0020",
+   "category": "SALES",
+   "messageDesc": "Please provide Rate",
+   "briefMsgDesc": "Rate field cannot be empty, please provide Rate",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0021",
+   "category": "SALES",
+   "messageDesc": "Please provide Value of Sales Excl. ST /Quantity",
+   "briefMsgDesc": "Value of Sales Excl. ST /Quantity cannot be empty, Please provide valid Value of Sales Excl. ST /Quantity",
+   "sourcePages": [
+    36
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0022",
+   "category": "SALES",
+   "messageDesc": "Please provide ST withheld at Source or STS Withheld",
+   "briefMsgDesc": "ST withheld at Source or STS Withheld cannot be empty, Please provide valid ST withheld at Source or STS Withheld",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0023",
+   "category": "SALES",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, Please provide valid Sales Tax",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0024",
+   "category": "SALES",
+   "messageDesc": "Please provide ST withheld",
+   "briefMsgDesc": "Sales Tax withheld cannot be empty, Please provide valid Sales Tax withheld",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0026",
+   "category": "SALES",
+   "messageDesc": "Invoice Reference No. is required.",
+   "briefMsgDesc": "Invoice Reference No. is mandatory requirement for debit/credit note. Please provide valid Invoice Reference No.",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0027",
+   "category": "SALES",
+   "messageDesc": "Reason is required.",
+   "briefMsgDesc": "Reason is mandatory requirement for debit/credit note. Please provide valid reason for debit/credit note",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0028",
+   "category": "SALES",
+   "messageDesc": "Reason Remarks are required.",
+   "briefMsgDesc": "Reason is selected as \"Others\". Please provide valid remarks against this reason",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0029",
+   "category": "SALES",
+   "messageDesc": "Invoice date must be greater or equal to original invoice no.",
+   "briefMsgDesc": "Debit/Credit note date should be equal or greater from original invoice date",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0030",
+   "category": "SALES",
+   "messageDesc": "Unregistered distributer type not allowed before date",
+   "briefMsgDesc": "Unregistered distributer type not allowed before system cut of date",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0031",
+   "category": "SALES",
+   "messageDesc": "Provide Sales Tax",
+   "briefMsgDesc": "Sales Tax is not mentioned, please provide Sales Tax",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0032",
+   "category": "SALES",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without sales invoice.",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0034",
+   "category": "SALES",
+   "messageDesc": "{0} only allowed within {1} days of invoice date of the original invoice",
+   "briefMsgDesc": "Debit/Credit note can only be added within 180 days of original invoice date",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0035",
+   "category": "SALES",
+   "messageDesc": "{0} date must be greater or equal to original invoice date.",
+   "briefMsgDesc": "Note Date must be greater or equal to original invoice date",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0036",
+   "category": "SALES",
+   "messageDesc": "Total {1} value of {0} invoice(s) is greater than {1} of original invoice. Value of Sales",
+   "briefMsgDesc": "Credit Note Value of Sale must be less or equal to the value of Sale in original invoice.",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0037",
+   "category": "SALES",
+   "messageDesc": "Total {1} value of {0} invoice(s) is greater than {1} of original invoice.ST Withheld as WH Agent",
+   "briefMsgDesc": "Credit Note Value of ST Withheld must be less or equal to the value of ST Withheld in original invoice.",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0039",
+   "category": "SALES",
+   "messageDesc": "Sale invoice not exist.",
+   "briefMsgDesc": "For registered users, STWH invoice fields must be same as sale invoice",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0041",
+   "category": "SALES",
+   "messageDesc": "Provide invoice No.",
+   "briefMsgDesc": "Invoice number cannot be empty, please provide invoice number.",
+   "sourcePages": [
+    37
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0042",
+   "category": "SALES",
+   "messageDesc": "Provide invoice date.",
+   "briefMsgDesc": "Invoice date cannot be empty, please provide invoice date.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0043",
+   "category": "SALES",
+   "messageDesc": "Provide valid Date.",
+   "briefMsgDesc": "Invoice date is not valid, please provide valid invoice date.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0044",
+   "category": "SALES",
+   "messageDesc": "Provide HS Code.",
+   "briefMsgDesc": "HS Code cannot be empty, please provide HS Code",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0046",
+   "category": "SALES",
+   "messageDesc": "Provide rate.",
+   "briefMsgDesc": "Rate cannot be empty, please provide valid rate as per selected Sales Type.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0050",
+   "category": "SALES",
+   "messageDesc": "Please provide valid Sales Tax withheld. For sale type 'Cotton ginners', Sales Tax Withheld must be equal to Sales Tax or zero",
+   "briefMsgDesc": "Please provide valid Sales Tax withheld. For sale type 'Cotton ginners', Sales Tax Withheld must be equal to Sales Tax or zero",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0052",
+   "category": "SALES",
+   "messageDesc": "Please provide valid HS Code against invoice no:",
+   "briefMsgDesc": "HS Code that does not match with provided sale type, Please provide valid HS Code against sale type",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0053",
+   "category": "SALES",
+   "messageDesc": "Provided buyer registration type is invalid",
+   "briefMsgDesc": "Buyer Registration Type is invalid, please provide valid Buyer Registration Type",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0055",
+   "category": "SALES",
+   "messageDesc": "Please Provide ST Withheld as WH Agent",
+   "briefMsgDesc": "Sales tax withheld cannot be empty or invalid format. Please provide valid sales tax withheld.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0056",
+   "category": "SALES",
+   "messageDesc": "Buyer not exists in steel sector.",
+   "briefMsgDesc": "Buyer does not exist in steel sector",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0057",
+   "category": "SALES",
+   "messageDesc": "Reference Invoice does not exist.",
+   "briefMsgDesc": "Reference invoice for debit/ credit note does not exists. Please provide valid Invoice Reference No.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0058",
+   "category": "SALES",
+   "messageDesc": "Self-invoicing not allowed",
+   "briefMsgDesc": "Buyer and Seller Registration number are same, this type of invoice is not allowed",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0064",
+   "category": "SALES",
+   "messageDesc": "Reference invoice already exist.",
+   "briefMsgDesc": "Credit note is already added to a invoice",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0067",
+   "category": "SALES",
+   "messageDesc": "{1} of {0} invoice is greater than {1} of original invoice.",
+   "briefMsgDesc": "Sales Tax value of Debit Note is greater than original invoice's sales tax",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0068",
+   "category": "SALES",
+   "messageDesc": "{1} of {0} invoice is less than {1} of original invoice.",
+   "briefMsgDesc": "Sales Tax value of Credit Note is less than original invoice's sales tax according to the rate.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0070",
+   "category": "SALES",
+   "messageDesc": "STWH cannot be created for unregistered buyers.",
+   "briefMsgDesc": "User is not registered, STWH is allowed only for registered user",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0071",
+   "category": "SALES",
+   "messageDesc": "Entry of {0} against the declared invoice is not allowed.",
+   "briefMsgDesc": "Credit note allowed to add only for specific users",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0073",
+   "category": "SALES",
+   "messageDesc": "Provide Sale Origination Province of Supplier",
+   "briefMsgDesc": "Sale Origination Province of Supplier cannot be empty, please provide valid Sale Origination Province of Supplier.",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0074",
+   "category": "SALES",
+   "messageDesc": "Provide Destination of Supply",
+   "briefMsgDesc": "Destination of Supply cannot be empty, please provide valid Destination of Supply",
+   "sourcePages": [
+    38
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0077",
+   "category": "SALES",
+   "messageDesc": "Provide SRO/Schedule No.",
+   "briefMsgDesc": "SRO/Schedule Number cannot be empty, please provide valid SRO/Schedule Number",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0078",
+   "category": "SALES",
+   "messageDesc": "Provide Item Sr. No.",
+   "briefMsgDesc": "Item serial number cannot be empty, please provide valid item serial number",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0079",
+   "category": "SALES",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If sales value is greater than 20,000 than rate 5% is not allowed",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0080",
+   "category": "SALES",
+   "messageDesc": "Please provide Further Tax",
+   "briefMsgDesc": "Further Tax' cannot be empty, please provide valid Further Tax",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0081",
+   "category": "SALES",
+   "messageDesc": "Please provide Input Credit not Allowed",
+   "briefMsgDesc": "'Input Credit not Allowed' cannot be empty, please provide ‘Input Credit not Allowed'",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0082",
+   "category": "SALES",
+   "messageDesc": "The Seller is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Seller is not registered for sales tax. Please provide a valid registration/NTN.",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0083",
+   "category": "SALES",
+   "messageDesc": "Mismatch Seller Registration No.",
+   "briefMsgDesc": "Seller Reg No. doesn’t match. Please provide valid Seller Registration Number",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0085",
+   "category": "SALES",
+   "messageDesc": "Please provide Total Value of Sales (In case of PFAD only)",
+   "briefMsgDesc": "Total Value of Sales is not provided, please provide valid Total Value of Sales (In case of PFAD only)",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0086",
+   "category": "SALES",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0087",
+   "category": "SALES",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0088",
+   "category": "SALES",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0089",
+   "category": "SALES",
+   "messageDesc": "Please provide FED Charged",
+   "briefMsgDesc": "FED Charged cannot be empty, please provide valid FED Charged",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0090",
+   "category": "SALES",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0091",
+   "category": "SALES",
+   "messageDesc": "Extra tax must be empty.",
+   "briefMsgDesc": "Extra tax must be empty.",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0092",
+   "category": "SALES",
+   "messageDesc": "Provide Valid Sale Type.",
+   "briefMsgDesc": "Purchase type cannot be empty, please provide valid purchase type",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0093",
+   "category": "SALES",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Selected Sale is are not allowed to Manufacturer. Please select proper sale type",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0095",
+   "category": "SALES",
+   "messageDesc": "Please provide Extra Tax",
+   "briefMsgDesc": "Extra Tax cannot be empty, please provide valid extra tax",
+   "sourcePages": [
+    39
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0096",
+   "category": "SALES",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0097",
+   "category": "SALES",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0098",
+   "category": "SALES",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0099",
+   "category": "SALES",
+   "messageDesc": "Provide uom.",
+   "briefMsgDesc": "UOM is not valid. UOM must be according to given HS Code",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0100",
+   "category": "SALES",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Registered user cannot add sale invoice. Only cotton ginner sale type is allowed for registered users.",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0101",
+   "category": "SALES",
+   "messageDesc": "Please Use Toll Manufacturing Sale Type for Steel Sector.",
+   "briefMsgDesc": "Sale type is not selected properly, please use Toll Manufacturing Sale Type for Steel Sector.",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0102",
+   "category": "SALES",
+   "messageDesc": "Calculated tax not matched in 3rd schedule",
+   "briefMsgDesc": "The calculated sales tax not calculated as per 3rd schedule calculation formula",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0103",
+   "category": "SALES",
+   "messageDesc": "The calculated tax for Potassium Chlorate does not match.",
+   "briefMsgDesc": "Calculated tax not matched for potassium chlorate. Calculated value doesn’t match according to potassium chlorate for sales potassium invoices.",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0104",
+   "category": "SALES",
+   "messageDesc": "The calculated percentage sales tax does not match.",
+   "briefMsgDesc": "Calculated percentage of sales tax not matched. Calculation must be correct with respect to provided rate",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0105",
+   "category": "SALES",
+   "messageDesc": "The calculated sales tax for the quantity is incorrect.",
+   "briefMsgDesc": "The calculated sales tax for the quantity is incorrect.",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0106",
+   "category": "SALES",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0107",
+   "category": "SALES",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0108",
+   "category": "SALES",
+   "messageDesc": "Invalid Seller Registration No or NTN",
+   "briefMsgDesc": "Seller Reg No. is not valid. Please provide valid Seller Registration Number/NTN",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0109",
+   "category": "SALES",
+   "messageDesc": "Wrong invoice type is selected in invoice no",
+   "briefMsgDesc": "Invoice type is not selected properly, please select proper invoice type",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0111",
+   "category": "SALES",
+   "messageDesc": "Wrong purchase type is selected with invoice no",
+   "briefMsgDesc": "Purchase type is not selected properly, please provide proper purchase type",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0113",
+   "category": "SALES",
+   "messageDesc": "System is unable to parse date. Please provide date in valid format dd-MMM-yy.",
+   "briefMsgDesc": "Date is not in proper format, please provide date in \"YYYY-MM-DD\" format. For example: 2025-05-25",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0300",
+   "category": "SALES",
+   "messageDesc": "Provided decimal value is not valid at field",
+   "briefMsgDesc": "Discount Value is not valid at item 1 | Total Value is not valid at item 1 | Fed Payable Value is not valid at item 1 | Extra Tax Value is not valid at item 1 | Further Tax Value is not valid at item 1 | SalesTaxWithheldAtSource Value is not valid at item 1 | Quantity Value is not valid at item 1",
+   "sourcePages": [
+    40
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0401",
+   "category": "SALES",
+   "messageDesc": "The provided seller NTN/CNIC does not have a valid or authorized access token",
+   "briefMsgDesc": "Unauthorized access: Provided seller registration number is not 13 digits (CNIC) or 7 digits (NTN) or the authorized token does not exist against seller registration number",
+   "sourcePages": [
+    41
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0402",
+   "category": "SALES",
+   "messageDesc": "The provided buyer NTN/CNIC does not have a valid or authorized access token",
+   "briefMsgDesc": "Unauthorized access: Provided buyer registration number is not 13 digits (CNIC) or 7 digits (NTN) or the authorized token does not exist against buyer registration number",
+   "sourcePages": [
+    41
+   ],
+   "occurrences": 1,
+   "variants": []
+  },
+  {
+   "code": "0156",
+   "category": "PURCHASE",
+   "messageDesc": "Invalid NTN / Reg No. provided.",
+   "briefMsgDesc": "NTN/Reg. No is invalid/Null, please provide valid NTN/Reg. No.",
+   "sourcePages": [
+    42,
+    43,
+    44
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0157",
+   "category": "PURCHASE",
+   "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN.",
+   "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide valid Registration/NTN.",
+   "sourcePages": [
+    42,
+    43,
+    44
+   ],
+   "occurrences": 3,
+   "variants": [
+    {
+     "messageDesc": "The Buyer is not registered for sales tax. Please provide a valid registration/NTN..",
+     "briefMsgDesc": "The Buyer is not registered for sales tax. Please provide valid Registration/NTN.",
+     "sourcePage": 43
+    }
+   ]
+  },
+  {
+   "code": "0158",
+   "category": "PURCHASE",
+   "messageDesc": "Mismatch Buyer Registration No.",
+   "briefMsgDesc": "Buyer Reg No. doesn’t match. Please provide valid Buyer Registration Number",
+   "sourcePages": [
+    42,
+    43,
+    44
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0159",
+   "category": "PURCHASE",
+   "messageDesc": "FTN holder as seller not allowed for purchases.",
+   "briefMsgDesc": "FTN Holder as Seller is not allowed for purchases",
+   "sourcePages": [
+    42,
+    43,
+    44
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0160",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Buyer Name.",
+   "briefMsgDesc": "Buyer Name cannot be empty, please provide valid buyer name",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0161",
+   "category": "PURCHASE",
+   "messageDesc": "Invoice Date must be greater or equal to {0}",
+   "briefMsgDesc": "Invoice Date must be greater or equal to original sale invoice date",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0162",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Sale Type.",
+   "briefMsgDesc": "Sale Type cannot be empty/Invalid, please provide valid Sale Type",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0163",
+   "category": "PURCHASE",
+   "messageDesc": "Selected Sale Type are not allowed to Manufacturer.",
+   "briefMsgDesc": "Provided Sale Type is not allowed for Manufacturer.",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0164",
+   "category": "PURCHASE",
+   "messageDesc": "For selected HSCode only KWH UOM is allowed.",
+   "briefMsgDesc": "For provided HS Code, only KWH UOM is allowed",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0165",
+   "category": "PURCHASE",
+   "messageDesc": "Provide UOM KG.",
+   "briefMsgDesc": "Please provide UOM in KG",
+   "sourcePages": [
+    42,
+    43,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0166",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Quantity / Electricity Units",
+   "briefMsgDesc": "Quantity / Electricity Unit cannot be empty, please provide valid Quantity / Electricity Unit",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0167",
+   "category": "PURCHASE",
+   "messageDesc": "Provide Value of Sales Excl. ST",
+   "briefMsgDesc": "Value of Sales Excl. ST cannot be empty/Invalid, please provide valid Value of Sales Excl. ST",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0168",
+   "category": "PURCHASE",
+   "messageDesc": "Cotton Ginners allowed against registered buyers only.",
+   "briefMsgDesc": "Only cotton ginner purchase type is allowed for registered users.",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0169",
+   "category": "PURCHASE",
+   "messageDesc": "STWH can only be created for GOV/FTN Holders.",
+   "briefMsgDesc": "User is not FTN holder, STWH can only be created for GOV/FTN Holders without purchase invoice.",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0170",
+   "category": "PURCHASE",
+   "messageDesc": "If Value of Sales Excl. ST greater than {0}. Rate {1} not allowed.",
+   "briefMsgDesc": "If Value of Sales Excl. ST greater than 20000 than rate 5% is not allowed.",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0171",
+   "category": "PURCHASE",
+   "messageDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "briefMsgDesc": "You are not an EFS license holder who has imported Compressor Scrap in the last 12 months.",
+   "sourcePages": [
+    42,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0172",
+   "category": "PURCHASE",
+   "messageDesc": "Petroleum Levy rates not configured properly.",
+   "briefMsgDesc": "Petroleum Levy rates not configured properly. Please update levy rates properly",
+   "sourcePages": [
+    43,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0173",
+   "category": "PURCHASE",
+   "messageDesc": "Alphanumeric and (-) contained invoice No. is allowed. (-) should be in between Alphanumeric string.",
+   "briefMsgDesc": "Invoice number is not valid, please provide valid invoice number in alphanumeric format. For example: Inv-001",
+   "sourcePages": [
+    43,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0174",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Sales Tax",
+   "briefMsgDesc": "Sales Tax cannot be empty, please provide valid Sales Tax",
+   "sourcePages": [
+    43,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0175",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Fixed / notified value or Retail Price",
+   "briefMsgDesc": "Fixed / notified value or Retail Price cannot be empty, please provide valid Fixed / notified value or Retail Price",
+   "sourcePages": [
+    43,
+    44,
+    45
+   ],
+   "occurrences": 3,
+   "variants": []
+  },
+  {
+   "code": "0176",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide ST withheld at Source",
+   "briefMsgDesc": "ST withheld at Source cannot be empty, please provide valid ST withheld at Source",
+   "sourcePages": [
+    43,
+    44
+   ],
+   "occurrences": 2,
+   "variants": []
+  },
+  {
+   "code": "0177",
+   "category": "PURCHASE",
+   "messageDesc": "Please provide Further Tax",
+   "briefMsgDesc": "Further Tax cannot be empty, please provide valid further tax",
+   "sourcePages": [
+    43,
+    44
+   ],
+   "occurrences": 2,
+   "variants": []
+  }
+ ],
+ "counts": {
+  "SALES": 86,
+  "PURCHASE": 22
+ }
+}
