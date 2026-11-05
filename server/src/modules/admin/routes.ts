@@ -1,13 +1,13 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import ExcelJS from 'exceljs';
-import { Prisma } from '@prisma/client';
+import { AttemptOperation, AttemptOutcome, InvoiceStatus, Prisma, TicketStatus, UserStatus } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { config } from '../../config.js';
 import { maskLast4 } from '../../lib/crypto.js';
 import { audit } from '../../lib/audit.js';
 import { badRequest, conflict, notFound } from '../../lib/errors.js';
-import { paging } from '../../lib/listing.js';
+import { enumFilter, paging } from '../../lib/listing.js';
 import { zTrim } from '../../lib/validators.js';
 import { requireAdmin, requireAdminPerm } from '../../plugins/auth.js';
 import { explainIssues } from '../../fbr/explain.js';
@@ -68,7 +68,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
     // ------------------------------------------------------------ users
     r.get('/users', { preHandler: requireAdminPerm('users.read') }, async (req) => {
-      const q = z.object({ q: z.string().trim().max(100).default(''), status: z.string().default(''), page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25) }).parse(req.query);
+      const q = z.object({ q: z.string().trim().max(100).default(''), status: enumFilter(Object.values(UserStatus)), page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25) }).parse(req.query);
       const where: Prisma.UserWhereInput = {
         platformRole: 'NONE',
         ...(q.status ? { status: q.status as never } : { status: { not: 'DELETED' } }),
@@ -171,7 +171,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
     // ------------------------------------------------------------ invoice oversight
     r.get('/invoices', { preHandler: requireAdminPerm('invoices.read') }, async (req) => {
-      const q = z.object({ q: z.string().trim().max(100).default(''), status: z.string().default(''), environment: z.enum(['SANDBOX', 'PRODUCTION', '']).default(''), businessId: z.string().default(''), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
+      const q = z.object({ q: z.string().trim().max(100).default(''), status: enumFilter(Object.values(InvoiceStatus), true), environment: z.enum(['SANDBOX', 'PRODUCTION', '']).default(''), businessId: z.string().default(''), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
       const where: Prisma.InvoiceWhereInput = {
         ...(q.environment ? { environment: q.environment } : {}),
         ...(q.status ? { status: { in: q.status.split(',') as never } } : {}),
@@ -229,7 +229,7 @@ export async function adminRoutes(app: FastifyInstance) {
         prisma.fbrAttempt.groupBy({ by: ['httpStatus'], where: { startedAt: { gte: since30d } }, _count: true }),
         prisma.fbrAttempt.findMany({ where: { outcome: { in: ['INVALID', 'AUTH_ERROR', 'HTTP_ERROR', 'NOT_SENT', 'UNCERTAIN', 'BAD_RESPONSE'] }, operation: { in: ['POST', 'VALIDATE'] } }, orderBy: { startedAt: 'desc' }, take: 25, include: { invoice: { select: { internalNumber: true, status: true } } } }),
         prisma.invoice.findMany({ where: { status: 'RECONCILIATION_REQUIRED' }, include: { business: { select: { name: true } } }, orderBy: { updatedAt: 'desc' }, take: 50 }),
-        prisma.$queryRaw<{ day: Date; operation: string; count: bigint }[]>`SELECT date_trunc('day', "startedAt") AS day, operation::text AS operation, count(*) AS count FROM "FbrAttempt" WHERE "startedAt" >= ${since30d} GROUP BY 1, 2 ORDER BY 1`,
+        prisma.$queryRaw<{ day: Date; operation: string; count: bigint }[]>`SELECT date_trunc('day', (("startedAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Karachi')) AS day, operation::text AS operation, count(*) AS count FROM "FbrAttempt" WHERE "startedAt" >= ${since30d} GROUP BY 1, 2 ORDER BY 1`,
       ]);
       const fbrCodes = await prisma.$queryRaw<{ code: string; count: bigint }[]>`SELECT e->>'code' AS code, count(*) AS count FROM "FbrAttempt", jsonb_array_elements(COALESCE(errors, '[]'::jsonb)) e WHERE "startedAt" >= ${since30d} AND e->>'code' IS NOT NULL GROUP BY 1 ORDER BY 2 DESC LIMIT 20`;
       return {
@@ -258,7 +258,7 @@ export async function adminRoutes(app: FastifyInstance) {
     });
 
     r.get('/fbr/attempts', { preHandler: requireAdminPerm('fbr.read') }, async (req) => {
-      const q = z.object({ outcome: z.string().default(''), operation: z.string().default(''), environment: z.enum(['SANDBOX', 'PRODUCTION', '']).default(''), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
+      const q = z.object({ outcome: enumFilter(Object.values(AttemptOutcome)), operation: enumFilter(Object.values(AttemptOperation)), environment: z.enum(['SANDBOX', 'PRODUCTION', '']).default(''), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
       const where: Prisma.FbrAttemptWhereInput = {
         ...(q.outcome ? { outcome: q.outcome as never } : {}),
         ...(q.operation ? { operation: q.operation as never } : {}),
@@ -271,8 +271,8 @@ export async function adminRoutes(app: FastifyInstance) {
 
     // ------------------------------------------------------------ reports
     r.get('/reports/summary', { preHandler: requireAdminPerm('reports.read') }, async () => {
-      const regDaily = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`SELECT date_trunc('day', "createdAt") AS day, count(*) AS count FROM "User" WHERE "platformRole" = 'NONE' AND "createdAt" >= now() - interval '90 days' GROUP BY 1 ORDER BY 1`;
-      const regMonthly = await prisma.$queryRaw<{ month: Date; count: bigint }[]>`SELECT date_trunc('month', "createdAt") AS month, count(*) AS count FROM "User" WHERE "platformRole" = 'NONE' AND "createdAt" >= now() - interval '24 months' GROUP BY 1 ORDER BY 1`;
+      const regDaily = await prisma.$queryRaw<{ day: Date; count: bigint }[]>`SELECT date_trunc('day', (("createdAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Karachi')) AS day, count(*) AS count FROM "User" WHERE "platformRole" = 'NONE' AND "createdAt" >= now() - interval '90 days' GROUP BY 1 ORDER BY 1`;
+      const regMonthly = await prisma.$queryRaw<{ month: Date; count: bigint }[]>`SELECT date_trunc('month', (("createdAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Karachi')) AS month, count(*) AS count FROM "User" WHERE "platformRole" = 'NONE' AND "createdAt" >= now() - interval '24 months' GROUP BY 1 ORDER BY 1`;
       const fbrMonthly = await prisma.$queryRaw<{ month: Date; status: string; count: bigint }[]>`SELECT date_trunc('month', "invoiceDate") AS month, status::text AS status, count(*) AS count FROM "Invoice" WHERE environment = 'PRODUCTION' AND status IN ('ACCEPTED','REJECTED','VALIDATION_FAILED','RECONCILIATION_REQUIRED') GROUP BY 1, 2 ORDER BY 1`;
       const userwise = await prisma.$queryRaw<{ businessId: string; name: string; ntn: string; invoices: bigint; accepted: bigint; failed: bigint; value: string | null }[]>`
         SELECT b.id AS "businessId", b.name, b."ntnCnic" AS ntn, count(i.id) AS invoices,
@@ -325,7 +325,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
     // ------------------------------------------------------------ support
     r.get('/support', { preHandler: requireAdminPerm('support.read') }, async (req) => {
-      const q = z.object({ status: z.string().default(''), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
+      const q = z.object({ status: enumFilter(Object.values(TicketStatus)), page: z.coerce.number().int().min(1).default(1) }).parse(req.query);
       const where: Prisma.SupportTicketWhereInput = q.status ? { status: q.status as never } : {};
       const [total, rows] = await Promise.all([prisma.supportTicket.count({ where }), prisma.supportTicket.findMany({ where, orderBy: [{ status: 'asc' }, { updatedAt: 'desc' }], include: { user: { select: { name: true, email: true } } }, ...paging(q.page, 25) })]);
       return { total, rows: rows.map((t) => ({ ...ticketDto(t), user: t.user, businessId: t.businessId })) };
@@ -433,14 +433,23 @@ export async function adminRoutes(app: FastifyInstance) {
     });
     r.post('/security/admins/invite', { preHandler: requireAdminPerm('security.manage') }, async (req) => {
       const { email, role } = z.object({ email: z.string().trim().toLowerCase().email(), role: z.enum(['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'AUDITOR']) }).parse(req.body);
+      let inv: Awaited<ReturnType<typeof createAdminInvite>>;
       try {
-        const inv = await createAdminInvite(email, role, { createdById: req.auth!.user.id });
-        const { sendMail } = await import('../../lib/mailer.js');
-        await sendMail(email, 'InvoiceGO administrator invitation', `You have been invited as an InvoiceGO ${role}.\nAccept within 24 hours:\n${inv.url}\n`, req.log);
-        await audit(req, { action: 'admin.security.invite', entityType: 'User', entityId: inv.userId, metadata: { email, role } });
-        return { ok: true, message: `Invitation emailed to ${email}.` };
+        inv = await createAdminInvite(email, role, { createdById: req.auth!.user.id });
       } catch (e) {
         throw badRequest((e as Error).message);
+      }
+      await audit(req, { action: 'admin.security.invite', entityType: 'User', entityId: inv.userId, metadata: { email, role } });
+      const { sendMail, mailConfigured } = await import('../../lib/mailer.js');
+      try {
+        if (!mailConfigured()) throw new Error('SMTP is not configured');
+        await sendMail(email, 'InvoiceGO administrator invitation', `You have been invited as an InvoiceGO ${role}.\nAccept within 24 hours:\n${inv.url}\nYou will be asked to enrol two-factor authentication at first sign-in.\n`, req.log);
+        return { ok: true, emailed: true, message: `Invitation emailed to ${email}.` };
+      } catch (e) {
+        // The invitation exists; give the inviting SUPER_ADMIN the one-time link to deliver securely
+        // (equivalent to the server CLI) instead of leaving an unusable invitation behind.
+        req.log.warn({ err: (e as Error).message }, 'admin invite email not sent');
+        return { ok: true, emailed: false, url: inv.url, expiresInHours: inv.expiresInHours, message: `The invitation was created but could not be emailed (${(e as Error).message}). Deliver the one-time link to ${email} over a secure channel.` };
       }
     });
     r.post('/security/admins/:id/role', { preHandler: requireAdminPerm('security.manage') }, async (req) => {

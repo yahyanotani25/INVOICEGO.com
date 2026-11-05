@@ -4,7 +4,8 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { audit } from '../../lib/audit.js';
 import { badRequest, notFound } from '../../lib/errors.js';
-import { paging, sortBy } from '../../lib/listing.js';
+import { enumFilter, isoDateParam, paging, sortBy } from '../../lib/listing.js';
+import { InvoiceStatus } from '@prisma/client';
 import { isoToDateOnly, karachiNow } from '../../lib/time.js';
 import { requireBusiness, requireMember } from '../../plugins/auth.js';
 import { explainIssues } from '../../fbr/explain.js';
@@ -38,10 +39,10 @@ export async function invoiceRoutes(app: FastifyInstance) {
       .object({
         q: z.string().trim().max(100).default(''),
         environment: z.enum(['SANDBOX', 'PRODUCTION', '']).default(''),
-        status: z.string().trim().default(''),
+        status: enumFilter(Object.values(InvoiceStatus), true),
         type: z.enum(['SALE_INVOICE', 'DEBIT_NOTE', '']).default(''),
-        from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-        to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        from: isoDateParam,
+        to: isoDateParam,
         page: z.coerce.number().int().min(1).default(1),
         pageSize: z.coerce.number().int().min(1).max(100).default(20),
         sort: z.string().optional(),

@@ -6,7 +6,7 @@ import { checkInvoiceMonth, dateOnlyToIso, isoToDateOnly, karachiNow, MONTH_RULE
 import { ntnCnicProblem } from '../../lib/validators.js';
 import { computeItem, D, discrepancies, invoiceTotals, money, qty4, type CalcIssue } from '../../fbr/calc.js';
 import { buildPayload, payloadHash, serializePayload, type PayloadInvoice } from '../../fbr/payload.js';
-import { callInvoiceApi, lookupRegistrationType, mismatchMessage } from '../../fbr/service.js';
+import { callInvoiceApi, lookupRegistrationType, mismatchMessage, resolveCredential } from '../../fbr/service.js';
 import { explainIssues, type ExplainedIssue } from '../../fbr/explain.js';
 import { notifyAdmins, notifyBusiness } from '../notifications/notify.js';
 import type { InvoiceInput, ItemInputParsed } from './schema.js';
@@ -510,6 +510,8 @@ export async function validateWithFbr(ctx: Ctx, id: string): Promise<FbrActionRe
   if (bc.mismatch) {
     throw new AppError(422, 'BUYER_REGISTRATION_MISMATCH', bc.message!, { issues: [{ field: 'buyerRegistrationType', level: 'error', message: bc.message }], buyerCheck: bc });
   }
+  // Fail fast on configuration problems (no token / bad URL) without changing the invoice state.
+  await resolveCredential(ctx.businessId, inv.environment);
   const lock = await prisma.invoice.updateMany({ where: { id, businessId: ctx.businessId, status: inv.status, version: inv.version }, data: { status: 'VALIDATING' } });
   if (lock.count !== 1) throw conflict('This invoice is being processed. Reload and try again.', undefined, 'BUSY');
   try {
@@ -547,7 +549,8 @@ export async function validateWithFbr(ctx: Ctx, id: string): Promise<FbrActionRe
       rawResponse: r.http.body ?? null,
     };
   } catch (e) {
-    await prisma.invoice.updateMany({ where: { id, status: 'VALIDATING' }, data: { status: 'VALIDATION_FAILED' } });
+    // Unexpected internal error: nothing was validated, restore the previous state.
+    await prisma.invoice.updateMany({ where: { id, status: 'VALIDATING' }, data: { status: inv.status } });
     throw e;
   }
 }
@@ -570,6 +573,7 @@ export async function submitToFbr(ctx: Ctx, id: string, opts: { retryOfId?: stri
   if (bc.mismatch) {
     throw new AppError(422, 'BUYER_REGISTRATION_MISMATCH', bc.message!, { issues: [{ field: 'buyerRegistrationType', level: 'error', message: bc.message }], buyerCheck: bc });
   }
+  await resolveCredential(ctx.businessId, inv.environment); // fail fast before locking
   const lockToken = `${ctx.userId}:${Date.now()}:${Math.random().toString(36).slice(2)}`;
   const lock = await prisma.invoice.updateMany({
     where: { id, businessId: ctx.businessId, status: 'VALIDATED', validatedHash: hash, version: inv.version },

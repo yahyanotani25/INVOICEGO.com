@@ -25,15 +25,17 @@ function Admins({ me }: { me: AdminMe }) {
   const canManage = me.permissions.includes('security.manage');
   const q = useQuery({ queryKey: ['admin-admins'], queryFn: () => aapi<AdminRow[]>('/security/admins') });
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteLink, setInviteLink] = useState<{ url: string; message: string } | null>(null);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('ADMIN');
   const [edit, setEdit] = useState<AdminRow | null>(null);
   const [editRole, setEditRole] = useState('ADMIN');
   const [editStatus, setEditStatus] = useState('ACTIVE');
   const invite = useMutation({
-    mutationFn: () => aapi<{ message: string }>('/security/admins/invite', { body: { email, role } }),
+    mutationFn: () => aapi<{ message: string; emailed: boolean; url?: string }>('/security/admins/invite', { body: { email, role } }),
     onSuccess: (r) => {
-      toast('green', r.message);
+      if (r.emailed) toast('green', r.message);
+      else if (r.url) setInviteLink({ url: r.url, message: r.message });
       setInviteOpen(false);
       setEmail('');
       void qc.invalidateQueries({ queryKey: ['admin-admins'] });
@@ -73,6 +75,12 @@ function Admins({ me }: { me: AdminMe }) {
           ))}
         </Table>
       )}
+      <Dialog open={!!inviteLink} onClose={() => setInviteLink(null)} title="Deliver the invitation link" footer={<Button onClick={() => setInviteLink(null)}>Done</Button>}>
+        <Alert tone="amber">{inviteLink?.message}</Alert>
+        <label className="block text-xs font-medium text-ink-700" htmlFor="invite-url">One-time invitation link (valid 24 hours)</label>
+        <input id="invite-url" readOnly className="input font-mono text-xs" value={inviteLink?.url ?? ''} onFocus={(e) => e.currentTarget.select()} />
+        <p className="text-xs text-ink-500">Anyone with this link can set the administrator password until it is used or expires. Share it only with the invited person.</p>
+      </Dialog>
       <Dialog
         open={inviteOpen}
         onClose={() => setInviteOpen(false)}

@@ -4,6 +4,7 @@ import ExcelJS from 'exceljs';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { isoToDateOnly, karachiNow } from '../../lib/time.js';
+import { isoDateParam } from '../../lib/listing.js';
 import { requireBusiness, requireMember } from '../../plugins/auth.js';
 import { safeCell } from '../bulk/excel.js';
 import { loadApplicability } from '../sandbox/routes.js';
@@ -59,8 +60,8 @@ export async function reportRoutes(app: FastifyInstance) {
     period: z.enum(['daily', 'monthly', 'quarterly', 'yearly']).default('monthly'),
     environment: z.enum(['PRODUCTION', 'SANDBOX']).default('PRODUCTION'),
     status: z.enum(['ACCEPTED', 'ALL']).default('ACCEPTED'),
-    from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-    to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    from: isoDateParam,
+    to: isoDateParam,
   });
 
   app.get('/reports/summary', { preHandler: requireMember('reports') }, async (req) => {
