@@ -1,0 +1,820 @@
+// InvoiceGO data model. All monetary values use NUMERIC (exact decimals).
+// Tenant-scoped tables carry businessId; every query in the service layer filters by it.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- identity
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BLOCKED
+  DELETED
+}
+
+enum PlatformRole {
+  NONE
+  SUPER_ADMIN
+  ADMIN
+  SUPPORT
+  AUDITOR
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  ACCOUNTANT
+  OPERATOR
+  VIEWER
+}
+
+enum SessionKind {
+  USER
+  ADMIN
+}
+
+enum TokenPurpose {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+  ADMIN_INVITE
+}
+
+model User {
+  id              String       @id @default(cuid())
+  email           String       @unique
+  name            String
+  phone           String?
+  passwordHash    String?
+  status          UserStatus   @default(PENDING_VERIFICATION)
+  emailVerifiedAt DateTime?
+  platformRole    PlatformRole @default(NONE)
+  totpSecretEnc   String?
+  totpEnabledAt   DateTime?
+  failedLogins    Int          @default(0)
+  lockedUntil     DateTime?
+  lastLoginAt     DateTime?
+  statusReason    String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  deletedAt       DateTime?
+
+  memberships Membership[]
+  sessions    Session[]
+  tokens      EmailToken[]
+  tickets     SupportTicket[]
+}
+
+model EmailToken {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  purpose     TokenPurpose
+  tokenHash   String       @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdById String?
+  meta        Json?
+  createdAt   DateTime     @default(now())
+
+  @@index([userId, purpose])
+}
+
+model Session {
+  id               String      @id @default(cuid())
+  tokenHash        String      @unique
+  userId           String
+  user             User        @relation(fields: [userId], references: [id])
+  kind             SessionKind
+  csrfToken        String
+  mfaVerified      Boolean     @default(false)
+  activeBusinessId String?
+  ip               String?
+  userAgent        String?
+  createdAt        DateTime    @default(now())
+  lastSeenAt       DateTime    @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+
+  @@index([userId, kind])
+}
+
+model LoginEvent {
+  id        String      @id @default(cuid())
+  userId    String?
+  email     String
+  kind      SessionKind
+  success   Boolean
+  reason    String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime    @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------- tenants
+model Business {
+  id                   String    @id @default(cuid())
+  name                 String
+  ntnCnic              String
+  strn                 String?
+  address              String
+  province             String
+  phone                String?
+  email                String?
+  businessActivities   String[]
+  sector               String
+  retailerRegistered   Boolean   @default(false)
+  officialScenarioIds  String[]
+  logoMime             String?
+  logoData             Bytes?
+  productionEnabled    Boolean   @default(false)
+  productionEnabledAt  DateTime?
+  invoicePrefix        String    @default("INV")
+  nextInvoiceSeq       Int       @default(1)
+  furtherTaxHelperRate Decimal?  @db.Decimal(9, 4)
+  status               String    @default("ACTIVE")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  memberships Membership[]
+  customers   Customer[]
+  products    Product[]
+  invoices    Invoice[]
+  credentials FbrCredential[]
+  onboarding  OnboardingProfile?
+}
+
+model Membership {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id])
+  businessId String
+  business   Business   @relation(fields: [businessId], references: [id])
+  role       MemberRole
+  createdAt  DateTime   @default(now())
+
+  @@unique([userId, businessId])
+  @@index([businessId])
+}
+
+enum WhitelistStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+model OnboardingProfile {
+  businessId             String          @id
+  business               Business        @relation(fields: [businessId], references: [id])
+  integratorChoice       String?
+  otherIntegratorName    String?
+  technicalContactName   String?
+  technicalContactMobile String?
+  technicalContactEmail  String?
+  erpProvider            String?
+  softwareType           String?
+  softwareVersion        String?
+  crmUserEmail           String?
+  hostingCompany         String?
+  hostingCountry         String?
+  whitelistIps           String[]
+  whitelistStatus        WhitelistStatus @default(NOT_SUBMITTED)
+  whitelistNotes         String?
+  whitelistUpdatedAt     DateTime?
+  checklist              Json            @default("{}")
+  updatedAt              DateTime        @updatedAt
+}
+
+enum FbrEnvironment {
+  SANDBOX
+  PRODUCTION
+}
+
+enum CredentialStatus {
+  UNTESTED
+  OK
+  UNAUTHORIZED
+  ERROR
+}
+
+model FbrCredential {
+  id                  String           @id @default(cuid())
+  businessId          String
+  business            Business         @relation(fields: [businessId], references: [id])
+  environment         FbrEnvironment
+  postUrl             String
+  validateUrl         String
+  tokenEnc            String?
+  tokenLast4          String?
+  tokenUpdatedAt      DateTime?
+  status              CredentialStatus @default(UNTESTED)
+  lastCheckedAt       DateTime?
+  lastCheckMessage    String?
+  lastCheckHttpStatus Int?
+  updatedById         String?
+  updatedAt           DateTime         @updatedAt
+
+  @@unique([businessId, environment])
+}
+
+// ---------------------------------------------------------------- master data
+enum RegistrationType {
+  REGISTERED
+  UNREGISTERED
+}
+
+enum VerificationResult {
+  NOT_CHECKED
+  REGISTERED
+  UNREGISTERED
+  UNAVAILABLE
+}
+
+model Customer {
+  id               String             @id @default(cuid())
+  businessId       String
+  business         Business           @relation(fields: [businessId], references: [id])
+  name             String
+  ntnCnic          String?
+  strn             String?
+  province         String
+  address          String
+  registrationType RegistrationType
+  phone            String?
+  email            String?
+  category         String?
+  verifiedResult   VerificationResult @default(NOT_CHECKED)
+  verifiedAt       DateTime?
+  deletedAt        DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([businessId, name])
+  @@index([businessId, ntnCnic])
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  businessId      String
+  business        Business  @relation(fields: [businessId], references: [id])
+  sku             String
+  description     String
+  hsCode          String
+  uom             String
+  saleType        String
+  rate            String?
+  unitPrice       Decimal   @db.Decimal(18, 4)
+  retailPrice     Decimal?  @db.Decimal(18, 4)
+  sroScheduleNo   String?
+  sroItemSerialNo String?
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([businessId, sku])
+  @@index([businessId, hsCode])
+}
+
+model HsCode {
+  code            String  @id
+  description     String
+  fullDescription String
+  chapter         String
+  heading         String
+  source          String
+  sourceLines     Int[]
+  importRunId     String?
+
+  alternates HsCodeAlternate[]
+
+  @@index([heading])
+}
+
+model HsCodeAlternate {
+  id          String @id @default(cuid())
+  code        String
+  hsCode      HsCode @relation(fields: [code], references: [code])
+  description String
+  source      String
+  sourceLine  String
+
+  @@index([code])
+}
+
+model DataImportRun {
+  id          String    @id @default(cuid())
+  dataset     String
+  sourceFiles Json
+  stats       Json
+  report      Json
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+}
+
+model ReferenceCache {
+  key         String   @id
+  payload     Json
+  httpStatus  Int
+  fetchedAt   DateTime @default(now())
+  fetchedById String?
+}
+
+// ---------------------------------------------------------------- FBR catalogues
+model ScenarioDefinition {
+  id            String  @id
+  description   String
+  saleTypeLabel String
+  saleTypeApi   String
+  retailerOnly  Boolean @default(false)
+  purchaseType  Boolean @default(false)
+  sortOrder     Int
+  source        String
+}
+
+model ScenarioTemplate {
+  scenarioId String @id
+  label      String
+  title      String
+  rawText    String
+  json       Json
+  anomalies  Json
+  source     String
+}
+
+model ApplicabilityRule {
+  sr               Int      @id
+  businessActivity String
+  sector           String
+  scenarioIdsRaw   String[]
+  rawText          String
+  sourcePage       Int
+  source           String
+
+  @@index([businessActivity, sector])
+}
+
+model SourceAnomaly {
+  id      String @id @default(cuid())
+  dataset String
+  ref     String
+  type    String
+  detail  Json
+}
+
+model ErrorCode {
+  id           String @id @default(cuid())
+  category     String
+  code         String
+  messageDesc  String
+  briefMsgDesc String
+  friendly     String
+  field        String?
+  action       String
+  variants     Json
+  occurrences  Int
+  sourcePages  Int[]
+  source       String
+
+  @@unique([category, code])
+  @@index([code])
+}
+
+// ---------------------------------------------------------------- invoices
+enum InvoiceType {
+  SALE_INVOICE
+  DEBIT_NOTE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  VALIDATING
+  VALIDATED
+  VALIDATION_FAILED
+  SUBMITTING
+  ACCEPTED
+  REJECTED
+  RECONCILIATION_REQUIRED
+}
+
+enum InvoiceSource {
+  MANUAL
+  EXCEL
+  SANDBOX_WORKSPACE
+  DUPLICATE
+}
+
+model Invoice {
+  id                    String             @id @default(cuid())
+  businessId            String
+  business              Business           @relation(fields: [businessId], references: [id])
+  environment           FbrEnvironment
+  internalNumber        String
+  invoiceType           InvoiceType
+  invoiceDate           DateTime           @db.Date
+  invoiceTime           String
+  paymentMode           String?
+  invoiceRefNo          String             @default("")
+  scenarioId            String?
+  sellerNtnCnic         String
+  sellerBusinessName    String
+  sellerProvince        String
+  sellerAddress         String
+  buyerNtnCnic          String             @default("")
+  buyerBusinessName     String
+  buyerProvince         String
+  buyerAddress          String
+  buyerRegistrationType RegistrationType?
+  customerId            String?
+  status                InvoiceStatus      @default(DRAFT)
+  source                InvoiceSource      @default(MANUAL)
+  importJobId           String?
+  importRef             String?
+  autoCalc              Boolean            @default(true)
+  totalValueExclST      Decimal            @default(0) @db.Decimal(18, 2)
+  totalSalesTax         Decimal            @default(0) @db.Decimal(18, 2)
+  totalFurtherTax       Decimal            @default(0) @db.Decimal(18, 2)
+  totalExtraTax         Decimal            @default(0) @db.Decimal(18, 2)
+  totalFed              Decimal            @default(0) @db.Decimal(18, 2)
+  totalWithheld         Decimal            @default(0) @db.Decimal(18, 2)
+  totalDiscount         Decimal            @default(0) @db.Decimal(18, 2)
+  grandTotal            Decimal            @default(0) @db.Decimal(18, 2)
+  netReceivable         Decimal            @default(0) @db.Decimal(18, 2)
+  payloadHash           String?
+  validatedHash         String?
+  lastValidatedAt       DateTime?
+  submitLockToken       String?
+  submitLockedAt        DateTime?
+  fbrInvoiceNumber      String?            @unique
+  fbrDated              String?
+  acceptedAt            DateTime?
+  acceptedViaReconcile  Boolean            @default(false)
+  reconciliationNote    String?
+  buyerCheckResult      VerificationResult @default(NOT_CHECKED)
+  buyerCheckAt          DateTime?
+  buyerCheckId          String?
+  rawTemplateDiff       Json?
+  notes                 String?
+  createdById           String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  version               Int                @default(1)
+
+  items     InvoiceItem[]
+  snapshots InvoiceSnapshot[]
+  attempts  FbrAttempt[]
+
+  @@unique([businessId, internalNumber])
+  @@index([businessId, environment, status])
+  @@index([businessId, invoiceDate])
+  @@index([status])
+}
+
+model InvoiceItem {
+  id                              String   @id @default(cuid())
+  invoiceId                       String
+  invoice                         Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  lineNo                          Int
+  productId                       String?
+  saleType                        String
+  hsCode                          String
+  productDescription              String
+  rate                            String
+  uom                             String
+  quantity                        Decimal  @db.Decimal(18, 4)
+  unitPrice                       Decimal  @db.Decimal(18, 4)
+  discount                        Decimal  @default(0) @db.Decimal(18, 2)
+  valueSalesExcludingST           Decimal  @db.Decimal(18, 2)
+  salesTaxApplicable              Decimal  @db.Decimal(18, 2)
+  retailPricePerUnit              Decimal? @db.Decimal(18, 4)
+  fixedNotifiedValueOrRetailPrice Decimal  @default(0) @db.Decimal(18, 2)
+  extraTax                        Decimal  @default(0) @db.Decimal(18, 2)
+  extraTaxEmpty                   Boolean  @default(false)
+  furtherTax                      Decimal  @default(0) @db.Decimal(18, 2)
+  fedPayable                      Decimal  @default(0) @db.Decimal(18, 2)
+  salesTaxWithheldAtSource        Decimal  @default(0) @db.Decimal(18, 2)
+  sroScheduleNo                   String   @default("")
+  sroItemSerialNo                 String   @default("")
+  totalValues                     Decimal  @default(0) @db.Decimal(18, 2)
+  fbrItemInvoiceNo                String?
+  fbrItemStatusCode               String?
+  fbrItemErrorCode                String?
+  fbrItemError                    String?
+
+  @@unique([invoiceId, lineNo])
+}
+
+enum SnapshotKind {
+  VALIDATED
+  SUBMITTED
+  ACCEPTED
+}
+
+model InvoiceSnapshot {
+  id          String       @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice      @relation(fields: [invoiceId], references: [id])
+  kind        SnapshotKind
+  payloadText String
+  payloadHash String
+  invoiceData Json
+  attemptId   String?
+  createdAt   DateTime     @default(now())
+
+  @@index([invoiceId])
+}
+
+enum AttemptOperation {
+  VALIDATE
+  POST
+  CONNECTION_TEST
+  REG_TYPE_LOOKUP
+  STATL_LOOKUP
+  REFERENCE
+}
+
+enum AttemptOutcome {
+  PENDING
+  VALID
+  INVALID
+  AUTH_ERROR
+  HTTP_ERROR
+  NOT_SENT
+  UNCERTAIN
+  BAD_RESPONSE
+  OK
+}
+
+model FbrAttempt {
+  id             String           @id @default(cuid())
+  businessId     String
+  invoiceId      String?
+  invoice        Invoice?         @relation(fields: [invoiceId], references: [id])
+  environment    FbrEnvironment
+  operation      AttemptOperation
+  url            String
+  requestBody    String?
+  requestHash    String?
+  httpStatus     Int?
+  responseBody   String?
+  responseJson   Json?
+  outcome        AttemptOutcome   @default(PENDING)
+  fbrInvoiceNo   String?
+  errors         Json?
+  errorMessage   String?
+  durationMs     Int?
+  scenarioId     String?
+  initiatedById  String?
+  initiatedKind  String?
+  retryOfId      String?
+  startedAt      DateTime         @default(now())
+  finishedAt     DateTime?
+
+  @@index([businessId, startedAt])
+  @@index([invoiceId])
+  @@index([outcome, startedAt])
+  @@index([businessId, scenarioId])
+}
+
+model BuyerVerification {
+  id             String             @id @default(cuid())
+  businessId     String
+  registrationNo String
+  result         VerificationResult
+  statusCode     String?
+  rawType        String?
+  httpStatus     Int?
+  message        String?
+  attemptId      String?
+  checkedAt      DateTime           @default(now())
+
+  @@index([businessId, registrationNo, checkedAt])
+}
+
+enum ScenarioStatus {
+  NOT_STARTED
+  FAILED
+  PASSED
+}
+
+model ScenarioProgress {
+  id                String         @id @default(cuid())
+  businessId        String
+  scenarioId        String
+  status            ScenarioStatus @default(NOT_STARTED)
+  attempts          Int            @default(0)
+  lastAttemptAt     DateTime?
+  lastOutcome       String?
+  passedAt          DateTime?
+  passedInvoiceId   String?
+  passedFbrNumber   String?
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([businessId, scenarioId])
+}
+
+// ---------------------------------------------------------------- bulk import
+model ImportJob {
+  id            String   @id @default(cuid())
+  businessId    String
+  environment   FbrEnvironment
+  filename      String
+  fileSha256    String
+  status        String   @default("PARSED")
+  totalInvoices Int      @default(0)
+  totalRows     Int      @default(0)
+  fileErrors    Json     @default("[]")
+  counts        Json     @default("{}")
+  createdById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  invoices ImportInvoice[]
+
+  @@index([businessId, createdAt])
+}
+
+model ImportInvoice {
+  id         String    @id @default(cuid())
+  jobId      String
+  job        ImportJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  importRef  String
+  rowNumbers Int[]
+  status     String
+  invoiceId  String?
+  data       Json
+  errors     Json      @default("[]")
+  warnings   Json      @default("[]")
+  fbrResult  Json?
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([jobId, importRef])
+}
+
+// ---------------------------------------------------------------- jobs
+model Job {
+  id         String    @id @default(cuid())
+  type       String
+  businessId String?
+  payload    Json
+  status     String    @default("QUEUED")
+  progress   Json      @default("{}")
+  attempts   Int       @default(0)
+  runAt      DateTime  @default(now())
+  lockedBy   String?
+  startedAt  DateTime?
+  finishedAt DateTime?
+  lastError  String?
+  createdById String?
+  createdAt  DateTime  @default(now())
+
+  @@index([status, runAt])
+}
+
+// ---------------------------------------------------------------- support & notifications
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  AWAITING_USER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum TicketCategory {
+  COMPLAINT
+  MESSAGE
+  TECHNICAL
+}
+
+enum QueryType {
+  INTEGRATION
+  POST_INTEGRATION
+}
+
+model SupportTicket {
+  id          String         @id @default(cuid())
+  number      Int            @unique @default(autoincrement())
+  businessId  String
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  title       String
+  description String
+  category    TicketCategory
+  queryType   QueryType
+  priority    TicketPriority @default(NORMAL)
+  status      TicketStatus   @default(OPEN)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  closedAt    DateTime?
+
+  messages    TicketMessage[]
+  attachments TicketAttachment[]
+
+  @@index([businessId, createdAt])
+  @@index([status])
+}
+
+model TicketMessage {
+  id            String        @id @default(cuid())
+  ticketId      String
+  ticket        SupportTicket @relation(fields: [ticketId], references: [id])
+  authorId      String
+  authorIsAdmin Boolean       @default(false)
+  body          String
+  createdAt     DateTime      @default(now())
+}
+
+model TicketAttachment {
+  id           String        @id @default(cuid())
+  ticketId     String
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id])
+  filename     String
+  mime         String
+  size         Int
+  sha256       String
+  data         Bytes
+  uploadedById String
+  createdAt    DateTime      @default(now())
+}
+
+model Notification {
+  id         String    @id @default(cuid())
+  userId     String?
+  businessId String?
+  audience   String
+  type       String
+  title      String
+  body       String
+  link       String?
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@index([audience, createdAt])
+}
+
+model Announcement {
+  id          String    @id @default(cuid())
+  kind        String
+  title       String
+  body        String
+  startsAt    DateTime  @default(now())
+  endsAt      DateTime?
+  active      Boolean   @default(true)
+  createdById String
+  createdAt   DateTime  @default(now())
+}
+
+// ---------------------------------------------------------------- platform
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorKind   String
+  businessId  String?
+  action      String
+  entityType  String?
+  entityId    String?
+  metadata    Json?
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([businessId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+model SystemSetting {
+  key         String   @id
+  value       Json
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+}
+
+model BackupRecord {
+  id            String    @id @default(cuid())
+  status        String
+  fileName      String?
+  sizeBytes     BigInt?
+  sha256        String?
+  error         String?
+  triggeredById String?
+  startedAt     DateTime  @default(now())
+  finishedAt    DateTime?
+}
