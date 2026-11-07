@@ -10,7 +10,7 @@ createdb -O invoicego invoicego_test
 cd server && npx vitest run
 ```
 
-The tests use a separate `invoicego_test` database; `test/global-setup.ts` migrates it and imports the reference data. Current result: **17 files, 143 tests passing**.
+The tests use a separate `invoicego_test` database; `test/global-setup.ts` migrates it and imports the reference data. Current result: **20 files, 154 tests passing**.
 
 | Area | File(s) |
 |---|---|
@@ -28,6 +28,9 @@ The tests use a separate `invoicego_test` database; `test/global-setup.ts` migra
 | Validate → submit → accepted; immutability; duplicate-submission lock; reconciliation; uncertain outcomes; tokens never exposed | `int-invoice.test.ts`, `int-network.test.ts` |
 | Malformed input returns 4xx, not 500 | `int-input.test.ts` |
 | Regressions (no-token validate keeps the state; PKT report grouping; invite link fallback) | `int-regressions.test.ts` |
+| Serverless hosting: bulk runs sliced across requests with no duplicate FBR calls, browser-driven `/process`, orphan re-queue, env-token admin bootstrap, health, cron secret | `int-serverless.test.ts` |
+| Email unavailable: registration still succeeds; admin activation verifies the account | `int-mail-unavailable.test.ts` |
+| Hosted Postgres URL handling (Neon pooled/direct variables) | `dburl.test.ts` |
 
 ### Important: what the automated tests do NOT prove
 

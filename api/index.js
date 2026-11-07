@@ -12,7 +12,22 @@ async function init() {
   return app;
 }
 
+/**
+ * vercel.json rewrites /api/:path* to /api/index?path=:path*. Depending on the runtime the
+ * function sees either the original URL or the rewritten one; normalise to the original.
+ */
+export function originalUrl(url) {
+  const u = new URL(url ?? '/', 'http://local');
+  if (u.pathname !== '/api/index' && u.pathname !== '/api') return url;
+  const path = u.searchParams.get('path');
+  if (path === null) return url;
+  u.searchParams.delete('path');
+  const rest = u.searchParams.toString();
+  return `/api/${path.replace(/^\/+/, '')}${rest ? `?${rest}` : ''}`;
+}
+
 export default async function handler(req, res) {
+  req.url = originalUrl(req.url);
   try {
     ready ??= init();
     const app = await ready;

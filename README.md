@@ -76,12 +76,13 @@ cd server && npx tsx scripts/admin-invite.ts --email admininvoicego@gmail.com --
 
 ## Production
 
-See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**. It covers:
-- the static outbound IP needed for IRIS whitelisting;
-- TLS and the systemd/nginx or container setup;
-- secure admin bootstrap;
-- encrypted backups and CLI-only restore;
-- upgrades and key rotation.
+- **Vercel (recommended if the repo is connected to Vercel):** [docs/VERCEL.md](docs/VERCEL.md). It covers the Neon database, environment variables, first-admin setup, the static outbound IP and the custom domain.
+- **VM or containers:** see **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**. It covers:
+  - the static outbound IP needed for IRIS whitelisting;
+  - TLS and the systemd/nginx or container setup;
+  - secure admin bootstrap;
+  - encrypted backups and CLI-only restore;
+  - upgrades and key rotation.
 
 ```bash
 npm run build && npm start
@@ -93,7 +94,7 @@ npm run build && npm start
 cd server && npx vitest run
 ```
 
-143 tests pass. FBR is **mocked** in the automated tests; see [docs/TESTING.md](docs/TESTING.md) for what this does and does not prove, and how to verify against the real sandbox.
+154 tests pass. FBR is **mocked** in the automated tests; see [docs/TESTING.md](docs/TESTING.md) for what this does and does not prove, and how to verify against the real sandbox.
 
 ## Documents
 
