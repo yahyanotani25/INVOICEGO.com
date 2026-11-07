@@ -11,3 +11,4 @@ server/backups/
 .DS_Store
 web/dist/
 server/public/
+*.whl
