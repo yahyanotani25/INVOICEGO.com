@@ -3,7 +3,7 @@ import { z } from 'zod';
 import ExcelJS from 'exceljs';
 import { AttemptOperation, AttemptOutcome, InvoiceStatus, Prisma, TicketStatus, UserStatus } from '@prisma/client';
 import { prisma } from '../../db.js';
-import { config } from '../../config.js';
+import { config, onVercel } from '../../config.js';
 import { maskLast4 } from '../../lib/crypto.js';
 import { audit } from '../../lib/audit.js';
 import { badRequest, conflict, notFound } from '../../lib/errors.js';
@@ -139,9 +139,11 @@ export async function adminRoutes(app: FastifyInstance) {
       const { status, reason } = z.object({ status: z.enum(['ACTIVE', 'INACTIVE', 'SUSPENDED', 'BLOCKED']), reason: zTrim(300).min(3) }).parse(req.body);
       const u = await prisma.user.findFirst({ where: { id, platformRole: 'NONE', status: { not: 'DELETED' } } });
       if (!u) throw notFound('User');
-      await prisma.user.update({ where: { id }, data: { status, statusReason: reason } });
+      // Activating an account that is awaiting email verification counts as manual verification (audited).
+      const manualVerify = status === 'ACTIVE' && !u.emailVerifiedAt;
+      await prisma.user.update({ where: { id }, data: { status, statusReason: reason, ...(manualVerify ? { emailVerifiedAt: new Date() } : {}) } });
       if (status !== 'ACTIVE') await prisma.session.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } });
-      await audit(req, { action: 'admin.user.status', entityType: 'User', entityId: id, metadata: { from: u.status, to: status, reason } });
+      await audit(req, { action: 'admin.user.status', entityType: 'User', entityId: id, metadata: { from: u.status, to: status, reason, manualEmailVerification: manualVerify } });
       return { ok: true };
     });
 
@@ -491,9 +493,15 @@ export async function adminRoutes(app: FastifyInstance) {
     // ------------------------------------------------------------ backups (restore is CLI-only)
     r.get('/backups', { preHandler: requireAdminPerm('settings.read') }, async () => {
       const rows = await prisma.backupRecord.findMany({ orderBy: { startedAt: 'desc' }, take: 50 });
-      return { encryptionConfigured: !!config.BACKUP_ENCRYPTION_KEY, rows: rows.map((b) => ({ ...b, sizeBytes: b.sizeBytes?.toString() ?? null })) };
+      return {
+        encryptionConfigured: !!config.BACKUP_ENCRYPTION_KEY,
+        supported: !onVercel,
+        unsupportedReason: onVercel ? 'This deployment runs on Vercel (serverless), where pg_dump cannot run. Use your database provider’s backups (e.g. Neon point-in-time restore and branches), or run scripts/backup.ts from a machine with access to the database.' : null,
+        rows: rows.map((b) => ({ ...b, sizeBytes: b.sizeBytes?.toString() ?? null })),
+      };
     });
     r.post('/backups/run', { preHandler: requireAdminPerm('backups.manage') }, async (req) => {
+      if (onVercel) throw conflict('Backups cannot run inside Vercel functions. Use your database provider’s backups or scripts/backup.ts from another machine.');
       if (!config.BACKUP_ENCRYPTION_KEY) throw conflict('Configure BACKUP_ENCRYPTION_KEY before running backups');
       const running = await prisma.job.count({ where: { type: 'backup.run', status: { in: ['QUEUED', 'RUNNING'] } } });
       if (running) throw conflict('A backup is already queued or running');

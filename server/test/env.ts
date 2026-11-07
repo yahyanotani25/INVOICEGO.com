@@ -18,6 +18,8 @@ export const TEST_ENV: Record<string, string> = {
   APP_BASE_URL: 'http://localhost',
   MAIL_LOG_ONLY: 'false',
   NO_PROXY: '127.0.0.1,localhost',
+  ADMIN_BOOTSTRAP_TOKEN: 'test-bootstrap-token-0123456789abcdef',
+  CRON_SECRET: 'test-cron-secret-0123456789',
   no_proxy: '127.0.0.1,localhost',
 };
 

@@ -85,7 +85,7 @@ export function Register() {
   const [f, setF] = useState({ name: '', email: '', phone: '', password: '', confirm: '', businessName: '', ntnCnic: '', strn: '', address: '', province: 'Punjab', sector: 'All Other Sectors', retailerRegistered: false });
   const [acts, setActs] = useState<string[]>([]);
   const [err, setErr] = useState<unknown>(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<null | { emailSent: boolean; message: string }>(null);
   const [busy, setBusy] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
   const issues = err instanceof ApiError ? err.issues : [];
@@ -96,7 +96,7 @@ export function Register() {
     setBusy(true);
     setErr(null);
     try {
-      await api('/api/auth/register', {
+      const r = await api<{ emailSent?: boolean; message: string }>('/api/auth/register', {
         body: {
           name: f.name,
           email: f.email,
@@ -105,7 +105,7 @@ export function Register() {
           business: { name: f.businessName, ntnCnic: f.ntnCnic.trim(), strn: f.strn || null, address: f.address, province: f.province, businessActivities: acts, sector: f.sector, retailerRegistered: f.retailerRegistered },
         },
       });
-      setDone(true);
+      setDone({ emailSent: r.emailSent !== false, message: r.message });
     } catch (e2) {
       setErr(e2);
     } finally {
@@ -114,9 +114,9 @@ export function Register() {
   };
   if (done)
     return (
-      <Shell title="Check your email">
-        <Alert tone="green" title="Account created">
-          We sent a verification link to {f.email}. Verify your email address, then sign in.
+      <Shell title={done.emailSent ? 'Check your email' : 'Account created'}>
+        <Alert tone={done.emailSent ? 'green' : 'amber'} title="Account created">
+          {done.emailSent ? <>We sent a verification link to {f.email}. Verify your email address, then sign in.</> : done.message}
         </Alert>
         <Link to="/login" className="mt-4 inline-block text-sm text-brand-700 hover:underline">
           Go to sign in

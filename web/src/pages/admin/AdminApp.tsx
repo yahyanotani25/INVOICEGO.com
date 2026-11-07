@@ -5,7 +5,7 @@ import { useAdminMe, type AdminMe } from '@/lib/auth';
 import { Alert, Spinner } from '@/components/ui';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { setAdminUnauthorizedHandler } from '@/components/admin/adminApi';
-import { AcceptInvite, AdminLogin } from './AdminAuth';
+import { AcceptInvite, AdminLogin, AdminSetup } from './AdminAuth';
 import AdminDashboard from './AdminDashboard';
 import { AdminUserDetail, AdminUsers } from './AdminUsers';
 import { AdminInvoiceDetail, AdminInvoices } from './AdminInvoices';
@@ -64,6 +64,7 @@ export default function AdminApp() {
     <Routes>
       <Route path="login" element={<AdminLogin />} />
       <Route path="accept-invite" element={<AcceptInvite />} />
+      <Route path="setup" element={<AdminSetup />} />
       <Route path="*" element={<Protected />} />
     </Routes>
   );

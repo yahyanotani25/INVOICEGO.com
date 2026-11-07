@@ -1,4 +1,4 @@
-import { EnvHttpProxyAgent, request, type Dispatcher } from 'undici';
+import { EnvHttpProxyAgent, ProxyAgent, request, type Dispatcher } from 'undici';
 import { config } from '../config.js';
 
 /**
@@ -9,15 +9,28 @@ import { config } from '../config.js';
  *                (response timeout, connection reset) -> never resubmit blindly.
  */
 let dispatcher: Dispatcher | null = null;
+/**
+ * FBR_PROXY_URL (if set) sends ALL FBR traffic through a proxy with a static egress IP, which
+ * is what businesses whitelist in IRIS. Needed on hosts without fixed outbound IPs (e.g. Vercel
+ * Hobby). Otherwise standard HTTP(S)_PROXY/NO_PROXY variables are honoured.
+ */
 function agent(): Dispatcher {
   if (!dispatcher) {
-    dispatcher = new EnvHttpProxyAgent({
-      connect: { timeout: config.FBR_HTTP_CONNECT_TIMEOUT_MS },
-      headersTimeout: config.FBR_HTTP_RESPONSE_TIMEOUT_MS,
-      bodyTimeout: config.FBR_HTTP_RESPONSE_TIMEOUT_MS,
-    });
+    const timeouts = { headersTimeout: config.FBR_HTTP_RESPONSE_TIMEOUT_MS, bodyTimeout: config.FBR_HTTP_RESPONSE_TIMEOUT_MS };
+    dispatcher = config.FBR_PROXY_URL
+      ? new ProxyAgent({
+          uri: config.FBR_PROXY_URL,
+          proxyTls: { timeout: config.FBR_HTTP_CONNECT_TIMEOUT_MS },
+          requestTls: { timeout: config.FBR_HTTP_CONNECT_TIMEOUT_MS },
+          ...timeouts,
+        })
+      : new EnvHttpProxyAgent({ connect: { timeout: config.FBR_HTTP_CONNECT_TIMEOUT_MS }, ...timeouts });
   }
   return dispatcher;
+}
+
+export function usingFbrProxy() {
+  return !!config.FBR_PROXY_URL;
 }
 
 export interface HttpResult {
@@ -66,7 +79,10 @@ export async function fbrHttp(opts: { method: 'GET' | 'POST'; url: string; token
     return { delivery: 'RESPONSE', status: res.statusCode, body: text.slice(0, MAX_BODY), durationMs: Date.now() - started };
   } catch (err: any) {
     const code: string = err?.code ?? err?.cause?.code ?? err?.name ?? 'UNKNOWN';
-    const delivery = NOT_SENT_CODES.has(code) ? 'NOT_SENT' : 'UNCERTAIN';
+    const msg = String(err?.message ?? '');
+    // A failed proxy CONNECT tunnel (e.g. 407/502 from the proxy) never reaches FBR.
+    const tunnelFailed = /Proxy response|tunnel/i.test(msg) && !/socket hang up/i.test(msg);
+    const delivery = NOT_SENT_CODES.has(code) || tunnelFailed ? 'NOT_SENT' : 'UNCERTAIN';
     return { delivery, errorCode: code, errorMessage: String(err?.message ?? err), durationMs: Date.now() - started };
   }
 }

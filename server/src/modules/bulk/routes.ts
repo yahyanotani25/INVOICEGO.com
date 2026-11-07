@@ -5,7 +5,8 @@ import { audit } from '../../lib/audit.js';
 import { badRequest, conflict, notFound } from '../../lib/errors.js';
 import { karachiNow } from '../../lib/time.js';
 import { requireBusiness, requireMember } from '../../plugins/auth.js';
-import { enqueue } from '../../jobs/runner.js';
+import { enqueue, maintenance, runOnce } from '../../jobs/runner.js';
+import { config, onVercel } from '../../config.js';
 import { buildErrorReport, buildTemplate } from './excel.js';
 import { createDrafts, createImportJob } from './service.js';
 
@@ -86,6 +87,25 @@ export async function bulkRoutes(app: FastifyInstance) {
     const r = await queue(req, 'bulk.submit');
     await audit(req, { action: 'bulk.submit', entityType: 'ImportJob', entityId: (req.params as { id: string }).id, metadata: r });
     return r;
+  });
+
+  /**
+   * Runs the next time slice of a queued FBR validation/submission run for this upload.
+   * On serverless hosts the open BulkJob page calls this repeatedly; on a VM the background
+   * worker also processes runs (claims are atomic, so a slice is never processed twice).
+   */
+  app.post('/bulk/jobs/:id/process', { preHandler: requireMember('invoice.submit') }, async (req) => {
+    const { id } = req.params as { id: string };
+    const imp = await prisma.importJob.findFirst({ where: { id, businessId: req.auth!.businessId! } });
+    if (!imp) throw notFound('Import job');
+    await maintenance(true);
+    const run = await prisma.job.findFirst({ where: { businessId: req.auth!.businessId!, type: { in: ['bulk.validate', 'bulk.submit'] }, status: 'QUEUED', payload: { path: ['jobId'], equals: id } }, orderBy: { createdAt: 'asc' } });
+    if (!run) return { ran: false };
+    const worstItemMs = 2 * (config.FBR_HTTP_CONNECT_TIMEOUT_MS + config.FBR_HTTP_RESPONSE_TIMEOUT_MS);
+    const budget = onVercel ? Math.max(15_000, config.FUNCTION_MAX_DURATION_S * 1000 - worstItemMs - 15_000) : 5 * 60_000;
+    const r = await runOnce(budget, run.id);
+    const after = await prisma.job.findUnique({ where: { id: run.id } });
+    return { ...r, progress: after?.progress ?? null };
   });
 
   app.get('/bulk/jobs/:id/errors.xlsx', async (req, reply) => {

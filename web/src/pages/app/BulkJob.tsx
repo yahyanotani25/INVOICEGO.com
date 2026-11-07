@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
@@ -32,6 +32,20 @@ export default function BulkJob() {
     mutationFn: ({ kind, refs }: { kind: 'validate' | 'submit'; refs: string[] }) => api<{ queued: number; skipped: number }>(`/api/app/bulk/jobs/${id}/${kind}`, { body: { refs } }),
     onSuccess: (r, v) => { toast('blue', `${r.queued} invoice(s) queued for FBR ${v.kind === 'validate' ? 'validation' : 'submission'}${r.skipped ? `, ${r.skipped} skipped (not eligible)` : ''}`); setSel(new Set()); refresh(); },
   });
+  // Serverless hosts have no background worker: while a run is queued, this page drives it in
+  // time slices. On a VM the worker may pick it up first; claims are atomic either way.
+  const driving = useRef(false);
+  useEffect(() => {
+    const r = q.data?.running[0];
+    if (!r || r.status !== 'QUEUED' || driving.current || !can('submit')) return;
+    driving.current = true;
+    api(`/api/app/bulk/jobs/${id}/process`, { body: {} })
+      .catch(() => undefined)
+      .finally(() => {
+        driving.current = false;
+        void refresh();
+      });
+  }, [q.data]); // eslint-disable-line react-hooks/exhaustive-deps
   const rows = useMemo(() => (q.data?.invoices ?? []).filter((r) => !filter || r.status === filter), [q.data, filter]);
   if (q.isLoading) return <Spinner />;
   if (!q.data) return <ErrorBanner error={q.error} />;
@@ -47,7 +61,7 @@ export default function BulkJob() {
         {['Upload', 'Parse', 'Preview', 'Local validation', 'FBR validation', 'Review', 'Submit'].map((s, i) => <li key={s} className="rounded-full bg-white px-3 py-1 ring-1 ring-ink-200">{i + 1}. {s}</li>)}
       </ol>
       {J.fileErrors.length > 0 && <Alert tone={J.fileErrors.some((f) => f.level === 'error') ? 'red' : 'amber'} title="File-level messages">{J.fileErrors.map((f, k) => <div key={k}>{f.row ? `Row ${f.row}: ` : ''}{f.message}</div>)}</Alert>}
-      {running && <Alert tone="blue" title={`${running.type === 'bulk.validate' ? 'Validating with FBR' : 'Submitting to FBR'}… ${running.progress.done ?? 0} / ${running.progress.total ?? '?'}`}>Each invoice is processed and reported separately.</Alert>}
+      {running && <Alert tone="blue" title={`${running.type === 'bulk.validate' ? 'Validating with FBR' : 'Submitting to FBR'}… ${running.progress.done ?? 0} / ${running.progress.total ?? '?'}`}>Each invoice is processed and reported separately. Keep this page open until the run finishes.</Alert>}
       <div className="flex flex-wrap gap-2">{Object.entries(J.counts).map(([k, v]) => <button key={k} onClick={() => setFilter(filter === k ? '' : k)}><Badge tone={TONE[k] ?? 'gray'} className={filter === k ? 'ring-2' : ''}>{k.replace(/_/g, ' ').toLowerCase()}: {v}</Badge></button>)}</div>
       {can('write') && (
         <Card title="Actions" bodyClass="flex flex-wrap items-center gap-2 p-4">

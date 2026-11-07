@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck } from 'lucide-react';
 import { api, ApiError, setCsrf } from '@/lib/api';
 import { useAdminMe } from '@/lib/auth';
@@ -111,6 +111,7 @@ export function AdminLogin() {
           <p className="text-center text-xs text-ink-500">
             Administrator accounts are created by invitation only. <Link to="/" className="text-brand-700 underline">Back to InvoiceGO</Link>
           </p>
+          <BootstrapHint />
         </form>
       </Shell>
     );
@@ -225,6 +226,95 @@ export function AcceptInvite() {
         <TextInput label="Confirm password" type="password" required autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} error={mismatch ? 'Passwords do not match' : null} />
         <Button type="submit" className="w-full" loading={busy} disabled={!name || !password || mismatch || tooShort}>
           Set password
+        </Button>
+      </form>
+    </Shell>
+  );
+}
+
+function useBootstrapStatus() {
+  return useQuery({
+    queryKey: ['admin-bootstrap-status'],
+    queryFn: () => api<{ available: boolean; email: string | null }>('/api/admin/auth/bootstrap-status', { area: 'admin' }),
+    retry: false,
+    staleTime: 30_000,
+  });
+}
+
+function BootstrapHint() {
+  const q = useBootstrapStatus();
+  if (!q.data?.available) return null;
+  return (
+    <Alert tone="amber">
+      No administrator exists yet. <Link to="/admin/setup" className="font-medium underline">Set up the first administrator</Link> with the server setup token.
+    </Alert>
+  );
+}
+
+/**
+ * First-administrator setup for hosts without shell access. Only works while the server has
+ * ADMIN_BOOTSTRAP_TOKEN configured and no active SUPER_ADMIN exists.
+ */
+export function AdminSetup() {
+  const status = useBootstrapStatus();
+  const [token, setToken] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<unknown>(null);
+  const [done, setDone] = useState<string | null>(null);
+  const mismatch = confirm.length > 0 && confirm !== password;
+  const tooShort = password.length > 0 && password.length < 12;
+
+  if (status.isLoading) return <Spinner />;
+  if (done) {
+    return (
+      <Shell title="Administrator created">
+        <Alert tone="green">{done}</Alert>
+        <Link to="/admin/login" className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-brand-700">
+          Go to administrator sign in
+        </Link>
+      </Shell>
+    );
+  }
+  if (!status.data?.available) {
+    return (
+      <Shell title="Setup not available">
+        <Alert tone="blue">Administrator setup is closed: an administrator already exists, or the server has no setup token configured. Use an invitation instead.</Alert>
+        <Link to="/admin/login" className="mt-4 inline-block text-sm text-brand-700 underline">Administrator sign in</Link>
+      </Shell>
+    );
+  }
+  const issues = error instanceof ApiError ? error.issues : [];
+  return (
+    <Shell title="Set up the first administrator" subtitle={`Creates the administrator account for ${status.data.email}. Two-factor authentication is enrolled at first sign-in.`}>
+      <form
+        className="space-y-4"
+        noValidate
+        onSubmit={async (e: FormEvent) => {
+          e.preventDefault();
+          if (mismatch || tooShort) return;
+          setBusy(true);
+          setError(null);
+          try {
+            const r = await api<{ message: string }>('/api/admin/auth/bootstrap', { body: { token, name, password }, area: 'admin' });
+            setDone(r.message);
+          } catch (err) {
+            setError(err);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {!!error && <ErrorBanner error={error} />}
+        <TextInput label="Server setup token" type="password" autoComplete="off" required value={token} onChange={(e) => setToken(e.target.value)} hint="The ADMIN_BOOTSTRAP_TOKEN value configured on the server" />
+        <TextInput label="Administrator email" value={status.data.email ?? ''} disabled />
+        <TextInput label="Your name" required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} error={issueFor(issues, 'name')} />
+        <TextInput label="Password" type="password" required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} error={tooShort ? 'At least 12 characters' : issueFor(issues, 'password')} />
+        <TextInput label="Confirm password" type="password" required autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} error={mismatch ? 'Passwords do not match' : null} />
+        <Button type="submit" className="w-full" loading={busy} disabled={!token || !name || !password || mismatch || tooShort}>
+          Create administrator
         </Button>
       </form>
     </Shell>

@@ -2,7 +2,7 @@
   "name": "invoicego",
   "version": "1.0.0",
   "private": true,
-  "description": "InvoiceGO — FBR Digital Invoicing web application for Pakistani businesses",
+  "description": "InvoiceGO \u2014 FBR Digital Invoicing web application for Pakistani businesses",
   "scripts": {
     "install:all": "npm ci --prefix server && npm ci --prefix web",
     "build": "npm run build --prefix web && rm -rf server/public && cp -r web/dist server/public && npm run build --prefix server",
@@ -11,5 +11,9 @@
     "data:import": "npm run data:import:prod --prefix server",
     "test": "npm test --prefix server",
     "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix web"
+  },
+  "type": "module",
+  "engines": {
+    "node": "22.x"
   }
 }

@@ -21,7 +21,7 @@ export default function AdminBackups({ me }: { me: AdminMe }) {
   const canRun = me.permissions.includes('backups.manage');
   const q = useQuery({
     queryKey: ['admin-backups'],
-    queryFn: () => aapi<{ encryptionConfigured: boolean; rows: BackupRow[] }>('/backups'),
+    queryFn: () => aapi<{ encryptionConfigured: boolean; supported?: boolean; unsupportedReason?: string | null; rows: BackupRow[] }>('/backups'),
     refetchInterval: (query) => (query.state.data?.rows.some((r) => r.status === 'RUNNING') ? 5000 : false),
   });
   const run = useMutation({
@@ -40,9 +40,10 @@ export default function AdminBackups({ me }: { me: AdminMe }) {
       <PageHeader
         title="Backups"
         subtitle="Encrypted PostgreSQL backups (pg_dump custom format, AES-256-GCM). Financial and audit records are included."
-        actions={canRun && <Button onClick={() => setOpen(true)} disabled={!d.encryptionConfigured}><DatabaseBackup className="h-4 w-4" /> Run encrypted backup now</Button>}
+        actions={canRun && d.supported !== false && <Button onClick={() => setOpen(true)} disabled={!d.encryptionConfigured}><DatabaseBackup className="h-4 w-4" /> Run encrypted backup now</Button>}
       />
-      {!d.encryptionConfigured && <Alert tone="red" title="Backups disabled">Set BACKUP_ENCRYPTION_KEY (32 bytes, base64) on the server. Unencrypted backups are never produced.</Alert>}
+      {d.supported === false && <Alert tone="amber" title="Backups are handled by the database provider on this deployment">{d.unsupportedReason}</Alert>}
+      {d.supported !== false && !d.encryptionConfigured && <Alert tone="red" title="Backups disabled">Set BACKUP_ENCRYPTION_KEY (32 bytes, base64) on the server. Unencrypted backups are never produced.</Alert>}
       <Alert tone="blue" title="Restore is CLI-only">
         For safety, restoring is not possible from the web panel. On the server, restore into a <strong>new</strong> database first and verify it before switching traffic:
         <code className="mt-1 block break-all rounded bg-white/70 px-2 py-1 font-mono text-[11px]">npx tsx scripts/restore.ts --file backups/invoicego-…dump.enc --target-url postgresql://… --confirm</code>

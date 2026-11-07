@@ -118,14 +118,25 @@ const fbrIssueRows = (importRef: string, row: number, issues: { code?: string | 
     scope: i.itemSNo ? 'item' : 'invoice',
   }));
 
+function prevProcessed(progress: Prisma.JsonValue): string[] {
+  const p = progress as { processed?: unknown } | null;
+  return Array.isArray(p?.processed) ? (p!.processed as unknown[]).filter((x): x is string => typeof x === 'string') : [];
+}
+
+let registered = false;
 /** Background handlers. Each invoice is processed independently; one failure never marks the batch successful. */
 export function registerBulkJobs() {
+  if (registered) return;
+  registered = true;
   registerJob('bulk.validate', async (job, progress) => {
     const p = job.payload as { jobId: string; refs: string[]; userId: string };
     const ctx: Ctx = { businessId: job.businessId!, userId: p.userId, kind: 'USER' };
-    const items = await prisma.importInvoice.findMany({ where: { jobId: p.jobId, job: { businessId: ctx.businessId }, importRef: { in: p.refs }, invoiceId: { not: null } } });
-    let done = 0;
+    const items = await prisma.importInvoice.findMany({ where: { jobId: p.jobId, job: { businessId: ctx.businessId }, importRef: { in: p.refs }, invoiceId: { not: null } }, orderBy: { importRef: 'asc' } });
+    const processed = new Set(prevProcessed(job.progress));
+    let done = processed.size;
     for (const it of items) {
+      if (processed.has(it.importRef)) continue;
+      if (Date.now() >= job.deadline) return 'PARTIAL';
       try {
         const r = await validateWithFbr(ctx, it.invoiceId!);
         await prisma.importInvoice.update({
@@ -145,8 +156,9 @@ export function registerBulkJobs() {
           },
         });
       }
+      processed.add(it.importRef);
       done++;
-      await progress({ done, total: items.length });
+      await progress({ done, total: items.length, processed: [...processed] });
     }
     await prisma.importJob.update({ where: { id: p.jobId }, data: { status: 'VALIDATED' } });
     await refreshCounts(p.jobId);
@@ -155,12 +167,17 @@ export function registerBulkJobs() {
   registerJob('bulk.submit', async (job, progress) => {
     const p = job.payload as { jobId: string; refs: string[]; userId: string };
     const ctx: Ctx = { businessId: job.businessId!, userId: p.userId, kind: 'USER' };
-    const items = await prisma.importInvoice.findMany({ where: { jobId: p.jobId, job: { businessId: ctx.businessId }, importRef: { in: p.refs }, invoiceId: { not: null } } });
-    let done = 0;
+    const items = await prisma.importInvoice.findMany({ where: { jobId: p.jobId, job: { businessId: ctx.businessId }, importRef: { in: p.refs }, invoiceId: { not: null } }, orderBy: { importRef: 'asc' } });
+    const processed = new Set(prevProcessed(job.progress));
+    let done = processed.size;
     for (const it of items) {
+      if (processed.has(it.importRef)) continue;
+      if (Date.now() >= job.deadline) return 'PARTIAL';
       const inv = await prisma.invoice.findFirst({ where: { id: it.invoiceId!, businessId: ctx.businessId } });
       if (!inv || inv.status === 'ACCEPTED') {
+        processed.add(it.importRef);
         done++;
+        await progress({ done, total: items.length, processed: [...processed] });
         continue; // never resubmit accepted invoices
       }
       try {
@@ -176,8 +193,9 @@ export function registerBulkJobs() {
           data: { status: 'ERROR', errors: [{ importRef: it.importRef, row: it.rowNumbers[0], field: 'invoice', level: 'error', message: (e as Error).message, scope: 'invoice' }] as Prisma.InputJsonValue },
         });
       }
+      processed.add(it.importRef);
       done++;
-      await progress({ done, total: items.length });
+      await progress({ done, total: items.length, processed: [...processed] });
     }
     await prisma.importJob.update({ where: { id: p.jobId }, data: { status: 'COMPLETED' } });
     await refreshCounts(p.jobId);

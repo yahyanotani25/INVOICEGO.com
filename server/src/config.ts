@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import { resolveDatabaseUrl } from './lib/dbUrl.js';
+
+/** Running on Vercel (serverless): no long-running worker, no pg_dump, HTTPS behind Vercel's proxy. */
+export const onVercel = !!process.env.VERCEL;
 
 const bool = (def: boolean) =>
   z
@@ -10,7 +14,7 @@ const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().default(8080),
   HOST: z.string().default('0.0.0.0'),
-  APP_BASE_URL: z.string().url().default('http://localhost:8080'),
+  APP_BASE_URL: z.string().url().default(defaultBaseUrl()),
   DATABASE_URL: z.string().min(1),
   /** 32-byte key, base64. Encrypts FBR tokens and TOTP secrets at rest. */
   DATA_ENCRYPTION_KEY: z.string().min(1),
@@ -19,7 +23,7 @@ const schema = z.object({
   SESSION_TTL_HOURS: z.coerce.number().default(12),
   ADMIN_SESSION_TTL_HOURS: z.coerce.number().default(4),
   COOKIE_SECURE: bool(true),
-  TRUST_PROXY: bool(false),
+  TRUST_PROXY: bool(!!process.env.VERCEL),
 
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().optional(),
@@ -52,14 +56,30 @@ const schema = z.object({
 
   UPLOAD_MAX_BYTES: z.coerce.number().default(5 * 1024 * 1024),
   JOB_WORKER_ENABLED: bool(true),
+  /** Minutes after which a RUNNING job whose worker vanished is re-queued (resumable, never re-submits accepted invoices). */
+  JOB_ORPHAN_MINUTES: z.coerce.number().default(process.env.VERCEL ? 7 : 15),
+  /** Optional HTTP(S) proxy with a STATIC egress IP used only for FBR calls (e.g. QuotaGuard Static, Fixie). */
+  FBR_PROXY_URL: z.string().url().optional().or(z.literal('').transform(() => undefined)),
+  /** One-time administrator bootstrap secret for hosts without shell access (Vercel). Remove after use. */
+  ADMIN_BOOTSTRAP_TOKEN: z.string().optional(),
+  ADMIN_BOOTSTRAP_EMAIL: z.string().email().default('admininvoicego@gmail.com'),
+  /** Max duration of a serverless request (seconds); bulk FBR runs are sliced to fit (Vercel Hobby: 300). */
+  FUNCTION_MAX_DURATION_S: z.coerce.number().default(300),
+  /** Vercel Cron sends "Authorization: Bearer <CRON_SECRET>". */
+  CRON_SECRET: z.string().optional(),
   LOG_LEVEL: z.string().default('info'),
   APP_VERSION: z.string().default('1.0.0'),
 });
 
 export type Config = z.infer<typeof schema>;
 
+function defaultBaseUrl() {
+  const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  return host ? `https://${host}` : 'http://localhost:8080';
+}
+
 function load(): Config {
-  const parsed = schema.safeParse(process.env);
+  const parsed = schema.safeParse({ ...process.env, DATABASE_URL: resolveDatabaseUrl() ?? process.env.DATABASE_URL });
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ');
     throw new Error(`Invalid environment configuration: ${issues}`);
@@ -71,6 +91,7 @@ function load(): Config {
     if (cfg.FBR_ALLOW_TEST_ORIGINS) throw new Error('FBR_ALLOW_TEST_ORIGINS must not be set in production');
     if (cfg.MAIL_LOG_ONLY) throw new Error('MAIL_LOG_ONLY must not be enabled in production');
     if (!cfg.COOKIE_SECURE) throw new Error('COOKIE_SECURE must be true in production');
+    if (cfg.ADMIN_BOOTSTRAP_TOKEN && cfg.ADMIN_BOOTSTRAP_TOKEN.length < 24) throw new Error('ADMIN_BOOTSTRAP_TOKEN must be at least 24 characters');
   }
   return cfg;
 }

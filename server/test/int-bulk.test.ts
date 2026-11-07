@@ -43,7 +43,7 @@ async function upload(rows: Record<string, unknown>[] | Buffer) {
 }
 const job = async (id: string) => (await call(app, s, 'GET', `/api/app/bulk/jobs/${id}`)).json();
 async function drain() {
-  while (await runOnce()) {
+  while ((await runOnce()).ran) {
     /* run queued jobs synchronously (worker disabled in tests) */
   }
 }

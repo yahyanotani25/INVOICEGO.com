@@ -9,7 +9,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ZodError } from 'zod';
 import { Prisma } from '@prisma/client';
-import { config, isProd, isTest } from './config.js';
+import { config, isProd, isTest, onVercel } from './config.js';
+import { prisma } from './db.js';
+import { maintenance, runOnce } from './jobs/runner.js';
+import { registerBulkJobs } from './modules/bulk/service.js';
+import { safeEqual } from './lib/crypto.js';
 import { AppError } from './lib/errors.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { businessRoutes } from './modules/business/routes.js';
@@ -39,6 +43,7 @@ export const REDACT = [
 ];
 
 export async function buildApp(): Promise<FastifyInstance> {
+  registerBulkJobs();
   const app = Fastify({
     logger: isTest
       ? false
@@ -97,7 +102,35 @@ export async function buildApp(): Promise<FastifyInstance> {
     return reply.status(500).send({ error: { code: 'INTERNAL', message: 'An unexpected error occurred. It has been logged.' } });
   });
 
-  app.get('/api/health', async () => ({ ok: true, version: config.APP_VERSION, time: new Date().toISOString() }));
+  app.get('/api/health', async (_req, reply) => {
+    let db: 'ok' | 'error' = 'ok';
+    let referenceData = false;
+    try {
+      referenceData = (await prisma.scenarioDefinition.count()) === 28;
+    } catch {
+      db = 'error';
+    }
+    return reply.status(db === 'ok' ? 200 : 503).send({ ok: db === 'ok', db, referenceData, version: config.APP_VERSION, time: new Date().toISOString() });
+  });
+
+  // Opportunistic maintenance (stale submission locks, orphaned job slices). Rate-limited per instance.
+  if (!isTest) {
+    app.addHook('onResponse', async () => {
+      void maintenance().catch(() => {});
+    });
+  }
+
+  /** Vercel Cron (or any scheduler): maintenance plus one slice of queued background work. */
+  app.get('/api/cron/maintenance', async (req, reply) => {
+    const auth = req.headers.authorization ?? '';
+    if (!config.CRON_SECRET || !safeEqual(auth, `Bearer ${config.CRON_SECRET}`)) {
+      return reply.status(401).send({ error: { code: 'UNAUTHORIZED', message: 'Invalid cron secret' } });
+    }
+    await maintenance(true);
+    const budget = onVercel ? Math.max(15_000, config.FUNCTION_MAX_DURATION_S * 1000 - 2 * (config.FBR_HTTP_CONNECT_TIMEOUT_MS + config.FBR_HTTP_RESPONSE_TIMEOUT_MS) - 15_000) : 60_000;
+    const r = await runOnce(budget);
+    return { ok: true, job: r };
+  });
 
   await app.register(authRoutes, { prefix: '/api' });
   await app.register(businessRoutes, { prefix: '/api/app' });

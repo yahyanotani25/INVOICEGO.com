@@ -161,10 +161,29 @@ export async function authRoutes(app: FastifyInstance) {
       await tx.membership.create({ data: { userId: user.id, businessId: business.id, role: 'OWNER' } });
       return { user, business };
     });
-    await sendVerification(req, user.id, user.email);
-    await audit(req, { action: 'user.register', entityType: 'User', entityId: user.id, businessId: business.id }, { userId: user.id, kind: 'USER' });
-    await notifyAdmins('NEW_REGISTRATION', 'New registration', `${user.name} registered ${business.name}`, `/admin/users/${user.id}`, business.id);
-    return reply.status(201).send({ ok: true, message: 'Account created. Check your email to verify your address before signing in.' });
+    let emailSent = true;
+    try {
+      await sendVerification(req, user.id, user.email);
+    } catch (e) {
+      // The account exists; never fail the registration because email delivery is unavailable.
+      emailSent = false;
+      req.log.error({ err: (e as Error).message }, 'verification email could not be sent');
+    }
+    await audit(req, { action: 'user.register', entityType: 'User', entityId: user.id, businessId: business.id, metadata: { verificationEmailSent: emailSent } }, { userId: user.id, kind: 'USER' });
+    await notifyAdmins(
+      'NEW_REGISTRATION',
+      emailSent ? 'New registration' : 'New registration — verification email NOT sent',
+      emailSent ? `${user.name} registered ${business.name}` : `${user.name} registered ${business.name}. Email could not be sent; review and activate the account manually.`,
+      `/admin/users/${user.id}`,
+      business.id,
+    );
+    return reply.status(201).send({
+      ok: true,
+      emailSent,
+      message: emailSent
+        ? 'Account created. Check your email to verify your address before signing in.'
+        : 'Account created, but the verification email could not be sent right now. An administrator will review and activate your account, or contact support.',
+    });
   });
 
   app.post('/auth/verify-email', strict, async (req) => {
@@ -184,7 +203,7 @@ export async function authRoutes(app: FastifyInstance) {
     checkAnonCsrf(req);
     const { email } = z.object({ email: z.string().trim().toLowerCase().email() }).parse(req.body);
     const user = await prisma.user.findUnique({ where: { email } });
-    if (user && user.status === 'PENDING_VERIFICATION') await sendVerification(req, user.id, user.email);
+    if (user && user.status === 'PENDING_VERIFICATION') await sendVerification(req, user.id, user.email).catch((e) => req.log.error({ err: (e as Error).message }, 'verification email could not be sent'));
     return { ok: true, message: 'If the account exists and is not verified, a new link has been sent.' };
   });
 
@@ -219,7 +238,7 @@ export async function authRoutes(app: FastifyInstance) {
     const { email } = z.object({ email: z.string().trim().toLowerCase().email() }).parse(req.body);
     const user = await prisma.user.findUnique({ where: { email } });
     if (user && !user.deletedAt && ['ACTIVE', 'PENDING_VERIFICATION'].includes(user.status) && user.platformRole === 'NONE') {
-      await sendPasswordReset(req, user.id, user.email);
+      await sendPasswordReset(req, user.id, user.email).catch((e) => req.log.error({ err: (e as Error).message }, 'password reset email could not be sent'));
     }
     return { ok: true, message: 'If an account exists for this email, a reset link has been sent.' };
   });
