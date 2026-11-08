@@ -21,7 +21,7 @@ This was verified with an offline `vercel build` (Vercel CLI 64.7.0) from a clea
 
 ## Step 1: Import the repository
 
-Already done: project **`invoicego`** in the team `yahyas-projects-ef5caf6e` is linked to `yahyanotani25/INVOICEGO.com`, production branch `claude/brave-dirac-j6hdgf`. Every push to that branch deploys to production at `https://invoicego-yahyas-projects-ef5caf6e.vercel.app`.
+Already done: project **`invoicego`** in the team `yahyas-projects-ef5caf6e` is linked to `yahyanotani25/INVOICEGO.com`, production branch `claude/brave-dirac-j6hdgf`. Every push to that branch deploys to production at **https://invoicego-rho.vercel.app**. Deployment Protection is set to *Standard*: the production URL is public, and preview deployments require a Vercel login.
 
 To recreate it elsewhere:
 
