@@ -17,7 +17,7 @@ This was verified with an offline `vercel build` (Vercel CLI 64.7.0) from a clea
 | **Cron** | `vercel.json` schedules `/api/cron/maintenance` daily (02:17 PKT). This is allowed on every plan. On Pro you may change it to every few minutes (e.g. `*/5 * * * *`) so unfinished bulk runs continue even if nobody keeps the page open. |
 | **Static outbound IP for FBR** | Vercel functions have no fixed outbound IP unless you buy Vercel **Static IPs** (Pro add-on). Businesses must whitelist the IP that FBR sees. Choose **one** of the two options in step 6. |
 | **Backups** | `pg_dump` cannot run inside Vercel functions. Use your database provider's backups (Neon point-in-time restore and branches), or run `scripts/backup.ts` from another machine. |
-| **Email** | Without SMTP, registration still works, but administrators must activate new accounts manually (Admin → Users → Activate). Configure SMTP for automatic verification and password-reset emails. |
+| **Email** | Without SMTP, registration still works, but administrators must activate new accounts manually (Admin → Users → Activate), team invitation links must be shared by hand, and notifications stay in the app only. Configure SMTP for verification, password-reset, invitation and notification emails. |
 
 ## Step 1: Import the repository
 

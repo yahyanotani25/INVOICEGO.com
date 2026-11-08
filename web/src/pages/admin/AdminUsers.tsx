@@ -110,6 +110,8 @@ interface UserDetail {
   status: string;
   statusReason: string | null;
   emailVerifiedAt: string | null;
+  mfaEnabled: boolean;
+  emailNotifications: boolean;
   createdAt: string;
   lastLoginAt: string | null;
   businesses: {
@@ -142,6 +144,8 @@ export function AdminUserDetail({ me }: { me: AdminMe }) {
   const [delOpen, setDelOpen] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState('');
   const [delReason, setDelReason] = useState('');
+  const [mfaOpen, setMfaOpen] = useState(false);
+  const [mfaReason, setMfaReason] = useState('');
 
   const setStatus = useMutation({
     mutationFn: () => aapi(`/users/${id}/status`, { body: { status: newStatus, reason } }),
@@ -158,6 +162,15 @@ export function AdminUserDetail({ me }: { me: AdminMe }) {
     onSuccess: (r) => {
       toast('green', r.message);
       setResetOpen(false);
+    },
+  });
+  const resetMfa = useMutation({
+    mutationFn: () => aapi(`/users/${id}/reset-2fa`, { body: { reason: mfaReason } }),
+    onSuccess: () => {
+      toast('green', 'Two-factor authentication was reset; the user has been signed out');
+      setMfaOpen(false);
+      setMfaReason('');
+      void qc.invalidateQueries({ queryKey: ['admin-user', id] });
     },
   });
   const del = useMutation({
@@ -213,7 +226,12 @@ export function AdminUserDetail({ me }: { me: AdminMe }) {
             {u.statusReason && <div className="flex justify-between gap-2"><dt className="text-ink-500">Reason</dt><dd className="text-right">{u.statusReason}</dd></div>}
             <div className="flex justify-between gap-2"><dt className="text-ink-500">Email verified</dt><dd>{u.emailVerifiedAt ? dateTime(u.emailVerifiedAt) : 'No'}</dd></div>
             <div className="flex justify-between gap-2"><dt className="text-ink-500">Last sign-in</dt><dd>{dateTime(u.lastLoginAt)}</dd></div>
+            <div className="flex justify-between gap-2"><dt className="text-ink-500">Two-factor</dt><dd>{u.mfaEnabled ? <Badge tone="green">On</Badge> : 'Off'}</dd></div>
+            <div className="flex justify-between gap-2"><dt className="text-ink-500">Email notifications</dt><dd>{u.emailNotifications ? 'On' : 'Off'}</dd></div>
           </dl>
+          {canManage && u.mfaEnabled && !deleted && (
+            <Button size="sm" variant="secondary" className="mt-3" onClick={() => setMfaOpen(true)}>Reset two-factor</Button>
+          )}
         </Card>
         <Card title="Invoice statistics" className="lg:col-span-2" bodyClass="p-0">
           {u.invoiceStats.length === 0 ? (
@@ -296,6 +314,18 @@ export function AdminUserDetail({ me }: { me: AdminMe }) {
         <TextArea label="Reason" required rows={3} value={reason} onChange={(e) => setReason(e.target.value)} hint="Recorded in the audit log. Non-active statuses sign the user out of all sessions." />
       </Dialog>
 
+      <Dialog
+        open={mfaOpen}
+        onClose={() => setMfaOpen(false)}
+        title="Reset two-factor authentication"
+        footer={<><Button variant="ghost" onClick={() => setMfaOpen(false)}>Cancel</Button><Button variant="danger" onClick={() => resetMfa.mutate()} loading={resetMfa.isPending} disabled={mfaReason.trim().length < 5}>Reset</Button></>}
+      >
+        <div className="space-y-3">
+          <Alert tone="amber">Only do this after confirming the person’s identity (for example by a call to the registered phone number). Their sessions are signed out and they can sign in with the password alone until they turn two-factor on again.</Alert>
+          <ErrorBanner error={resetMfa.error} />
+          <TextArea label="Reason (recorded in the audit log)" required value={mfaReason} onChange={(e) => setMfaReason(e.target.value)} />
+        </div>
+      </Dialog>
       <ConfirmDialog
         open={resetOpen}
         title="Send password reset"

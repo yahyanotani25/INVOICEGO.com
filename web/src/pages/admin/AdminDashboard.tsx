@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Card, EmptyState, ErrorBanner, PageHeader, Spinner, Stat, Table } from '@/components/ui';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAdminMe } from '@/lib/auth';
+import { Card, Checkbox, EmptyState, ErrorBanner, PageHeader, Spinner, Stat, Table } from '@/components/ui';
 import { dateTime } from '@/lib/format';
 import { aapi, human, type AuditRow } from '@/components/admin/adminApi';
 
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Platform overview" subtitle="Users, FBR submission health and recent administrator/system activity. Subscription and payment statistics are not part of this release." />
+      <MyEmailNotifications />
       <section aria-labelledby="users-h">
         <h2 id="users-h" className="mb-2 text-sm font-semibold text-ink-700">
           Registered users
@@ -72,5 +74,24 @@ export default function AdminDashboard() {
         )}
       </Card>
     </div>
+  );
+}
+
+/** Each administrator chooses whether operational notifications (registrations, tickets, FBR failures) are emailed. */
+function MyEmailNotifications() {
+  const me = useAdminMe();
+  const qc = useQueryClient();
+  const save = useMutation({ mutationFn: (v: boolean) => aapi('/me/preferences', { method: 'PATCH', body: { emailNotifications: v } }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-me'] }) });
+  if (!me.data) return null;
+  return (
+    <Card>
+      <ErrorBanner error={save.error} />
+      <Checkbox
+        label="Email me about new registrations, support tickets and failed production submissions"
+        hint="Notifications always appear in the admin console. Emails are sent only when SMTP is configured on the server."
+        checked={me.data.user.emailNotifications}
+        onChange={(v) => !save.isPending && save.mutate(v)}
+      />
+    </Card>
   );
 }

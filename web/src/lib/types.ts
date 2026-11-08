@@ -95,6 +95,8 @@ export interface BuyerCheck {
   mismatch: boolean;
   message: string | null;
   checkedAt: string | null;
+  /** FBR STATL status text for registered buyers, exactly as FBR returned it. */
+  activeStatus?: { available: boolean; status: string | null; statusCode: string | null; message: string | null; date?: string } | null;
 }
 
 export interface Lookups {

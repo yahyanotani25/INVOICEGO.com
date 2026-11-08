@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { pkr } from '@/lib/format';
 import { emptyItem, MONTH_RULE_MESSAGE, type BuyerCheck, type Customer, type Invoice, type InvoiceItem, type Lookups, type Product } from '@/lib/types';
 import { Alert, Badge, Button, Card, Checkbox, ComboInput, EnvBadge, ErrorBanner, Field, PageHeader, SelectInput, Spinner, TextInput, issueFor, useToast } from '@/components/ui';
+import { FbrItemAssist } from '@/components/FbrItemAssist';
 
 interface CalcLine {
   line: number;
@@ -106,7 +107,7 @@ export default function InvoiceBuilder() {
   });
 
   const verifyBuyer = useMutation({
-    mutationFn: () => api<BuyerCheck>('/api/app/invoices/buyer-check', { body: { buyerNtnCnic: h.buyerNtnCnic, buyerBusinessName: h.buyerBusinessName, buyerRegistrationType: h.buyerRegistrationType || null } }),
+    mutationFn: () => api<BuyerCheck>('/api/app/invoices/buyer-check', { body: { buyerNtnCnic: h.buyerNtnCnic, buyerBusinessName: h.buyerBusinessName, buyerRegistrationType: h.buyerRegistrationType || null, invoiceDate: h.invoiceDate || null } }),
     onSuccess: setBuyerCheck,
   });
 
@@ -215,6 +216,15 @@ export default function InvoiceBuilder() {
           {verifyBuyer.error && <span className="text-xs text-red-600">{(verifyBuyer.error as Error).message}</span>}
         </div>
         {buyerCheck?.result === 'UNAVAILABLE' && <p className="mt-2 text-xs text-amber-700">{buyerCheck.message}</p>}
+        {buyerCheck?.activeStatus && (
+          <p className="mt-2 text-xs text-ink-600">
+            {buyerCheck.activeStatus.available ? (
+              <>FBR active-taxpayer status (STATL) on {buyerCheck.activeStatus.date}: <Badge tone={/^active$/i.test(buyerCheck.activeStatus.status ?? '') ? 'green' : 'amber'}>{buyerCheck.activeStatus.status ?? `code ${buyerCheck.activeStatus.statusCode}`}</Badge> <span className="text-ink-500">Shown as FBR reports it; it does not block the invoice.</span></>
+            ) : (
+              <span className="text-amber-700">{buyerCheck.activeStatus.message}</span>
+            )}
+          </p>
+        )}
       </Card>
 
       <Card
@@ -285,6 +295,7 @@ export default function InvoiceBuilder() {
                   <TextInput label="SRO / schedule no." value={it.sroScheduleNo} onChange={(e) => setItem(i, { sroScheduleNo: e.target.value })} error={err('sroScheduleNo')} />
                   <TextInput label="Item S. No." value={it.sroItemSerialNo} onChange={(e) => setItem(i, { sroItemSerialNo: e.target.value })} error={err('sroItemSerialNo')} />
                   <NumOut label="Total (incl. taxes)" auto={autoCalc} value={autoCalc ? v?.totalValues : it.totalValues} onChange={(x) => setItem(i, { totalValues: x })} />
+                  <FbrItemAssist line={it} invoiceDate={h.invoiceDate} sellerProvince={business.data?.province ?? ''} onChange={(patch) => setItem(i, patch)} />
                 </div>
                 {lineIssues.filter((x) => x.level === 'warning').length > 0 && (
                   <ul className="mt-2 space-y-0.5 text-xs text-amber-700">

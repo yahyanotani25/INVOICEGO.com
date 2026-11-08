@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AdminMe } from '@/lib/auth';
-import { ApiError } from '@/lib/api';
+import { api, ApiError } from '@/lib/api';
 import { Alert, Badge, Button, Card, ErrorBanner, PageHeader, Spinner, TextArea, TextInput, issueFor, useToast } from '@/components/ui';
 import { aapi } from '@/components/admin/adminApi';
 
@@ -19,6 +19,7 @@ interface SettingsResp {
     backupEncryptionConfigured: boolean;
     backupDir: string;
   };
+  logo: { mime: string; updatedAt: string } | null;
   deferred: string[];
 }
 
@@ -85,6 +86,7 @@ export default function AdminSettings({ me }: { me: AdminMe }) {
         </dl>
         <p className="mt-3 text-xs text-ink-500">Secrets (SMTP password, encryption keys, FBR tokens) are environment variables or encrypted records and are never editable or visible here.</p>
       </Card>
+      <PlatformLogo logo={q.data!.logo} canEdit={canEdit} />
       <div className="grid gap-4 lg:grid-cols-2">
         <SettingForm k="platform" title="Website / software & company information" initial={settings.platform} canEdit={canEdit}>
           {(v, set, err) => (
@@ -145,5 +147,38 @@ export default function AdminSettings({ me }: { me: AdminMe }) {
         </Card>
       </div>
     </div>
+  );
+}
+
+function PlatformLogo({ logo, canEdit }: { logo: SettingsResp['logo']; canEdit: boolean }) {
+  const qc = useQueryClient();
+  const toast = useToast();
+  const refresh = async () => {
+    await qc.invalidateQueries({ queryKey: ['admin-settings'] });
+    await qc.invalidateQueries({ queryKey: ['branding'] });
+  };
+  const upload = useMutation({
+    mutationFn: (f: File) => {
+      const fd = new FormData();
+      fd.append('file', f);
+      return api('/api/admin/settings/logo', { form: fd, area: 'admin' });
+    },
+    onSuccess: async () => { toast('green', 'Logo updated'); await refresh(); },
+  });
+  const remove = useMutation({ mutationFn: () => api('/api/admin/settings/logo', { method: 'DELETE', area: 'admin' }), onSuccess: async () => { toast('green', 'Logo removed'); await refresh(); } });
+  return (
+    <Card title="Platform logo">
+      <div className="flex flex-wrap items-center gap-4">
+        {logo ? <img src={`/api/public/logo?v=${new Date(logo.updatedAt).getTime()}`} alt="Current platform logo" className="h-14 w-auto rounded border border-ink-200 bg-white p-1" /> : <p className="text-sm text-ink-500">No logo uploaded; the default InvoiceGO mark is shown.</p>}
+        {canEdit && (
+          <div className="space-y-1">
+            <input type="file" accept="image/png,image/jpeg,image/webp" aria-label="Upload platform logo" className="text-sm" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload.mutate(f); e.target.value = ''; }} />
+            <p className="text-xs text-ink-500">PNG, JPEG or WebP, up to 512 KB. Shown on the website, sign-in pages and the business app.</p>
+            {logo && <Button size="sm" variant="ghost" onClick={() => remove.mutate()} loading={remove.isPending}>Remove logo</Button>}
+          </div>
+        )}
+      </div>
+      <ErrorBanner error={upload.error ?? remove.error} />
+    </Card>
   );
 }

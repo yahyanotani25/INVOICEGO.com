@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { CalendarCheck, FileSpreadsheet, FlaskConical, Printer, ShieldCheck, UserCheck } from 'lucide-react';
+import { CalendarCheck, FileSpreadsheet, FlaskConical, KeyRound, Printer, ShieldCheck, UserCheck, Users } from 'lucide-react';
+import { BrandMark, useBranding } from '@/lib/branding';
 
 const FEATURES = [
   { icon: FlaskConical, title: 'Sandbox scenarios, built in', body: 'Every supplied scenario (SN001–SN028) loads as an editable form and JSON. Run it against your own FBR sandbox token and track which required scenarios have genuinely passed.' },
@@ -8,16 +9,25 @@ const FEATURES = [
   { icon: FileSpreadsheet, title: 'Excel bulk upload', body: 'Upload 20 or more multi-item invoices at once, see row-level errors, validate them with FBR and submit only the ones you select.' },
   { icon: ShieldCheck, title: 'Careful submission', body: 'Exact decimal maths, item-level result checks, locked submissions and a reconciliation workflow when the outcome is uncertain — never a blind resend.' },
   { icon: Printer, title: 'A4 invoices with FBR number & QR', body: 'Printable invoices carry the FBR invoice number, the Digital Invoicing logo and QR only after FBR accepts them. Sandbox prints are clearly watermarked.' },
+  { icon: Users, title: 'Your whole team, with roles', body: 'Invite accountants and operators by email. Owners and admins manage FBR credentials; viewers get read-only access.' },
+  { icon: KeyRound, title: 'Secure accounts', body: 'Optional two-factor sign-in with recovery codes, encrypted FBR tokens that never reach the browser, and a full audit trail.' },
+];
+
+const STEPS = [
+  { title: 'Create your account', body: 'Register your business with the NTN/CNIC, business nature and sector exactly as they appear in IRIS.' },
+  { title: 'Connect IRIS', body: 'Complete the technical details and IP whitelisting in IRIS, then save your sandbox token in InvoiceGO.' },
+  { title: 'Pass the sandbox scenarios', body: 'Run the scenarios that apply to your business. Each is marked passed only after FBR accepts it.' },
+  { title: 'Go live', body: 'Save the production token IRIS issues, then create, validate and submit real invoices.' },
 ];
 
 export default function Landing() {
+  const brand = useBranding();
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b border-ink-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/favicon.svg" alt="" className="h-8 w-8" />
-            <span className="text-lg font-semibold">InvoiceGO</span>
+            <BrandMark size="lg" />
           </Link>
           <nav className="flex items-center gap-2">
             <Link to="/login" className="rounded-lg px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-100">
@@ -48,27 +58,19 @@ export default function Landing() {
               </Link>
             </div>
           </div>
-          <div className="card self-center p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wide text-ink-500">Invoice preview · sample</span>
-              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800 ring-1 ring-amber-200">SANDBOX</span>
-            </div>
-            <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              {[
-                ['HS code', '0101.2100'],
-                ['Sale type', 'Goods at standard rate (default)'],
-                ['Rate', '18%'],
-                ['UOM', 'Numbers, pieces, units'],
-                ['Value excl. ST', 'Rs 10,000.00'],
-                ['Sales tax', 'Rs 1,800.00'],
-              ].map(([k, v]) => (
-                <div key={k} className="rounded-lg border border-ink-100 bg-ink-50 p-2.5">
-                  <dt className="text-xs text-ink-500">{k}</dt>
-                  <dd className="font-medium text-ink-900">{v}</dd>
-                </div>
+          <div className="card self-center p-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-500">From sign-up to live invoicing</h2>
+            <ol className="mt-4 space-y-4">
+              {STEPS.map((st, i) => (
+                <li key={st.title} className="flex gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-700 ring-1 ring-brand-200">{i + 1}</span>
+                  <div>
+                    <p className="font-medium text-ink-900">{st.title}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-ink-600">{st.body}</p>
+                  </div>
+                </li>
               ))}
-            </dl>
-            <p className="mt-4 text-xs text-ink-500">Illustrative values. Every submission is checked at invoice and item level; HTTP 200 alone is never treated as success.</p>
+            </ol>
           </div>
         </section>
         <section className="border-t border-ink-100 bg-ink-50 py-16">
@@ -95,7 +97,16 @@ export default function Landing() {
           </div>
         </section>
       </main>
-      <footer className="border-t border-ink-100 py-6 text-center text-xs text-ink-500">© {new Date().getFullYear()} InvoiceGO · invoicego.com</footer>
+      <footer className="border-t border-ink-100 py-6 text-center text-xs text-ink-500">
+        <p>© {new Date().getFullYear()} {brand.companyName ?? brand.softwareName}{brand.companyAddress ? ` · ${brand.companyAddress}` : ''}</p>
+        {(brand.supportEmail || brand.supportPhone) && (
+          <p className="mt-1">
+            Support: {brand.supportEmail && <a className="text-brand-700 hover:underline" href={`mailto:${brand.supportEmail}`}>{brand.supportEmail}</a>}
+            {brand.supportEmail && brand.supportPhone && ' · '}
+            {brand.supportPhone}
+          </p>
+        )}
+      </footer>
     </div>
   );
 }

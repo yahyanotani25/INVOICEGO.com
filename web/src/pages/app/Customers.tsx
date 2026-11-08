@@ -43,9 +43,11 @@ export default function Customers() {
     },
   });
   const verify = useMutation({
-    mutationFn: (c: Customer) => api<{ customer: Customer; result: string; mismatch: boolean; message: string }>(`/api/app/customers/${c.id}/verify`, { body: {} }),
+    mutationFn: (c: Customer) => api<{ customer: Customer; result: string; mismatch: boolean; message: string; activeStatus: { available: boolean; status: string | null; statusCode: string | null; message: string | null } | null }>(`/api/app/customers/${c.id}/verify`, { body: {} }),
     onSuccess: async (r) => {
-      setVerifyMsg({ tone: r.result === 'UNAVAILABLE' ? 'amber' : r.mismatch ? 'red' : 'green', text: r.message });
+      const a = r.activeStatus;
+      const statl = a ? (a.available ? ` FBR active-taxpayer status (STATL) today: ${a.status ?? `code ${a.statusCode}`}.` : ` ${a.message}`) : '';
+      setVerifyMsg({ tone: r.result === 'UNAVAILABLE' ? 'amber' : r.mismatch ? 'red' : 'green', text: r.message + statl });
       setView(r.customer);
       await qc.invalidateQueries({ queryKey: ['customers'] });
     },

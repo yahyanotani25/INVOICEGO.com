@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { api, ApiError } from '@/lib/api';
-import { useAuth, type Me } from '@/lib/auth';
+import { api, ApiError, setCsrf } from '@/lib/api';
+import { useAuth, type Me, type MfaPending } from '@/lib/auth';
+import { BrandMark } from '@/lib/branding';
 import { Alert, Button, Checkbox, ErrorBanner, SelectInput, TextInput, issueFor } from '@/components/ui';
 
-const ACTIVITIES = ['Manufacturer', 'Importer', 'Distributor', 'Wholesaler', 'Exporter', 'Retailer', 'Service Provider', 'Other'];
-const SECTORS = ['All Other Sectors', 'Steel', 'FMCG', 'Textile', 'Telecom', 'Petroleum', 'Electricity Distribution', 'Gas Distribution', 'Services', 'Automobile', 'CNG Stations', 'Pharmaceuticals', 'Wholesale / Retails'];
-const PROVINCES = ['Punjab', 'Sindh', 'Khyber Pakhtunkhwa', 'Balochistan', 'Capital Territory', 'Gilgit Baltistan', 'Azad Jammu and Kashmir'];
+export const ACTIVITIES = ['Manufacturer', 'Importer', 'Distributor', 'Wholesaler', 'Exporter', 'Retailer', 'Service Provider', 'Other'];
+export const SECTORS = ['All Other Sectors', 'Steel', 'FMCG', 'Textile', 'Telecom', 'Petroleum', 'Electricity Distribution', 'Gas Distribution', 'Services', 'Automobile', 'CNG Stations', 'Pharmaceuticals', 'Wholesale / Retails'];
+export const PROVINCES = ['Punjab', 'Sindh', 'Khyber Pakhtunkhwa', 'Balochistan', 'Capital Territory', 'Gilgit Baltistan', 'Azad Jammu and Kashmir'];
 
 function Shell({ title, subtitle, children, wide }: { title: string; subtitle?: ReactNode; children: ReactNode; wide?: boolean }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-ink-50 px-4 py-10">
       <Link to="/" className="mb-6 flex items-center gap-2">
-        <img src="/favicon.svg" alt="" className="h-8 w-8" />
-        <span className="text-lg font-semibold">InvoiceGO</span>
+        <BrandMark size="lg" />
       </Link>
       <div className={`card w-full ${wide ? 'max-w-2xl' : 'max-w-md'} p-6 sm:p-8`}>
         <h1 className="text-xl font-semibold text-ink-900">{title}</h1>
@@ -41,6 +41,8 @@ export function Login() {
   const [err, setErr] = useState<unknown>(null);
   const [busy, setBusy] = useState(false);
   const [resent, setResent] = useState(false);
+  const [mfaStep, setMfaStep] = useState(false);
+  const [code, setCode] = useState('');
   useEffect(() => {
     if (me) nav(safeNext(sp.get('next')), { replace: true });
   }, [me, nav, sp]);
@@ -49,7 +51,12 @@ export function Login() {
     setBusy(true);
     setErr(null);
     try {
-      const m = await api<Me>('/api/auth/login', { body: { email, password } });
+      const m = await api<Me | MfaPending>('/api/auth/login', { body: { email, password } });
+      if ('mfaRequired' in m) {
+        setCsrf('app', m.csrfToken);
+        setMfaStep(true);
+        return;
+      }
       setMe(m);
       nav(safeNext(sp.get('next')), { replace: true });
     } catch (e2) {
@@ -58,7 +65,43 @@ export function Login() {
       setBusy(false);
     }
   };
+  const verify = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setErr(null);
+    try {
+      const m = await api<Me>('/api/auth/mfa/verify', { body: { code: code.trim() } });
+      setMe(m);
+      nav(safeNext(sp.get('next')), { replace: true });
+    } catch (e2) {
+      setErr(e2);
+      // The sign-in ended (too many wrong codes or expired): start again from the password.
+      if (e2 instanceof ApiError && (e2.status === 429 || e2.code === 'UNAUTHORIZED')) {
+        setMfaStep(false);
+        setCode('');
+        setPassword('');
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
   const unverified = err instanceof ApiError && err.code === 'EMAIL_NOT_VERIFIED';
+  if (mfaStep) {
+    return (
+      <Shell title="Two-factor authentication" subtitle="Enter the 6-digit code from your authenticator app.">
+        <form onSubmit={verify} className="space-y-4" noValidate>
+          <ErrorBanner error={err} />
+          <TextInput label="Authentication code" autoComplete="one-time-code" inputMode="text" autoFocus required value={code} onChange={(e) => setCode(e.target.value)} hint="Lost your phone? Enter one of your recovery codes instead (for example abcde-fghjk)." />
+          <Button type="submit" loading={busy} className="w-full" disabled={code.trim().length < 6}>
+            Verify and sign in
+          </Button>
+          <button type="button" className="w-full text-center text-sm text-brand-700 hover:underline" onClick={() => { setMfaStep(false); setCode(''); setErr(null); }}>
+            Use a different account
+          </button>
+        </form>
+      </Shell>
+    );
+  }
   return (
     <Shell title="Sign in" subtitle="Business account sign-in">
       <form onSubmit={submit} className="space-y-4" noValidate>
@@ -285,6 +328,103 @@ export function ResetPassword() {
           </Button>
         </form>
       )}
+    </Shell>
+  );
+}
+
+interface InviteInfo { businessName: string; email: string; role: string; roleDescription: string; invitedBy: string | null; expiresAt: string; accountExists: boolean }
+
+/** Accepting a team invitation: new people create their account here; existing users confirm with their password. */
+export function AcceptInvite() {
+  const nav = useNavigate();
+  const [sp] = useSearchParams();
+  const token = sp.get('token') ?? '';
+  const { setMe } = useAuth();
+  const info = useQuery({ queryKey: ['team-invite', token], queryFn: () => api<InviteInfo>(`/api/auth/team-invite?token=${encodeURIComponent(token)}`), enabled: token.length > 20, retry: false });
+  const [f, setF] = useState({ name: '', phone: '', password: '', confirm: '' });
+  const [err, setErr] = useState<unknown>(null);
+  const [busy, setBusy] = useState(false);
+  const [mfaStep, setMfaStep] = useState(false);
+  const [code, setCode] = useState('');
+  const issues = err instanceof ApiError ? err.issues : [];
+  if (!token) return <Shell title="Team invitation"><Alert tone="red">This invitation link is incomplete. Open the link from your email again.</Alert></Shell>;
+  if (info.isLoading) return <Shell title="Team invitation"><p className="text-sm text-ink-500">Checking the invitation…</p></Shell>;
+  if (info.error || !info.data) {
+    return (
+      <Shell title="Team invitation">
+        <ErrorBanner error={info.error} />
+        <p className="mt-4 text-sm text-ink-600">Already a member? <Link to="/login" className="text-brand-700 hover:underline">Sign in</Link>.</p>
+      </Shell>
+    );
+  }
+  const inv = info.data;
+  const isNew = !inv.accountExists;
+  const mismatch = isNew && f.confirm && f.confirm !== f.password ? 'Passwords do not match' : null;
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (mismatch) return;
+    setBusy(true);
+    setErr(null);
+    try {
+      const m = await api<Me | MfaPending>('/api/auth/team-invite/accept', { body: isNew ? { token, name: f.name, phone: f.phone, password: f.password } : { token, password: f.password } });
+      if ('mfaRequired' in m) {
+        setCsrf('app', m.csrfToken);
+        setMfaStep(true);
+        return;
+      }
+      setMe(m);
+      nav('/app', { replace: true });
+    } catch (e2) {
+      setErr(e2);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const verify = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setErr(null);
+    try {
+      setMe(await api<Me>('/api/auth/mfa/verify', { body: { code: code.trim() } }));
+      nav('/app', { replace: true });
+    } catch (e2) {
+      setErr(e2);
+    } finally {
+      setBusy(false);
+    }
+  };
+  if (mfaStep) {
+    return (
+      <Shell title="Two-factor authentication" subtitle={`You joined ${inv.businessName}. Enter your code to finish signing in.`}>
+        <form onSubmit={verify} className="space-y-4" noValidate>
+          <ErrorBanner error={err} />
+          <TextInput label="Authentication code" autoComplete="one-time-code" autoFocus required value={code} onChange={(e) => setCode(e.target.value)} hint="Or one of your recovery codes" />
+          <Button type="submit" loading={busy} className="w-full" disabled={code.trim().length < 6}>Verify and continue</Button>
+        </form>
+      </Shell>
+    );
+  }
+  return (
+    <Shell title={`Join ${inv.businessName}`} subtitle={<>{inv.invitedBy ? `${inv.invitedBy} invited you` : 'You have been invited'} to InvoiceGO as <strong>{inv.role.toLowerCase()}</strong>.</>}>
+      <form onSubmit={submit} className="space-y-4" noValidate>
+        <Alert tone="blue">{inv.roleDescription}.</Alert>
+        <ErrorBanner error={err} />
+        <TextInput label="Email" value={inv.email} disabled hint="The invitation is for this address" />
+        {isNew ? (
+          <>
+            <TextInput label="Your full name" required autoComplete="name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} error={issueFor(issues, 'name')} />
+            <TextInput label="Phone number" required autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} error={issueFor(issues, 'phone')} />
+            <TextInput label="Choose a password" type="password" required autoComplete="new-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} error={issueFor(issues, 'password')} hint="At least 10 characters with letters and numbers" />
+            <TextInput label="Confirm password" type="password" required autoComplete="new-password" value={f.confirm} onChange={(e) => setF({ ...f, confirm: e.target.value })} error={mismatch} />
+          </>
+        ) : (
+          <TextInput label="Your InvoiceGO password" type="password" required autoComplete="current-password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} hint={<>You already have an account. <Link to="/forgot-password" className="text-brand-700 hover:underline">Forgot your password?</Link></>} />
+        )}
+        <Button type="submit" loading={busy} className="w-full" disabled={!f.password || (isNew && (!f.name || !f.phone || !!mismatch || !f.confirm))}>
+          {isNew ? 'Create account and join' : 'Join business'}
+        </Button>
+        <p className="text-center text-xs text-ink-500">This invitation expires on {new Date(inv.expiresAt).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' })}.</p>
+      </form>
     </Shell>
   );
 }

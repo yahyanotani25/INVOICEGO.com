@@ -27,6 +27,9 @@ export default function AdminNotifications({ me }: { me: AdminMe }) {
   const [startsAt, setStartsAt] = useState('');
   const [endsAt, setEndsAt] = useState('');
   const [notifyUsers, setNotifyUsers] = useState(false);
+  const [emailUsers, setEmailUsers] = useState(false);
+  const smtp = useQuery({ queryKey: ['admin-settings'], queryFn: () => aapi<{ environment: { smtpConfigured: boolean } }>('/settings'), retry: false });
+  const smtpOn = !!smtp.data?.environment.smtpConfigured;
   const [deactivate, setDeactivate] = useState<Announcement | null>(null);
   const endBeforeStart = !!startsAt && !!endsAt && new Date(endsAt) <= new Date(startsAt);
 
@@ -40,15 +43,17 @@ export default function AdminNotifications({ me }: { me: AdminMe }) {
           ...(startsAt ? { startsAt: new Date(startsAt).toISOString() } : {}),
           ...(endsAt ? { endsAt: new Date(endsAt).toISOString() } : {}),
           notifyUsers,
+          emailUsers: emailUsers && smtpOn,
         },
       }),
     onSuccess: () => {
-      toast('green', notifyUsers ? 'Published and sent to all active users' : 'Published as a banner in the business app');
+      toast('green', emailUsers && smtpOn ? 'Published and emailed to users (remaining emails continue in the background)' : notifyUsers ? 'Published and sent to all active users' : 'Published as a banner in the business app');
       setTitle('');
       setBody('');
       setStartsAt('');
       setEndsAt('');
       setNotifyUsers(false);
+      setEmailUsers(false);
       void qc.invalidateQueries({ queryKey: ['admin-announcements'] });
     },
   });
@@ -108,6 +113,12 @@ export default function AdminNotifications({ me }: { me: AdminMe }) {
                 <TextInput label="Ends (optional)" type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} error={endBeforeStart ? 'Must be after the start' : null} />
               </div>
               <Checkbox label="Also send as a notification to every active user" checked={notifyUsers} onChange={setNotifyUsers} hint="Otherwise it is shown as a banner in the business app while active." />
+              <Checkbox
+                label="Also email every active user"
+                checked={emailUsers && smtpOn}
+                onChange={(v) => smtpOn && setEmailUsers(v)}
+                hint={smtpOn ? 'Users who turned email notifications off are skipped.' : 'Email is not configured on the server (SMTP), so announcements cannot be emailed.'}
+              />
               <Button type="submit" loading={create.isPending} disabled={title.trim().length < 3 || body.trim().length < 3 || endBeforeStart}>
                 <Megaphone className="h-4 w-4" /> Publish
               </Button>

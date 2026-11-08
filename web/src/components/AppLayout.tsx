@@ -1,11 +1,13 @@
 import { useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Bell, BookOpen, Boxes, ClipboardCheck, FileSpreadsheet, FilePlus2, FileText, FlaskConical, Hash, LayoutDashboard, LifeBuoy, LogOut, Menu, PlugZap, Settings as SettingsIcon, Users, BarChart3, AlertOctagon, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import { Badge } from './ui';
+import { BrandMark } from '@/lib/branding';
+import CreateBusiness from './CreateBusiness';
 
 const NAV = [
   { section: 'Workspace', items: [
@@ -32,16 +34,16 @@ const NAV = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { me, logout, setMe } = useAuth();
+  const qc = useQueryClient();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
-  const notif = useQuery({ queryKey: ['notifications'], queryFn: () => api<{ unread: number; announcements: { id: string; kind: string; title: string; body: string }[] }>('/api/app/notifications'), refetchInterval: 60_000 });
+  const notif = useQuery({ enabled: !!me?.business, queryKey: ['notifications'], queryFn: () => api<{ unread: number; announcements: { id: string; kind: string; title: string; body: string }[] }>('/api/app/notifications'), refetchInterval: 60_000 });
   const b = me?.business;
 
   const sidebar = (
     <nav aria-label="Main" className="flex h-full flex-col gap-4 overflow-y-auto px-3 py-4">
       <Link to="/app" className="flex items-center gap-2 px-2" onClick={() => setOpen(false)}>
-        <img src="/favicon.svg" alt="" className="h-7 w-7" />
-        <span className="text-lg font-semibold tracking-tight text-ink-900">InvoiceGO</span>
+        <BrandMark />
       </Link>
       {b && (
         <div className="rounded-xl border border-ink-200 bg-ink-50 p-3">
@@ -60,6 +62,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               onChange={async (e) => {
                 const m = await api<never>('/api/auth/switch-business', { body: { businessId: e.target.value } });
                 setMe(m);
+                // Never show the previous business's cached invoices, customers or settings.
+                qc.removeQueries({ predicate: (query) => query.queryKey[0] !== 'me' && query.queryKey[0] !== 'branding' });
                 nav('/app');
               }}
             >
@@ -70,9 +74,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               ))}
             </select>
           )}
+          {b.role === 'OWNER' && (
+            <Link to="/app/businesses/new" onClick={() => setOpen(false)} className="mt-2 inline-block text-xs text-brand-700 hover:underline">
+              + Add another business
+            </Link>
+          )}
         </div>
       )}
-      {NAV.map((s) => (
+      {b && NAV.map((s) => (
         <div key={s.section}>
           <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-ink-400">{s.section}</p>
           <ul className="space-y-0.5">
@@ -146,7 +155,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <strong>{a.kind === 'MAINTENANCE' ? 'Maintenance: ' : ''}{a.title}</strong> — {a.body}
           </div>
         ))}
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">{children}</main>
+        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">{b ? children : <CreateBusiness firstBusiness />}</main>
       </div>
     </div>
   );

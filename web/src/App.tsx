@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './lib/auth';
 import { Spinner } from './components/ui';
 import AppLayout from './components/AppLayout';
 import Landing from './pages/public/Landing';
-import { Login, Register, VerifyEmail, ForgotPassword, ResetPassword } from './pages/public/Auth';
+import { Login, Register, VerifyEmail, ForgotPassword, ResetPassword, AcceptInvite } from './pages/public/Auth';
 
 const Dashboard = lazy(() => import('./pages/app/Dashboard'));
 const Invoices = lazy(() => import('./pages/app/Invoices'));
@@ -26,6 +26,7 @@ const Settings = lazy(() => import('./pages/app/Settings'));
 const Notifications = lazy(() => import('./pages/app/Notifications'));
 const ErrorCodes = lazy(() => import('./pages/app/ErrorCodes'));
 const AdminApp = lazy(() => import('./pages/admin/AdminApp'));
+const CreateBusiness = lazy(() => import('./components/CreateBusiness'));
 
 function RequireUser({ children }: { children: ReactNode }) {
   const { me, loading } = useAuth();
@@ -51,6 +52,7 @@ export default function App() {
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/accept-invite" element={<AcceptInvite />} />
                 <Route path="/app/invoices/:id/print" element={<RequireUser><InvoicePrint /></RequireUser>} />
                 <Route
                   path="/app/*"
@@ -78,6 +80,7 @@ export default function App() {
                             <Route path="support/:id" element={<SupportTicket />} />
                             <Route path="settings" element={<Settings />} />
                             <Route path="notifications" element={<Notifications />} />
+                            <Route path="businesses/new" element={<CreateBusiness firstBusiness={false} />} />
                             <Route path="*" element={<Navigate to="/app" replace />} />
                           </Routes>
                         </Suspense>

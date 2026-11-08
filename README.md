@@ -33,6 +33,11 @@ Key behaviours:
   - Scenarios are checked against the full applicability matrix.
   - A scenario is marked passed only after a genuine FBR sandbox acceptance.
 - **Excel bulk upload** (20+ multi-item invoices): preview, row-level errors, FBR validation and selective submission.
+- **Teams and account security.**
+  - Owners invite team members by email with a role (Admin, Accountant, Operator, Viewer).
+  - Optional two-factor sign-in for business users, with recovery codes.
+  - Notification emails (when SMTP is configured), which each user can switch off.
+- **Official FBR lists in the invoice builder**: sale type → rate → SRO → SRO item and HS → UOM, from FBR's reference APIs; STATL active status for registered buyers.
 - **Admin console.**
   - Admins are created by invitation only and must use mandatory TOTP two-factor authentication.
   - Covers users, invoice oversight, FBR monitoring, reports and exports, support, announcements, settings, security and encrypted backups.
@@ -94,7 +99,7 @@ npm run build && npm start
 cd server && npx vitest run
 ```
 
-154 tests pass. FBR is **mocked** in the automated tests; see [docs/TESTING.md](docs/TESTING.md) for what this does and does not prove, and how to verify against the real sandbox.
+167 tests pass. FBR is **mocked** in the automated tests; see [docs/TESTING.md](docs/TESTING.md) for what this does and does not prove, and how to verify against the real sandbox.
 
 ## Documents
 

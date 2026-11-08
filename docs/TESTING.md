@@ -10,7 +10,7 @@ createdb -O invoicego invoicego_test
 cd server && npx vitest run
 ```
 
-The tests use a separate `invoicego_test` database; `test/global-setup.ts` migrates it and imports the reference data. Current result: **20 files, 154 tests passing**.
+The tests use a separate `invoicego_test` database; `test/global-setup.ts` migrates it and imports the reference data. Current result: **22 files, 167 tests passing**.
 
 | Area | File(s) |
 |---|---|
@@ -31,6 +31,8 @@ The tests use a separate `invoicego_test` database; `test/global-setup.ts` migra
 | Serverless hosting: bulk runs sliced across requests with no duplicate FBR calls, browser-driven `/process`, orphan re-queue, env-token admin bootstrap, health, cron secret | `int-serverless.test.ts` |
 | Email unavailable: registration still succeeds; admin activation verifies the account | `int-mail-unavailable.test.ts` |
 | Hosted Postgres URL handling (Neon pooled/direct variables) | `dburl.test.ts` |
+| Team invitations (new and existing accounts, roles, revoke/resend, tenant isolation, create business), business-user 2FA (recovery codes, lockout, admin reset), preferences, platform logo and branding, STATL | `int-team-mfa.test.ts` |
+| Notification emails with SMTP mocked: FBR failures, support replies and tickets, registrations, announcements, team invitations; opt-out respected | `int-mail.test.ts` |
 
 ### Important: what the automated tests do NOT prove
 
@@ -53,4 +55,8 @@ This has **not** been performed during development: no real sandbox token was av
 cd web && npx tsc --noEmit && npx vite build
 ```
 
-The UI was exercised manually in Chromium (Playwright): login, dashboard, invoice builder (the previous-month date shows the exact error immediately), sandbox workspace, print layout, FBR settings, and the admin invite → set password → TOTP enrolment → dashboard flow. There are no automated browser tests yet.
+The UI was exercised manually in Chromium (Playwright): login, dashboard, invoice builder (the previous-month date shows the exact error immediately), sandbox workspace, print layout, FBR settings, and the admin invite → set password → TOTP enrolment → dashboard flow.
+
+A scripted Chromium run (2026-11-08) covered the newer flows against a local server: turning on 2FA and signing in with a code (a wrong code is refused), inviting a member and accepting on a phone-sized screen, removing the member (who then sees the create-business screen), the landing page, and the invoice builder's FBR options panel, both without a token and against a local stand-in that returns the spec's sample reference responses (sale type → rate → SRO → SRO item, HS → UOM). That run also found and fixed a sign-out bug where the app stayed signed in on screen. These browser scripts are not yet part of the repository's automated suite.
+
+The Vercel build also loads the compiled API with `require()` of ES modules disabled (`scripts/check-api-loads.mjs`), matching the function runtime, and fails the build if a dependency cannot load.
