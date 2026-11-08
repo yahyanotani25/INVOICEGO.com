@@ -23,6 +23,10 @@ export async function sendMail(to: string, subject: string, text: string, log: {
     port: config.SMTP_PORT ?? 587,
     secure: config.SMTP_SECURE,
     auth: config.SMTP_USER ? { user: config.SMTP_USER, pass: config.SMTP_PASS } : undefined,
+    // Bounded waits: a slow or unreachable mail server must not hold a request (or a serverless function) open.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
   await transport.sendMail({ from: config.MAIL_FROM, to, subject, text });
 }

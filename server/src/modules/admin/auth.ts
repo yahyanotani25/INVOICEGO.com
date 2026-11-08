@@ -42,7 +42,7 @@ export async function adminAuthRoutes(app: FastifyInstance) {
     const s = await loadSession(req, 'ADMIN');
     if (!s || s.user.platformRole === 'NONE') throw unauthorized('Administrator sign-in required');
     return {
-      user: { id: s.user.id, name: s.user.name, email: s.user.email },
+      user: { id: s.user.id, name: s.user.name, email: s.user.email, emailNotifications: s.user.emailNotifications },
       role: s.user.platformRole,
       permissions: adminPermissions(s.user.platformRole),
       mfaVerified: s.mfaVerified && !!s.user.totpEnabledAt,

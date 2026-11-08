@@ -281,6 +281,64 @@ export async function lookupRegistrationType(businessId: string, registrationNo:
   return { result, statusCode, rawType, checkedAt: v.checkedAt, id: v.id, cached: false };
 }
 
+// ---------------------------------------------------------------- active taxpayer status (spec §5.11 STATL)
+export type ActiveStatus =
+  | { available: true; status: string | null; statusCode: string | null; checkedAt: Date; cached: boolean }
+  | { available: false; message: string; checkedAt: Date; cached: false };
+
+/**
+ * Asks FBR's STATL service for a registration number's taxpayer status on a date (YYYY-MM-DD).
+ * The status text is shown exactly as FBR returns it: the specification does not define the
+ * meaning of the status codes (SOURCE_CONFLICTS A6), so no meaning is invented. Informational
+ * only; it never blocks an invoice, and a failed lookup is reported as unavailable.
+ */
+export async function lookupActiveStatus(businessId: string, registrationNo: string, date: string, userId?: string): Promise<ActiveStatus> {
+  const regno = registrationNo.trim();
+  const key = `statl?date=${date}&regno=${regno}`;
+  const cached = await prisma.referenceCache.findUnique({ where: { key } });
+  if (cached && Date.now() - cached.fetchedAt.getTime() < 12 * 3600_000) {
+    const j = cached.payload as { status?: string; statusCode?: string };
+    return { available: true, status: j.status ?? null, statusCode: j.statusCode ?? null, checkedAt: cached.fetchedAt, cached: true };
+  }
+  const tok = await lookupToken(businessId);
+  if (!tok) return { available: false, message: 'Active status could not be checked: no FBR token is configured.', checkedAt: new Date(), cached: false };
+  const url = referenceUrl('statl');
+  const body = JSON.stringify({ regno, date });
+  const http = await fbrHttp({ method: config.FBR_LOOKUP_METHOD, url, token: tok.token, body });
+  await prisma.fbrAttempt.create({
+    data: {
+      businessId,
+      environment: tok.env,
+      operation: 'REFERENCE',
+      url,
+      requestBody: body,
+      httpStatus: http.status,
+      outcome: outcomeFromHttp(http, 'REFERENCE'),
+      responseBody: truncate(http.body, 2000),
+      durationMs: http.durationMs,
+      finishedAt: new Date(),
+      initiatedById: userId,
+      errorMessage: http.errorMessage,
+    },
+  });
+  if (http.delivery !== 'RESPONSE') return { available: false, message: `Active status could not be checked: FBR could not be reached (${http.errorCode}).`, checkedAt: new Date(), cached: false };
+  if (http.status !== 200) return { available: false, message: `Active status could not be checked: FBR returned HTTP ${http.status}.`, checkedAt: new Date(), cached: false };
+  let status: string | null = null;
+  let statusCode: string | null = null;
+  try {
+    const j = JSON.parse(http.body ?? '') as Record<string, unknown>;
+    status = typeof j.status === 'string' ? j.status.trim() : null;
+    const code = j['status code'] ?? j.statuscode ?? j.statusCode;
+    statusCode = code != null ? String(code) : null;
+  } catch {
+    return { available: false, message: 'Active status could not be checked: FBR returned an unreadable response.', checkedAt: new Date(), cached: false };
+  }
+  if (!status && !statusCode) return { available: false, message: 'Active status could not be checked: the FBR response had no status.', checkedAt: new Date(), cached: false };
+  const payload = { status, statusCode } as Prisma.InputJsonValue;
+  await prisma.referenceCache.upsert({ where: { key }, create: { key, payload, httpStatus: 200, fetchedById: userId }, update: { payload, httpStatus: 200, fetchedAt: new Date(), fetchedById: userId } });
+  return { available: true, status, statusCode, checkedAt: new Date(), cached: false };
+}
+
 export function mismatchMessage(buyerName: string, actual: 'REGISTERED' | 'UNREGISTERED') {
   const name = buyerName.trim() || 'Buyer';
   return actual === 'REGISTERED' ? `${name} is Registered. Please select Registered.` : `${name} is Unregistered. Please select Unregistered.`;

@@ -100,6 +100,8 @@ export async function requireUser(req: FastifyRequest) {
   const s = await loadSession(req, 'USER');
   if (!s) throw unauthorized();
   checkCsrf(req, s);
+  // Two-factor users must complete the code step before the session can be used.
+  if (s.user.totpEnabledAt && !s.mfaVerified) throw new AppError(401, 'MFA_REQUIRED', 'Enter your two-factor authentication code to continue.');
   let businessId = s.activeBusinessId;
   let role: MemberRole | null = null;
   const memberships = await prisma.membership.findMany({ where: { userId: s.userId }, orderBy: { createdAt: 'asc' } });

@@ -12,9 +12,13 @@ import { config, isProd, isTest, onVercel } from './config.js';
 import { prisma } from './db.js';
 import { maintenance, runOnce } from './jobs/runner.js';
 import { registerBulkJobs } from './modules/bulk/service.js';
+import { registerMailJobs } from './modules/notifications/jobs.js';
 import { safeEqual } from './lib/crypto.js';
 import { AppError } from './lib/errors.js';
 import { authRoutes } from './modules/auth/routes.js';
+import { userMfaRoutes } from './modules/auth/mfa.js';
+import { publicRoutes } from './modules/public/routes.js';
+import { teamInviteAcceptRoutes, teamRoutes } from './modules/business/team.js';
 import { businessRoutes } from './modules/business/routes.js';
 import { customerRoutes } from './modules/customers/routes.js';
 import { productRoutes } from './modules/products/routes.js';
@@ -43,6 +47,7 @@ export const REDACT = [
 
 export async function buildApp(): Promise<FastifyInstance> {
   registerBulkJobs();
+  registerMailJobs();
   const app = Fastify({
     logger: isTest
       ? false
@@ -133,6 +138,10 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   await app.register(authRoutes, { prefix: '/api' });
+  await app.register(userMfaRoutes, { prefix: '/api' });
+  await app.register(publicRoutes, { prefix: '/api/public' });
+  await app.register(teamInviteAcceptRoutes, { prefix: '/api' });
+  await app.register(teamRoutes, { prefix: '/api/app' });
   await app.register(businessRoutes, { prefix: '/api/app' });
   await app.register(customerRoutes, { prefix: '/api/app' });
   await app.register(productRoutes, { prefix: '/api/app' });

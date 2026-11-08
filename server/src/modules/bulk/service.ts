@@ -3,6 +3,7 @@ import { prisma } from '../../db.js';
 import { sha256Hex } from '../../lib/crypto.js';
 import { AppError } from '../../lib/errors.js';
 import { registerJob } from '../../jobs/runner.js';
+import { notifyBusiness } from '../notifications/notify.js';
 import { createInvoice, localValidate, prepareItems, submitToFbr, toPayloadInvoice, validateWithFbr, type Ctx } from '../invoices/service.js';
 import { parseWorkbook, type RowIssue } from './excel.js';
 
@@ -181,7 +182,7 @@ export function registerBulkJobs() {
         continue; // never resubmit accepted invoices
       }
       try {
-        const r = await submitToFbr(ctx, it.invoiceId!);
+        const r = await submitToFbr(ctx, it.invoiceId!, { emailFailures: false }); // one summary email at the end instead
         const status = r.invoice.status === 'ACCEPTED' ? 'ACCEPTED' : r.invoice.status === 'RECONCILIATION_REQUIRED' ? 'RECONCILIATION_REQUIRED' : r.invoice.status === 'REJECTED' ? 'REJECTED' : 'NOT_SENT';
         await prisma.importInvoice.update({
           where: { id: it.id },
@@ -197,7 +198,19 @@ export function registerBulkJobs() {
       done++;
       await progress({ done, total: items.length, processed: [...processed] });
     }
-    await prisma.importJob.update({ where: { id: p.jobId }, data: { status: 'COMPLETED' } });
-    await refreshCounts(p.jobId);
+    const imp = await prisma.importJob.update({ where: { id: p.jobId }, data: { status: 'COMPLETED' } });
+    const counts = (await refreshCounts(p.jobId)) as Record<string, number>;
+    const accepted = counts.ACCEPTED ?? 0;
+    const reconcile = counts.RECONCILIATION_REQUIRED ?? 0;
+    const failed = (counts.REJECTED ?? 0) + (counts.NOT_SENT ?? 0) + (counts.ERROR ?? 0);
+    if (reconcile > 0 || failed > 0) {
+      await notifyBusiness(
+        ctx.businessId,
+        'BULK_SUBMISSION_FINISHED',
+        `Bulk upload ${imp.filename}: ${failed + reconcile} invoice(s) need attention`,
+        `${accepted} accepted by FBR, ${failed} not accepted, ${reconcile} need reconciliation (outcome uncertain; do not resend until reconciled).`,
+        `/app/bulk/${p.jobId}`,
+      );
+    }
   });
 }

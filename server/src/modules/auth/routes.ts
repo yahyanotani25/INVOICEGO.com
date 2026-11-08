@@ -12,7 +12,7 @@ import { checkAnonCsrf, clearSessionCookie, createSession, loadSession, requireU
 import { notifyAdmins } from '../notifications/notify.js';
 
 /** Emails reserved for the platform administrator; public registration can never use them. */
-const RESERVED_ADMIN_EMAILS = ['admininvoicego@gmail.com'];
+export const RESERVED_ADMIN_EMAILS = ['admininvoicego@gmail.com'];
 
 const registerSchema = z.object({
   name: zTrim(120).min(2),
@@ -107,7 +107,7 @@ export async function meDto(userId: string, sessionId: string, csrfToken: string
   const memberships = await prisma.membership.findMany({ where: { userId }, include: { business: true }, orderBy: { createdAt: 'asc' } });
   const active = memberships.find((m) => m.businessId === activeBusinessId) ?? memberships[0];
   return {
-    user: { id: user.id, name: user.name, email: user.email, phone: user.phone, emailVerified: !!user.emailVerifiedAt },
+    user: { id: user.id, name: user.name, email: user.email, phone: user.phone, emailVerified: !!user.emailVerifiedAt, mfaEnabled: !!user.totpEnabledAt, emailNotifications: user.emailNotifications },
     csrfToken,
     sessionId,
     businesses: memberships.map((m) => ({ id: m.businessId, name: m.business.name, role: m.role })),
@@ -212,14 +212,17 @@ export async function authRoutes(app: FastifyInstance) {
     const { email, password } = z.object({ email: z.string().trim().toLowerCase().email(), password: z.string().min(1).max(200) }).parse(req.body);
     const user = await passwordLogin(req, email, password, 'USER');
     const first = await prisma.membership.findFirst({ where: { userId: user.id }, orderBy: { createdAt: 'asc' } });
-    const session = await createSession(req, reply, user, 'USER', { activeBusinessId: first?.businessId ?? null });
-    await audit(req, { action: 'user.login', entityType: 'User', entityId: user.id }, { userId: user.id, kind: 'USER' });
+    const session = await createSession(req, reply, user, 'USER', { activeBusinessId: first?.businessId ?? null, mfaVerified: false });
+    await audit(req, { action: 'user.login', entityType: 'User', entityId: user.id, metadata: { mfaPending: !!user.totpEnabledAt } }, { userId: user.id, kind: 'USER' });
+    // With two-factor authentication on, the session is usable only after POST /auth/mfa/verify.
+    if (user.totpEnabledAt) return { mfaRequired: true, csrfToken: session.csrfToken };
     return meDto(user.id, session.id, session.csrfToken, session.activeBusinessId);
   });
 
   app.get('/auth/me', async (req) => {
     const s = await loadSession(req, 'USER');
     if (!s) throw unauthorized();
+    if (s.user.totpEnabledAt && !s.mfaVerified) return { mfaRequired: true, csrfToken: s.csrfToken };
     return meDto(s.userId, s.id, s.csrfToken, s.activeBusinessId);
   });
 
@@ -289,6 +292,28 @@ export async function authRoutes(app: FastifyInstance) {
 
   app.get('/auth/login-history', { preHandler: requireUser }, async (req) => {
     return prisma.loginEvent.findMany({ where: { userId: req.auth!.user.id, kind: 'USER' }, orderBy: { createdAt: 'desc' }, take: 50 });
+  });
+
+  /** A signed-in user creates a (further) business and becomes its owner, e.g. after leaving a team. */
+  app.post('/auth/businesses', { preHandler: requireUser, config: { rateLimit: { max: 5, timeWindow: '1 minute' } } }, async (req, reply) => {
+    const user = req.auth!.user;
+    if (user.platformRole !== 'NONE') throw new AppError(403, 'FORBIDDEN', 'Administrator accounts cannot own a business.');
+    const b = registerSchema.shape.business.parse(req.body);
+    const np = ntnCnicProblem(b.ntnCnic, true);
+    if (np) throw badRequest(np, { issues: [{ field: 'ntnCnic', level: 'error', message: np }] });
+    const owned = await prisma.membership.count({ where: { userId: user.id, role: 'OWNER' } });
+    if (owned >= 10) throw badRequest('You already own 10 businesses. Contact support to add more.');
+    const business = await prisma.$transaction(async (tx) => {
+      const created = await tx.business.create({
+        data: { name: b.name, ntnCnic: b.ntnCnic.trim(), strn: b.strn || null, address: b.address, province: b.province, phone: user.phone, email: user.email, businessActivities: b.businessActivities, sector: b.sector, retailerRegistered: b.retailerRegistered },
+      });
+      await tx.membership.create({ data: { userId: user.id, businessId: created.id, role: 'OWNER' } });
+      return created;
+    });
+    await prisma.session.update({ where: { id: req.auth!.session.id }, data: { activeBusinessId: business.id } });
+    await audit(req, { action: 'business.create', entityType: 'Business', entityId: business.id, businessId: business.id });
+    await notifyAdmins('NEW_BUSINESS', 'New business added', `${user.name} added ${business.name}`, `/admin/users/${user.id}`, business.id, { log: req.log });
+    return reply.status(201).send(await meDto(user.id, req.auth!.session.id, req.auth!.session.csrfToken, business.id));
   });
 
   app.post('/auth/switch-business', { preHandler: requireUser }, async (req) => {

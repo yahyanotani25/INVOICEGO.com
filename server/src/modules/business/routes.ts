@@ -6,6 +6,7 @@ import { audit } from '../../lib/audit.js';
 import { badRequest } from '../../lib/errors.js';
 import { BUSINESS_ACTIVITIES, SECTORS, ntnCnicProblem, zTrim } from '../../lib/validators.js';
 import { requireBusiness, requireMember } from '../../plugins/auth.js';
+import { detectImage } from '../../lib/images.js';
 
 const profileSchema = z.object({
   name: zTrim(200).min(2),
@@ -99,13 +100,12 @@ export async function businessRoutes(app: FastifyInstance) {
   app.post('/business/logo', { preHandler: requireMember('business.manage') }, async (req) => {
     const file = await req.file();
     if (!file) throw badRequest('Choose an image file');
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.mimetype)) throw badRequest('Logo must be PNG, JPEG or WebP');
     const buf = await file.toBuffer();
     if (buf.length > 1024 * 1024) throw badRequest('Logo must be 1 MB or smaller');
-    const sig = buf.subarray(0, 4).toString('hex');
-    const ok = sig.startsWith('89504e47') || sig.startsWith('ffd8ff') || buf.subarray(8, 12).toString() === 'WEBP';
-    if (!ok) throw badRequest('File content is not a supported image');
-    await prisma.business.update({ where: { id: req.auth!.businessId! }, data: { logoData: buf, logoMime: file.mimetype } });
+    // The stored type comes from the file content, not from the name or the browser's claim.
+    const mime = detectImage(buf);
+    if (!mime) throw badRequest('Logo must be a PNG, JPEG or WebP image');
+    await prisma.business.update({ where: { id: req.auth!.businessId! }, data: { logoData: buf, logoMime: mime } });
     await audit(req, { action: 'business.logo', entityType: 'Business', entityId: req.auth!.businessId! });
     return { ok: true };
   });

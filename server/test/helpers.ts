@@ -21,7 +21,7 @@ export const today = () => karachiNow().date;
 const TENANT_TABLES = [
   'TicketAttachment', 'TicketMessage', 'SupportTicket', 'ImportInvoice', 'ImportJob', 'Job', 'InvoiceSnapshot', 'InvoiceItem', 'FbrAttempt', 'Invoice',
   'BuyerVerification', 'ScenarioProgress', 'Customer', 'Product', 'FbrCredential', 'OnboardingProfile', 'Membership', 'Business', 'Session', 'EmailToken',
-  'LoginEvent', 'Notification', 'Announcement', 'AuditLog', 'SystemSetting', 'BackupRecord', 'ReferenceCache', 'User',
+  'LoginEvent', 'Notification', 'Announcement', 'AuditLog', 'SystemSetting', 'BackupRecord', 'ReferenceCache', 'TeamInvite', 'PlatformAsset', 'User',
 ];
 
 export async function resetDb() {

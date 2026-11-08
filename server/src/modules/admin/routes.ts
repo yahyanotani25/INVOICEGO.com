@@ -16,8 +16,11 @@ import { invoiceDto, submitToFbr } from '../invoices/service.js';
 import { sendPasswordReset } from '../auth/routes.js';
 import { ticketDto } from '../support/routes.js';
 import { notifyUser } from '../notifications/notify.js';
+import { resetUserMfa } from '../auth/mfa.js';
+import { detectImage } from '../../lib/images.js';
 import { safeCell } from '../bulk/excel.js';
-import { enqueue, registerJob } from '../../jobs/runner.js';
+import { enqueue, registerJob, runOnce } from '../../jobs/runner.js';
+import { mailConfigured } from '../../lib/mailer.js';
 import { adminAuthRoutes } from './auth.js';
 import { createAdminInvite } from './invite.js';
 import { runBackup } from './backup.js';
@@ -113,6 +116,8 @@ export async function adminRoutes(app: FastifyInstance) {
         status: u.status,
         statusReason: u.statusReason,
         emailVerifiedAt: u.emailVerifiedAt,
+        mfaEnabled: !!u.totpEnabledAt,
+        emailNotifications: u.emailNotifications,
         createdAt: u.createdAt,
         lastLoginAt: u.lastLoginAt,
         businesses: u.memberships.map((m) => ({
@@ -156,6 +161,19 @@ export async function adminRoutes(app: FastifyInstance) {
       return { ok: true, message: `A password reset link was emailed to ${u.email}. The administrator never sees the password or the link.` };
     });
 
+    /** Lost authenticator: clears the user's two-factor settings and signs out their sessions. */
+    r.post('/users/:id/reset-2fa', { preHandler: requireAdminPerm('users.manage') }, async (req) => {
+      const { id } = req.params as { id: string };
+      const { reason } = z.object({ reason: zTrim(300).min(5) }).parse(req.body);
+      const u = await prisma.user.findFirst({ where: { id, platformRole: 'NONE', status: { not: 'DELETED' } } });
+      if (!u) throw notFound('User');
+      if (!u.totpEnabledAt) throw badRequest('Two-factor authentication is not on for this user.');
+      await resetUserMfa(id);
+      await audit(req, { action: 'admin.user.reset_2fa', entityType: 'User', entityId: id, metadata: { reason } });
+      await notifyUser(id, 'SECURITY', 'Two-factor authentication was reset by support', 'An InvoiceGO administrator turned off two-factor authentication on your account at your request. Sign in and turn it on again in Settings → Account & security.', '/app/settings', { log: req.log });
+      return { ok: true };
+    });
+
     /** Controlled deletion: personal data is anonymised; financial records and audit logs are retained. */
     r.post('/users/:id/delete', { preHandler: requireAdminPerm('users.delete') }, async (req) => {
       const { id } = req.params as { id: string };
@@ -164,7 +182,7 @@ export async function adminRoutes(app: FastifyInstance) {
       if (!u || u.status === 'DELETED') throw notFound('User');
       if (u.email !== confirmEmail) throw badRequest('Type the user email exactly to confirm deletion');
       await prisma.$transaction([
-        prisma.user.update({ where: { id }, data: { status: 'DELETED', deletedAt: new Date(), name: 'Deleted user', email: `deleted+${id}@invalid.invoicego`, phone: null, passwordHash: null, totpSecretEnc: null, statusReason: reason } }),
+        prisma.user.update({ where: { id }, data: { status: 'DELETED', deletedAt: new Date(), name: 'Deleted user', email: `deleted+${id}@invalid.invoicego`, phone: null, passwordHash: null, totpSecretEnc: null, totpEnabledAt: null, totpRecoveryHashes: [], emailNotifications: false, statusReason: reason } }),
         prisma.session.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } }),
       ]);
       await audit(req, { action: 'admin.user.delete', entityType: 'User', entityId: id, metadata: { reason, retained: 'businesses, invoices, FBR attempts and audit logs are retained for financial-record compliance' } });
@@ -347,7 +365,7 @@ export async function adminRoutes(app: FastifyInstance) {
       if (!t) throw notFound('Ticket');
       await prisma.ticketMessage.create({ data: { ticketId: id, authorId: req.auth!.user.id, authorIsAdmin: true, body: body.body } });
       await prisma.supportTicket.update({ where: { id }, data: { status: body.status ?? 'AWAITING_USER', closedAt: body.status === 'CLOSED' ? new Date() : null } });
-      await notifyUser(t.userId, 'SUPPORT_REPLY', `Support replied to ticket #${t.number}`, body.body.slice(0, 200), `/app/support/${id}`);
+      await notifyUser(t.userId, 'SUPPORT_REPLY', `Support replied to ticket #${t.number}`, body.body.slice(0, 200), `/app/support/${id}`, { log: req.log });
       await audit(req, { action: 'admin.support.reply', entityType: 'SupportTicket', entityId: id, businessId: t.businessId });
       return { ok: true };
     });
@@ -382,7 +400,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
     r.get('/announcements', { preHandler: requireAdminPerm('notifications.manage') }, async () => prisma.announcement.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }));
     r.post('/announcements', { preHandler: requireAdminPerm('notifications.manage') }, async (req) => {
-      const body = z.object({ kind: z.enum(['ANNOUNCEMENT', 'MAINTENANCE']), title: zTrim(200).min(3), body: zTrim(3000).min(3), startsAt: z.string().datetime().optional(), endsAt: z.string().datetime().optional().nullable(), notifyUsers: z.boolean().default(false) }).parse(req.body);
+      const body = z.object({ kind: z.enum(['ANNOUNCEMENT', 'MAINTENANCE']), title: zTrim(200).min(3), body: zTrim(3000).min(3), startsAt: z.string().datetime().optional(), endsAt: z.string().datetime().optional().nullable(), notifyUsers: z.boolean().default(false), emailUsers: z.boolean().default(false) }).parse(req.body);
       const a = await prisma.announcement.create({ data: { kind: body.kind, title: body.title, body: body.body, startsAt: body.startsAt ? new Date(body.startsAt) : new Date(), endsAt: body.endsAt ? new Date(body.endsAt) : null, createdById: req.auth!.user.id } });
       if (body.notifyUsers) {
         const users = await prisma.user.findMany({ where: { platformRole: 'NONE', status: 'ACTIVE' }, select: { id: true } });
@@ -390,8 +408,16 @@ export async function adminRoutes(app: FastifyInstance) {
           await prisma.notification.createMany({ data: users.slice(i, i + 500).map((u) => ({ userId: u.id, audience: 'USER', type: body.kind, title: body.title, body: body.body })) });
         }
       }
-      await audit(req, { action: 'admin.announcement.create', entityType: 'Announcement', entityId: a.id, metadata: { kind: body.kind, notifyUsers: body.notifyUsers } });
-      return a;
+      let emailJobId: string | null = null;
+      if (body.emailUsers) {
+        if (!mailConfigured()) throw badRequest('Email is not configured on the server (SMTP). The announcement was not emailed.');
+        const job = await enqueue('mail.announcement', { title: body.title, body: body.body }, { createdById: req.auth!.user.id });
+        emailJobId = job.id;
+        // Send the first batches now; anything left continues in the background (worker or cron).
+        await runOnce(25_000, job.id);
+      }
+      await audit(req, { action: 'admin.announcement.create', entityType: 'Announcement', entityId: a.id, metadata: { kind: body.kind, notifyUsers: body.notifyUsers, emailUsers: body.emailUsers, emailJobId } });
+      return { ...a, emailJobId };
     });
     r.post('/announcements/:id/deactivate', { preHandler: requireAdminPerm('notifications.manage') }, async (req) => {
       const { id } = req.params as { id: string };
@@ -417,8 +443,32 @@ export async function adminRoutes(app: FastifyInstance) {
           backupEncryptionConfigured: !!config.BACKUP_ENCRYPTION_KEY,
           backupDir: config.BACKUP_DIR,
         },
+        logo: await prisma.platformAsset.findUnique({ where: { key: 'logo' }, select: { mime: true, updatedAt: true } }),
         deferred: ['Payment gateway settings (subscriptions are not part of this release)'],
       };
+    });
+    r.post('/settings/logo', { preHandler: requireAdminPerm('settings.manage') }, async (req) => {
+      const file = await req.file();
+      if (!file) throw badRequest('Choose an image file');
+      const buf = await file.toBuffer();
+      const mime = detectImage(buf);
+      if (!mime) throw badRequest('The logo must be a PNG, JPEG or WebP image');
+      if (buf.length > 512 * 1024) throw badRequest('The logo must be 512 KB or smaller');
+      await prisma.platformAsset.upsert({ where: { key: 'logo' }, create: { key: 'logo', data: buf, mime, updatedById: req.auth!.user.id }, update: { data: buf, mime, updatedById: req.auth!.user.id } });
+      await audit(req, { action: 'admin.settings.logo', entityType: 'PlatformAsset', entityId: 'logo', metadata: { bytes: buf.length, mime } });
+      return { ok: true };
+    });
+    r.delete('/settings/logo', { preHandler: requireAdminPerm('settings.manage') }, async (req) => {
+      await prisma.platformAsset.deleteMany({ where: { key: 'logo' } });
+      await audit(req, { action: 'admin.settings.logo_removed', entityType: 'PlatformAsset', entityId: 'logo' });
+      return { ok: true };
+    });
+
+    r.patch('/me/preferences', async (req) => {
+      const body = z.object({ emailNotifications: z.boolean() }).parse(req.body);
+      await prisma.user.update({ where: { id: req.auth!.user.id }, data: body });
+      await audit(req, { action: 'admin.preferences', entityType: 'User', entityId: req.auth!.user.id, metadata: body });
+      return { ok: true, ...body };
     });
     r.put('/settings/:key', { preHandler: requireAdminPerm('settings.manage') }, async (req) => {
       const { key } = z.object({ key: z.enum(SETTINGS_KEYS) }).parse(req.params);

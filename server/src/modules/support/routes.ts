@@ -59,7 +59,7 @@ export async function supportRoutes(app: FastifyInstance) {
       .parse(req.body);
     const t = await prisma.supportTicket.create({ data: { ...body, businessId: req.auth!.businessId!, userId: req.auth!.user.id } });
     await audit(req, { action: 'support.create', entityType: 'SupportTicket', entityId: t.id });
-    await notifyAdmins('SUPPORT_TICKET', `New ${body.priority.toLowerCase()} ticket #${t.number}`, body.title, `/admin/support/${t.id}`, req.auth!.businessId!);
+    await notifyAdmins('SUPPORT_TICKET', `New ${body.priority.toLowerCase()} ticket #${t.number}`, body.title, `/admin/support/${t.id}`, req.auth!.businessId!, { roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'], log: req.log });
     return reply.status(201).send(ticketDto(t));
   });
 
@@ -77,7 +77,7 @@ export async function supportRoutes(app: FastifyInstance) {
     const { body } = z.object({ body: zTrim(5000).min(1) }).parse(req.body);
     await prisma.ticketMessage.create({ data: { ticketId: t.id, authorId: req.auth!.user.id, body } });
     await prisma.supportTicket.update({ where: { id: t.id }, data: { status: t.status === 'AWAITING_USER' || t.status === 'RESOLVED' ? 'OPEN' : t.status } });
-    await notifyAdmins('SUPPORT_REPLY', `Reply on ticket #${t.number}`, body.slice(0, 200), `/admin/support/${t.id}`, req.auth!.businessId!);
+    await notifyAdmins('SUPPORT_REPLY', `Reply on ticket #${t.number}`, body.slice(0, 200), `/admin/support/${t.id}`, req.auth!.businessId!, { roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'], log: req.log });
     return ticketDto(await own(req, id));
   });
 

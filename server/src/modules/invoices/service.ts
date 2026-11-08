@@ -6,7 +6,7 @@ import { checkInvoiceMonth, dateOnlyToIso, isoToDateOnly, karachiNow, MONTH_RULE
 import { ntnCnicProblem } from '../../lib/validators.js';
 import { computeItem, D, discrepancies, invoiceTotals, money, qty4, type CalcIssue } from '../../fbr/calc.js';
 import { buildPayload, payloadHash, serializePayload, type PayloadInvoice } from '../../fbr/payload.js';
-import { callInvoiceApi, lookupRegistrationType, mismatchMessage, resolveCredential } from '../../fbr/service.js';
+import { callInvoiceApi, lookupActiveStatus, lookupRegistrationType, mismatchMessage, resolveCredential } from '../../fbr/service.js';
 import { explainIssues, type ExplainedIssue } from '../../fbr/explain.js';
 import { notifyAdmins, notifyBusiness } from '../notifications/notify.js';
 import type { InvoiceInput, ItemInputParsed } from './schema.js';
@@ -405,6 +405,20 @@ export interface BuyerCheck {
   message: string | null;
   checkedAt: string | null;
   verificationId: string | null;
+  /** FBR STATL status text for registered buyers (informational; shown as FBR returns it). */
+  activeStatus?: { available: boolean; status: string | null; statusCode: string | null; message: string | null; date: string } | null;
+}
+
+/** Buyer check plus the STATL active-status lookup for registered buyers (used by the builder). */
+export async function checkBuyerWithStatus(ctx: Ctx, p: { buyerNtnCnic: string; buyerBusinessName: string; buyerRegistrationType: 'REGISTERED' | 'UNREGISTERED' | null; invoiceDate?: string | null }): Promise<BuyerCheck> {
+  const c = await checkBuyer(ctx, p);
+  if (c.result !== 'REGISTERED') return { ...c, activeStatus: null };
+  const date = p.invoiceDate && /^\d{4}-\d{2}-\d{2}$/.test(p.invoiceDate) ? p.invoiceDate : karachiNow().date;
+  const a = await lookupActiveStatus(ctx.businessId, p.buyerNtnCnic, date, ctx.userId);
+  return {
+    ...c,
+    activeStatus: a.available ? { available: true, status: a.status, statusCode: a.statusCode, message: null, date } : { available: false, status: null, statusCode: null, message: a.message, date },
+  };
 }
 
 export async function checkBuyer(ctx: Ctx, p: { buyerNtnCnic: string; buyerBusinessName: string; buyerRegistrationType: 'REGISTERED' | 'UNREGISTERED' | null }): Promise<BuyerCheck> {
@@ -556,7 +570,7 @@ export async function validateWithFbr(ctx: Ctx, id: string): Promise<FbrActionRe
 }
 
 // ------------------------------------------------------------------ submit
-export async function submitToFbr(ctx: Ctx, id: string, opts: { retryOfId?: string } = {}): Promise<FbrActionResult> {
+export async function submitToFbr(ctx: Ctx, id: string, opts: { retryOfId?: string; emailFailures?: boolean } = {}): Promise<FbrActionResult> {
   const inv = await getInvoice(ctx, id);
   if (inv.status === 'ACCEPTED') throw conflict(`Already accepted by FBR (${inv.fbrInvoiceNumber}). It cannot be submitted again.`, undefined, 'ALREADY_ACCEPTED');
   if (inv.status === 'RECONCILIATION_REQUIRED') throw conflict('The previous submission outcome is uncertain. Reconcile it before any reattempt.', undefined, 'RECONCILIATION_REQUIRED');
@@ -633,9 +647,10 @@ export async function submitToFbr(ctx: Ctx, id: string, opts: { retryOfId?: stri
   }
   if (status !== 'ACCEPTED') {
     const label = status === 'RECONCILIATION_REQUIRED' ? 'needs reconciliation' : 'was not accepted';
-    await notifyBusiness(ctx.businessId, 'FBR_SUBMISSION_FAILED', `Invoice ${inv.internalNumber} ${label}`, c.issues.map((i) => i.message).join('; ').slice(0, 400), `/app/invoices/${id}`);
+    const email = opts.emailFailures !== false;
+    await notifyBusiness(ctx.businessId, 'FBR_SUBMISSION_FAILED', `Invoice ${inv.internalNumber} ${label}`, c.issues.map((i) => i.message).join('; ').slice(0, 400), `/app/invoices/${id}`, { email });
     if (inv.environment === 'PRODUCTION') {
-      await notifyAdmins('FBR_SUBMISSION_FAILED', `FBR submission ${label}: ${inv.internalNumber}`, `Outcome ${c.outcome}, HTTP ${r.http.status ?? r.http.errorCode}`, `/admin/invoices/${id}`, ctx.businessId);
+      await notifyAdmins('FBR_SUBMISSION_FAILED', `FBR submission ${label}: ${inv.internalNumber}`, `Outcome ${c.outcome}, HTTP ${r.http.status ?? r.http.errorCode}`, `/admin/invoices/${id}`, ctx.businessId, { email });
     }
   }
   return {

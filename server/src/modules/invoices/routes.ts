@@ -12,7 +12,7 @@ import { explainIssues } from '../../fbr/explain.js';
 import { computeItem, discrepancies, invoiceTotals } from '../../fbr/calc.js';
 import { invoiceInputSchema, itemInputSchema } from './schema.js';
 import {
-  checkBuyer,
+  checkBuyer, checkBuyerWithStatus,
   createInvoice,
   deleteInvoice,
   duplicateInvoice,
@@ -131,8 +131,8 @@ export async function invoiceRoutes(app: FastifyInstance) {
 
   /** Verify buyer registration before saving (Get_Reg_Type). */
   app.post('/invoices/buyer-check', { preHandler: requireMember('invoice.write') }, async (req) => {
-    const body = z.object({ buyerNtnCnic: z.string().default(''), buyerBusinessName: z.string().default(''), buyerRegistrationType: z.enum(['REGISTERED', 'UNREGISTERED']).nullable() }).parse(req.body);
-    return checkBuyer(ctxOf(req), body);
+    const body = z.object({ buyerNtnCnic: z.string().default(''), buyerBusinessName: z.string().default(''), buyerRegistrationType: z.enum(['REGISTERED', 'UNREGISTERED']).nullable(), invoiceDate: z.string().max(10).optional().nullable() }).parse(req.body);
+    return checkBuyerWithStatus(ctxOf(req), body);
   });
 
   app.get('/invoices/:id', async (req) => {

@@ -7,7 +7,8 @@ import { badRequest, conflict, notFound } from '../../lib/errors.js';
 import { listQuery, paging, sortBy } from '../../lib/listing.js';
 import { ntnCnicProblem, zTrim } from '../../lib/validators.js';
 import { requireBusiness, requireMember } from '../../plugins/auth.js';
-import { lookupRegistrationType, mismatchMessage } from '../../fbr/service.js';
+import { lookupActiveStatus, lookupRegistrationType, mismatchMessage } from '../../fbr/service.js';
+import { karachiNow } from '../../lib/time.js';
 
 const customerSchema = z.object({
   name: zTrim(200).min(2),
@@ -121,10 +122,13 @@ export async function customerRoutes(app: FastifyInstance) {
     const r = await lookupRegistrationType(req.auth!.businessId!, c.ntnCnic, req.auth!.user.id);
     const updated = await prisma.customer.update({ where: { id }, data: { verifiedResult: r.result, verifiedAt: r.checkedAt } });
     const mismatch = r.result !== 'UNAVAILABLE' && r.result !== c.registrationType;
+    // STATL (spec §5.11): FBR's status text for registered buyers, shown as returned (informational).
+    const active = r.result === 'REGISTERED' ? await lookupActiveStatus(req.auth!.businessId!, c.ntnCnic, karachiNow().date, req.auth!.user.id) : null;
     return {
       customer: dto(updated),
       result: r.result,
       mismatch,
+      activeStatus: active ? (active.available ? { available: true, status: active.status, statusCode: active.statusCode, message: null } : { available: false, status: null, statusCode: null, message: active.message }) : null,
       message: r.result === 'UNAVAILABLE' ? r.message : mismatch ? mismatchMessage(c.name, r.result) : `${c.name} is ${r.result === 'REGISTERED' ? 'Registered' : 'Unregistered'} (verified with FBR).`,
     };
   });
