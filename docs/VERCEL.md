@@ -21,13 +21,19 @@ This was verified with an offline `vercel build` (Vercel CLI 64.7.0) from a clea
 
 ## Step 1: Import the repository
 
-1. In Vercel, go to **Add New → Project** and import `yahyanotani25/INVOICEGO.com`. If it is already connected, open that project.
+Already done: project **`invoicego`** in the team `yahyas-projects-ef5caf6e` is linked to `yahyanotani25/INVOICEGO.com`, production branch `claude/brave-dirac-j6hdgf`. Every push to that branch deploys to production at `https://invoicego-yahyas-projects-ef5caf6e.vercel.app`.
+
+To recreate it elsewhere:
+
+1. In Vercel, go to **Add New → Project** and import `yahyanotani25/INVOICEGO.com`.
 2. **Framework preset:** Other. **Root directory:** `./`. Leave the build and output settings empty; `vercel.json` provides them.
 3. **Settings → Git → Production Branch:** use the branch that holds this code (currently `claude/brave-dirac-j6hdgf`), or merge it into your production branch first.
 
 ## Step 2: Create the database (Neon Postgres)
 
-**Storage → Create Database → Neon (Postgres) → Connect** to the project, for all environments.
+**Storage → Create Database → Neon (Postgres)**, choose region **Singapore (`sin1`)**, then **Connect** it to the project for all environments.
+
+The API functions run in `sin1` (`vercel.json` → `regions`), the closest Vercel region to Pakistan that Neon also offers. Keep the database in the same region: every request makes several database queries, and a database on another continent makes each page slow. If you choose another region for the database, change `regions` in `vercel.json` to match.
 
 This adds `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct). InvoiceGO uses the pooled URL at runtime and the direct URL for migrations. The variable names of Vercel Postgres, Supabase and plain `DIRECT_URL` are also accepted.
 

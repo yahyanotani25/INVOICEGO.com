@@ -4,6 +4,7 @@
   "installCommand": "npm ci --prefix server --include=dev && npm ci --prefix web --include=dev",
   "buildCommand": "node scripts/vercel-build.mjs",
   "outputDirectory": "web/dist",
+  "regions": ["sin1"],
   "functions": {
     "api/index.js": {
       "maxDuration": 300,
