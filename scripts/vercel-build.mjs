@@ -13,6 +13,8 @@ const run = (cmd, opts = {}) => {
 run('npm run build', { cwd: 'web' });
 run('npx prisma generate', { cwd: 'server' });
 run('npm run build', { cwd: 'server' });
+// Fails the build (keeping the current production deployment live) if the API could not start.
+run('node --no-experimental-require-module scripts/check-api-loads.mjs');
 
 const direct =
   process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING || process.env.DIRECT_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;

@@ -3,7 +3,6 @@ import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import multipart from '@fastify/multipart';
-import fstatic from '@fastify/static';
 import { existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -150,6 +149,9 @@ export async function buildApp(): Promise<FastifyInstance> {
   // Built SPA (web/dist copied to server/public at build time)
   const publicDir = [join(here, '..', 'public'), join(here, '..', '..', 'public')].find((p) => existsSync(join(p, 'index.html')));
   if (publicDir) {
+    // Loaded only when serving the SPA (VM/container hosting). On Vercel the CDN serves web/dist and this
+    // plugin is never imported, which also keeps its ESM-only dependencies out of the function's startup path.
+    const { default: fstatic } = await import('@fastify/static');
     await app.register(fstatic, { root: publicDir, prefix: '/', wildcard: false, index: false, maxAge: '1h' });
     app.setNotFoundHandler((req, reply) => {
       if (req.url.startsWith('/api/')) return reply.status(404).send({ error: { code: 'NOT_FOUND', message: 'Not found' } });
