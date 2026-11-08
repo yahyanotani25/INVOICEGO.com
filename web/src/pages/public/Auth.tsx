@@ -25,6 +25,13 @@ function Shell({ title, subtitle, children, wide }: { title: string; subtitle?: 
   );
 }
 
+/** Only same-app paths under /app are allowed as a post-login destination (no open redirects). */
+function safeNext(next: string | null): string {
+  if (!next || !/^\/app(?:[/?#]|$)/.test(next)) return '/app';
+  if (next.includes('\\') || next.includes('//') || next.includes('..')) return '/app';
+  return next;
+}
+
 export function Login() {
   const nav = useNavigate();
   const [sp] = useSearchParams();
@@ -35,7 +42,7 @@ export function Login() {
   const [busy, setBusy] = useState(false);
   const [resent, setResent] = useState(false);
   useEffect(() => {
-    if (me) nav(sp.get('next') || '/app', { replace: true });
+    if (me) nav(safeNext(sp.get('next')), { replace: true });
   }, [me, nav, sp]);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,8 +51,7 @@ export function Login() {
     try {
       const m = await api<Me>('/api/auth/login', { body: { email, password } });
       setMe(m);
-      const next = sp.get('next');
-      nav(next && next.startsWith('/app') ? next : '/app', { replace: true });
+      nav(safeNext(sp.get('next')), { replace: true });
     } catch (e2) {
       setErr(e2);
     } finally {

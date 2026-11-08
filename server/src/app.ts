@@ -96,7 +96,8 @@ export async function buildApp(): Promise<FastifyInstance> {
     }
     const status = (err as { statusCode?: number }).statusCode;
     if (status && status < 500) {
-      return reply.status(status).send({ error: { code: (err as { code?: string }).code ?? 'REQUEST_ERROR', message: err.message } });
+      const message = err instanceof Error ? err.message : 'The request could not be processed';
+      return reply.status(status).send({ error: { code: (err as { code?: string }).code ?? 'REQUEST_ERROR', message } });
     }
     req.log.error({ err }, 'Unhandled error');
     return reply.status(500).send({ error: { code: 'INTERNAL', message: 'An unexpected error occurred. It has been logged.' } });

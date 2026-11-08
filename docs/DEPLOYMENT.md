@@ -189,6 +189,21 @@ sudo systemctl restart invoicego
 
 Take a backup before every upgrade. When the server restarts, the stale-lock sweeper marks any invoice left in *Submitting* as **Reconciliation required**; it never resends automatically.
 
+### Dependency security advisories
+
+Check with `npm audit --omit=dev` in `server/` and `web/` before each release.
+
+On 2026-11-08, `fastify` (5.12.8), `undici` (7.30.2), `@fastify/static` (10.1.10), `nodemailer` (10.4.0) and `react-router-dom` (6.30.6) were upgraded to clear their published advisories. All 154 server tests passed afterwards.
+
+These advisories remain open, because each fix needs a major-version migration that should be planned and tested on its own:
+
+| Package | Why it is still open | Exposure in InvoiceGO |
+|---|---|---|
+| `prisma` / `@prisma/client` 6 → 7 | Advisories are in the Prisma CLI's configuration tooling (`effect`, `deepmerge-ts`). Prisma 7 requires driver adapters and a `prisma.config.ts`. | Build-time tooling only; not reachable from requests. |
+| `zod` 3 → 4 | Memory exhaustion when validating oversized constrained collections. | Limited: request bodies are capped by Fastify's body limit and upload size limits. |
+| `react-router-dom` 6 → 7 | Open redirect via backslash paths in `<Link>`/`navigate`, and an SSR-only issue. | The only user-supplied navigation target (`?next=` after login) is restricted to `/app` paths. InvoiceGO does not use SSR. |
+| `exceljs` (via `uuid`) | npm's suggested "fix" is a downgrade to exceljs 3, which is not acceptable. | The advisory needs a caller-supplied output buffer with uuid v3/v5/v6; InvoiceGO does not call `uuid` itself. |
+
 ## 8. Key rotation
 
 1. Set `DATA_ENCRYPTION_KEY_PREVIOUS` to the old key and `DATA_ENCRYPTION_KEY` to the new one, then restart. Both keys can now decrypt.
