@@ -32,7 +32,7 @@ Key behaviours:
   - Each scenario opens as an editable form or as JSON.
   - Scenarios are checked against the full applicability matrix.
   - A scenario is marked passed only after a genuine FBR sandbox acceptance.
-- **Excel bulk upload** (20+ multi-item invoices): preview, row-level errors, FBR validation and selective submission.
+- **Excel bulk upload** (20+ multi-item invoices): built on the server, currently hidden in the app at the client's request.
 - **Teams and account security.**
   - Owners invite team members by email with a role (Admin, Accountant, Operator, Viewer).
   - Optional two-factor sign-in for business users, with recovery codes.

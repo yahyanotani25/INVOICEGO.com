@@ -13,7 +13,8 @@ export default function Invoices() {
   const [search, setSearch] = useState(sp.get('q') ?? '');
   const f = {
     q: sp.get('q') ?? '',
-    environment: sp.get('environment') ?? '',
+    // Production invoices only; sandbox test invoices are listed in Sandbox scenarios.
+    environment: 'PRODUCTION',
     status: sp.get('status') ?? '',
     type: sp.get('type') ?? '',
     from: sp.get('from') ?? '',
@@ -33,11 +34,10 @@ export default function Invoices() {
 
   return (
     <div>
-      <PageHeader title="Invoices" subtitle="All invoices, including historical months (view and report only — new invoices must be in the current month)." actions={<Link to="/app/invoices/new"><Button><FilePlus2 className="h-4 w-4" /> Create invoice</Button></Link>} />
+      <PageHeader title="Invoices" subtitle="Your FBR production invoices, including earlier months (view and report only — new invoices must be in the current month). Sandbox test invoices are under Sandbox scenarios." actions={<Link to="/app/invoices/new"><Button><FilePlus2 className="h-4 w-4" /> Create invoice</Button></Link>} />
       <Card bodyClass="p-0">
-        <form className="grid gap-2 border-b border-ink-100 p-3 sm:grid-cols-2 lg:grid-cols-7" onSubmit={(e) => { e.preventDefault(); set({ q: search }); }}>
+        <form className="grid gap-2 border-b border-ink-100 p-3 sm:grid-cols-2 lg:grid-cols-6" onSubmit={(e) => { e.preventDefault(); set({ q: search }); }}>
           <input className="input lg:col-span-2" placeholder="Search number, FBR number, buyer, NTN" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search invoices" />
-          <select className="input" value={f.environment} onChange={(e) => set({ environment: e.target.value })} aria-label="Environment"><option value="">All environments</option><option value="PRODUCTION">Production</option><option value="SANDBOX">Sandbox</option></select>
           <select className="input" value={f.status} onChange={(e) => set({ status: e.target.value })} aria-label="Status"><option value="">All statuses</option>{Object.entries(STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <select className="input" value={f.type} onChange={(e) => set({ type: e.target.value })} aria-label="Type"><option value="">All types</option><option value="SALE_INVOICE">Sale Invoice</option><option value="DEBIT_NOTE">Debit Note</option></select>
           <input type="date" className="input" value={f.from} onChange={(e) => set({ from: e.target.value })} aria-label="From date" />

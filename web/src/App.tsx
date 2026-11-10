@@ -15,16 +15,10 @@ const Customers = lazy(() => import('./pages/app/Customers'));
 const Products = lazy(() => import('./pages/app/Products'));
 const HsCodes = lazy(() => import('./pages/app/HsCodes'));
 const Sandbox = lazy(() => import('./pages/app/Sandbox'));
-const Bulk = lazy(() => import('./pages/app/Bulk'));
-const BulkJob = lazy(() => import('./pages/app/BulkJob'));
 const FbrIntegration = lazy(() => import('./pages/app/FbrIntegration'));
-const Onboarding = lazy(() => import('./pages/app/Onboarding'));
 const Reports = lazy(() => import('./pages/app/Reports'));
-const Support = lazy(() => import('./pages/app/Support'));
-const SupportTicket = lazy(() => import('./pages/app/SupportTicket'));
 const Settings = lazy(() => import('./pages/app/Settings'));
 const Notifications = lazy(() => import('./pages/app/Notifications'));
-const ErrorCodes = lazy(() => import('./pages/app/ErrorCodes'));
 const AdminApp = lazy(() => import('./pages/admin/AdminApp'));
 const CreateBusiness = lazy(() => import('./components/CreateBusiness'));
 
@@ -69,15 +63,9 @@ export default function App() {
                             <Route path="customers" element={<Customers />} />
                             <Route path="products" element={<Products />} />
                             <Route path="hs-codes" element={<HsCodes />} />
-                            <Route path="error-codes" element={<ErrorCodes />} />
                             <Route path="sandbox" element={<Sandbox />} />
-                            <Route path="bulk" element={<Bulk />} />
-                            <Route path="bulk/:id" element={<BulkJob />} />
                             <Route path="fbr" element={<FbrIntegration />} />
-                            <Route path="onboarding" element={<Onboarding />} />
                             <Route path="reports" element={<Reports />} />
-                            <Route path="support" element={<Support />} />
-                            <Route path="support/:id" element={<SupportTicket />} />
                             <Route path="settings" element={<Settings />} />
                             <Route path="notifications" element={<Notifications />} />
                             <Route path="businesses/new" element={<CreateBusiness firstBusiness={false} />} />

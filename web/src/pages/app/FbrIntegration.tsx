@@ -33,6 +33,7 @@ export default function FbrIntegration() {
   return (
     <div className="space-y-5">
       <PageHeader title="FBR integration" subtitle="Your own FBR Digital Invoicing credentials from IRIS. Tokens are encrypted on the server, never shown in full and never sent to the browser." />
+      <IrisDetails />
       <div className="grid gap-5 xl:grid-cols-2">
         {q.data.credentials.map((c) => <CredentialCard key={c.environment} c={c} canManage={can('fbr')} />)}
       </div>
@@ -115,6 +116,47 @@ function CredentialCard({ c, canManage }: { c: Cred; canManage: boolean }) {
         </div>
       </form>
       <ConfirmDialog open={confirmRemove} onClose={() => setConfirmRemove(false)} title="Remove token?" danger confirmLabel="Remove" loading={remove.isPending} onConfirm={() => remove.mutate()} message={c.environment === 'PRODUCTION' ? 'Production submission will be disabled.' : 'Sandbox validation and submission will stop until a token is saved again.'} />
+    </Card>
+  );
+}
+
+/** What to enter in IRIS (Digital Invoicing → API Integration → technical details and IP whitelisting). */
+function IrisDetails() {
+  const toast = useToast();
+  const q = useQuery({ queryKey: ['onboarding-server'], queryFn: () => api<{ server: { outboundIps: string[]; hostingCompany: string; hostingCountry: string } }>('/api/app/onboarding') });
+  const srv = q.data?.server;
+  const rows: [string, string][] = [
+    ['Integrator', 'PRAL'],
+    ['ERP / software provider', 'InvoiceGO'],
+    ['Software type', 'Cloud'],
+    ['Hosting company', srv?.hostingCompany || 'Ask your administrator'],
+    ['Hosting country', srv?.hostingCountry || 'Ask your administrator'],
+    ['IP address(es) to whitelist', srv?.outboundIps.length ? srv.outboundIps.join(', ') : 'Not configured yet — ask your administrator'],
+  ];
+  const copy = async (v: string) => {
+    try {
+      await navigator.clipboard.writeText(v);
+      toast('green', 'Copied');
+    } catch {
+      toast('red', 'Copy failed — select the text and copy it');
+    }
+  };
+  return (
+    <Card title="Details to enter in IRIS">
+      <p className="mb-3 text-sm text-ink-600">In IRIS open <strong>Digital Invoicing → API Integration</strong>, choose PRAL, fill in your technical contact, and use these values. PRAL usually approves IP whitelisting within a few working hours.</p>
+      {q.error ? <ErrorBanner error={q.error} /> : (
+        <dl className="divide-y divide-ink-100 rounded-lg border border-ink-200">
+          {rows.map(([k, v]) => (
+            <div key={k} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm">
+              <dt className="text-ink-500">{k}</dt>
+              <dd className="flex items-center gap-2 font-medium text-ink-900">
+                <span className="break-all">{v}</span>
+                {!v.startsWith('Ask') && !v.startsWith('Not configured') && <button type="button" onClick={() => copy(v)} className="rounded px-1.5 py-0.5 text-xs text-brand-700 hover:bg-brand-50">Copy</button>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </Card>
   );
 }

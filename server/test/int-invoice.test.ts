@@ -267,9 +267,13 @@ describe('uncertain outcomes require reconciliation (mocked FBR)', () => {
 
 describe('production separation (mocked FBR)', () => {
   it('production requires a tested production token; production payload has no scenarioId and uses non-_sb paths', async () => {
-    const blocked = await call(app, s, 'POST', '/api/app/invoices', invoiceBody({ environment: 'PRODUCTION' }));
+    // A production draft can be saved before production is enabled, but it cannot reach FBR.
+    const draft = await call(app, s, 'POST', '/api/app/invoices', invoiceBody({ environment: 'PRODUCTION', scenarioId: null }));
+    expect(draft.statusCode, draft.body).toBe(201);
+    const blocked = await call(app, s, 'POST', `/api/app/invoices/${draft.json().invoice.id}/validate`, {});
     expect(blocked.statusCode).toBe(409);
     expect(blocked.json().error.code).toBe('PRODUCTION_DISABLED');
+    expect(mock.calls(PATHS.validate)).toHaveLength(0);
     await saveCredential(app, s, 'PRODUCTION', PROD_TOKEN);
     const en1 = await call(app, s, 'POST', '/api/app/fbr/production/enable', { confirm: true });
     expect(en1.statusCode).toBe(409); // not tested yet

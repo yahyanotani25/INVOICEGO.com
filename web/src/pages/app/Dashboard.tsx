@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FilePlus2, FileSpreadsheet, FlaskConical } from 'lucide-react';
+import { FilePlus2, FlaskConical } from 'lucide-react';
 import { api } from '@/lib/api';
 import { dateOnly, dateTime, pkr, STATUS_LABEL, STATUS_TONE } from '@/lib/format';
 import { Alert, Badge, Button, Card, EnvBadge, ErrorBanner, PageHeader, Spinner, Stat, Table } from '@/components/ui';
@@ -29,7 +29,6 @@ export default function Dashboard() {
         subtitle={`Today ${dateOnly(d.today.date)} · ${d.today.time} PKT · invoices can be dated ${dateOnly(d.today.monthStart)} – ${dateOnly(d.today.monthEnd)}`}
         actions={
           <>
-            <Link to="/app/bulk"><Button variant="secondary"><FileSpreadsheet className="h-4 w-4" /> Bulk upload</Button></Link>
             <Link to="/app/invoices/new"><Button><FilePlus2 className="h-4 w-4" /> Create invoice</Button></Link>
           </>
         }

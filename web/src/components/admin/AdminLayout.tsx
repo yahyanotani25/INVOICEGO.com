@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Bell, DatabaseBackup, FileText, Gauge, LifeBuoy, LogOut, Menu, PlugZap, Settings, ShieldCheck, Users, BarChart3, Megaphone, X } from 'lucide-react';
@@ -24,6 +24,7 @@ const NAV: { to: string; label: string; icon: typeof Gauge; perm?: string; end?:
 export default function AdminLayout({ me, children }: { me: AdminMe; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const nav = useNavigate();
+  const loc = useLocation();
   const qc = useQueryClient();
   const notif = useQuery({ queryKey: ['admin-notifications'], queryFn: () => aapi<{ unread: number }>('/notifications'), refetchInterval: 60_000 });
   const items = NAV.filter((n) => !n.perm || me.permissions.includes(n.perm));
@@ -61,7 +62,7 @@ export default function AdminLayout({ me, children }: { me: AdminMe; children: R
               to={it.to}
               end={it.end}
               onClick={() => setOpen(false)}
-              className={({ isActive }) => clsx('flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm', isActive ? 'bg-white/15 font-medium text-white' : 'text-ink-200 hover:bg-white/10 hover:text-white')}
+              className={({ isActive }) => clsx('flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-200', isActive ? 'bg-white/15 font-medium text-white shadow-inner ring-1 ring-white/10' : 'text-ink-200 hover:translate-x-0.5 hover:bg-white/10 hover:text-white')}
             >
               <it.icon className="h-4 w-4" aria-hidden />
               {it.label}
@@ -75,11 +76,11 @@ export default function AdminLayout({ me, children }: { me: AdminMe; children: R
 
   return (
     <div className="min-h-screen bg-ink-50 lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="sticky top-0 hidden h-screen bg-navy lg:block">{sidebar}</aside>
+      <aside className="sticky top-0 hidden h-screen bg-gradient-to-b from-navy to-[#141c40] lg:block">{sidebar}</aside>
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-ink-900/50" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-navy shadow-xl">
+          <div className="absolute inset-0 animate-fade-in bg-ink-900/50 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 w-72 animate-slide-in-left bg-navy shadow-2xl">
             <button className="absolute right-2 top-2 rounded p-2 text-ink-200" onClick={() => setOpen(false)} aria-label="Close menu">
               <X className="h-5 w-5" />
             </button>
@@ -108,7 +109,9 @@ export default function AdminLayout({ me, children }: { me: AdminMe; children: R
             </button>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">{children}</main>
+        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">
+          <div key={loc.pathname} className="animate-fade-up">{children}</div>
+        </main>
       </div>
     </div>
   );

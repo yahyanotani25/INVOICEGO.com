@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import { FileCheck2, Plus, Save, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 import { api, ApiError, qs, type Issue } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { pkr } from '@/lib/format';
 import { emptyItem, MONTH_RULE_MESSAGE, type BuyerCheck, type Customer, type Invoice, type InvoiceItem, type Lookups, type Product } from '@/lib/types';
-import { Alert, Badge, Button, Card, Checkbox, ComboInput, EnvBadge, ErrorBanner, Field, PageHeader, SelectInput, Spinner, TextInput, issueFor, useToast } from '@/components/ui';
-import { FbrItemAssist } from '@/components/FbrItemAssist';
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, EnvBadge, ErrorBanner, Field, PageHeader, SelectInput, Spinner, TextInput, issueFor, useToast } from '@/components/ui';
+import { Combobox } from '@/components/Combobox';
+import { useHsSearch, useLineOptions } from '@/lib/fbrOptions';
+import { useDebounced } from '@/lib/useDebounced';
 
 interface CalcLine {
   line: number;
@@ -16,14 +18,6 @@ interface CalcLine {
   issues: { field: string; level: 'error' | 'warning'; message: string }[];
 }
 
-function useDebounced<T>(v: T, ms = 400) {
-  const [d, setD] = useState(v);
-  useEffect(() => {
-    const t = setTimeout(() => setD(v), ms);
-    return () => clearTimeout(t);
-  }, [v, ms]);
-  return d;
-}
 
 export default function InvoiceBuilder() {
   const { id } = useParams();
@@ -31,13 +25,15 @@ export default function InvoiceBuilder() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const toast = useToast();
-  const { me } = useAuth();
+  const { me, can } = useAuth();
   const lookups = useQuery({ queryKey: ['lookups'], queryFn: () => api<Lookups>('/api/app/lookups') });
   const business = useQuery({ queryKey: ['business'], queryFn: () => api<{ furtherTaxHelperRate: string | null; productionEnabled: boolean; name: string; ntnCnic: string; province: string; address: string }>('/api/app/business') });
   const scenarios = useQuery({ queryKey: ['scenario-list'], queryFn: () => api<{ scenarios: { id: string; description: string; applicability: { status: string } }[] }>('/api/app/sandbox/scenarios') });
   const existing = useQuery({ queryKey: ['invoice', id], queryFn: () => api<Invoice>(`/api/app/invoices/${id}`), enabled: editing });
 
-  const [env, setEnv] = useState<'SANDBOX' | 'PRODUCTION'>('SANDBOX');
+  // New invoices are production invoices; sandbox testing has its own section (Sandbox scenarios).
+  const [env, setEnv] = useState<'SANDBOX' | 'PRODUCTION'>('PRODUCTION');
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [h, setH] = useState({ invoiceType: 'SALE_INVOICE', invoiceDate: '', invoiceTime: '', paymentMode: 'Cash', invoiceRefNo: '', scenarioId: '', customerId: '' as string | null, buyerNtnCnic: '', buyerBusinessName: '', buyerProvince: '', buyerAddress: '', buyerRegistrationType: '' as '' | 'REGISTERED' | 'UNREGISTERED', notes: '' });
   const [items, setItems] = useState<InvoiceItem[]>([emptyItem()]);
   const [autoCalc, setAutoCalc] = useState(true);
@@ -66,9 +62,6 @@ export default function InvoiceBuilder() {
     }
   }, [lookups.data, existing.data, editing]);
 
-  useEffect(() => {
-    if (!editing && business.data?.productionEnabled) setEnv('PRODUCTION');
-  }, [business.data?.productionEnabled, editing]);
 
   // server-side calculation preview (single source of truth for maths)
   const debouncedItems = useDebounced(items);
@@ -86,7 +79,7 @@ export default function InvoiceBuilder() {
   const editable = !editing || ['DRAFT', 'VALIDATED', 'VALIDATION_FAILED', 'REJECTED'].includes(existing.data?.status ?? 'DRAFT');
 
   const save = useMutation({
-    mutationFn: async (then: 'stay' | 'validate') => {
+    mutationFn: async (then: 'stay' | 'validate' | 'submit') => {
       const body = { ...h, environment: env, autoCalc, version, scenarioId: env === 'SANDBOX' ? h.scenarioId || null : null, customerId: h.customerId || null, buyerRegistrationType: h.buyerRegistrationType || null, paymentMode: h.paymentMode || null, items: items.map(cleanItem) };
       const r = editing ? await api<{ invoice: Invoice; issues: Issue[] }>(`/api/app/invoices/${id}`, { method: 'PUT', body }) : await api<{ invoice: Invoice; issues: Issue[] }>('/api/app/invoices', { body });
       return { r, then };
@@ -96,7 +89,7 @@ export default function InvoiceBuilder() {
       await qc.invalidateQueries({ queryKey: ['invoices'] });
       qc.setQueryData(['invoice', r.invoice.id], r.invoice);
       toast('green', `Saved ${r.invoice.internalNumber}`);
-      nav(`/app/invoices/${r.invoice.id}${then === 'validate' ? '?action=validate' : ''}`);
+      nav(`/app/invoices/${r.invoice.id}${then === 'stay' ? '' : `?action=${then}`}`);
     },
     onError: (e) => {
       if (e instanceof ApiError) {
@@ -136,6 +129,7 @@ export default function InvoiceBuilder() {
     setItem(i, { productId: p.id, saleType: p.saleType, hsCode: p.hsCode, productDescription: p.description, uom: p.uom, rate: p.rate ?? items[i].rate, unitPrice: p.unitPrice, retailPricePerUnit: p.retailPrice ?? '', sroScheduleNo: p.sroScheduleNo ?? '', sroItemSerialNo: p.sroItemSerialNo ?? '' });
   };
   const helperRate = business.data?.furtherTaxHelperRate;
+  const fbrReady = env === 'SANDBOX' || !!business.data?.productionEnabled;
   const regMismatch = buyerCheck?.mismatch ? buyerCheck.message : null;
 
   return (
@@ -150,17 +144,21 @@ export default function InvoiceBuilder() {
           Status: {existing.data?.status}. <Link className="underline" to={`/app/invoices/${id}`}>Open the invoice</Link>.
         </Alert>
       )}
+      {env === 'PRODUCTION' && business.data && !business.data.productionEnabled && (
+        <Alert tone="amber" title="Production is not enabled yet">
+          You can prepare and save drafts now. To validate and submit them to FBR, pass the required tests in <Link className="font-medium underline" to="/app/sandbox">Sandbox scenarios</Link>, then save the production token and enable production in <Link className="font-medium underline" to="/app/fbr">FBR integration</Link>.
+        </Alert>
+      )}
       {save.error && <ErrorBanner error={save.error} />}
 
       <Card title="Invoice details">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <SelectInput label="Environment" required value={env} disabled={editing} onChange={(e) => setEnv(e.target.value as 'SANDBOX' | 'PRODUCTION')} options={[{ value: 'SANDBOX', label: 'Sandbox (testing)' }, { value: 'PRODUCTION', label: business.data?.productionEnabled ? 'Production' : 'Production (not enabled)' }]} hint={env === 'PRODUCTION' && !business.data?.productionEnabled ? 'Enable production in FBR integration first' : editing ? 'Fixed once created' : undefined} />
           <SelectInput label="Type" required value={h.invoiceType} onChange={(e) => setH({ ...h, invoiceType: e.target.value })} options={L.invoiceTypes} />
           <Field label="Date" required error={dateError ?? issueFor(issues, 'invoiceDate')} hint={`Current month only (${today?.monthStart} to ${today?.monthEnd}, PKT)`}>
             <input type="date" className={clsx('input', (dateError || issueFor(issues, 'invoiceDate')) && 'input-error')} value={h.invoiceDate} min={today?.monthStart} max={today?.monthEnd} onChange={(e) => onDate(e.target.value)} aria-invalid={!!dateError} required />
           </Field>
           <TextInput label="Current time" type="time" value={h.invoiceTime} onChange={(e) => setH({ ...h, invoiceTime: e.target.value })} hint="Shown on the invoice; not sent to FBR" />
-          <ComboInput label="Payment mode" value={h.paymentMode} onChange={(e) => setH({ ...h, paymentMode: e.target.value })} suggestions={L.paymentModes} hint="How the buyer pays; not sent to FBR" />
+          <Combobox label="Payment mode" value={h.paymentMode} onChange={(val) => setH({ ...h, paymentMode: val })} options={L.paymentModes.map((p) => ({ value: p }))} hint="How the buyer pays; not sent to FBR" />
           <TextInput label="Reference invoice no." required={h.invoiceType === 'DEBIT_NOTE'} value={h.invoiceRefNo} onChange={(e) => setH({ ...h, invoiceRefNo: e.target.value.trim() })} error={issueFor(issues, 'invoiceRefNo')} hint={h.invoiceType === 'DEBIT_NOTE' ? 'Original FBR invoice number (22 or 28 characters)' : 'Only for debit notes'} />
           {env === 'SANDBOX' && (
             <SelectInput label="Sandbox scenario" required value={h.scenarioId} onChange={(e) => setH({ ...h, scenarioId: e.target.value })} placeholder="Select scenario…" options={(scenarios.data?.scenarios ?? []).map((s) => ({ value: s.id, label: `${s.id} — ${s.description}${s.applicability.status === 'REQUIRED' ? ' (required)' : ''}` }))} error={issueFor(issues, 'scenarioId')} className="sm:col-span-2" />
@@ -194,7 +192,7 @@ export default function InvoiceBuilder() {
           </Field>
           <TextInput label="Buyer NTN / CNIC" required={h.buyerRegistrationType === 'REGISTERED'} inputMode="numeric" value={h.buyerNtnCnic} onChange={(e) => { setBuyerCheck(null); setH({ ...h, buyerNtnCnic: e.target.value.trim() }); }} error={issueFor(issues, 'buyerNtnCnic')} hint="7-digit NTN or 13-digit CNIC; optional for unregistered buyers" />
           <TextInput label="Buyer name" required value={h.buyerBusinessName} onChange={(e) => setH({ ...h, buyerBusinessName: e.target.value })} error={issueFor(issues, 'buyerBusinessName')} />
-          <ComboInput label="Buyer province" required value={h.buyerProvince} onChange={(e) => setH({ ...h, buyerProvince: e.target.value })} suggestions={L.provinces.values} error={issueFor(issues, 'buyerProvince')} />
+          <Combobox label="Buyer province" required value={h.buyerProvince} onChange={(val) => setH({ ...h, buyerProvince: val })} options={L.provinces.values.map((p) => ({ value: p }))} allowCustom={false} source={L.provinces.source.startsWith('FBR') ? 'Official list from FBR' : 'Provinces'} error={issueFor(issues, 'buyerProvince')} placeholder="Choose the province" />
           <TextInput label="Buyer address" required value={h.buyerAddress} onChange={(e) => setH({ ...h, buyerAddress: e.target.value })} error={issueFor(issues, 'buyerAddress')} />
           <Field label="Buyer type" required error={regMismatch ?? issueFor(issues, 'buyerRegistrationType')}>
             <div className={clsx('flex gap-2 rounded-lg', regMismatch && 'ring-2 ring-red-400')} role="radiogroup" aria-label="Buyer type">
@@ -240,78 +238,25 @@ export default function InvoiceBuilder() {
       >
         {!autoCalc && <Alert tone="amber" className="mb-3">Manual mode: values are sent exactly as entered. Differences from the general formula are shown as warnings for review.</Alert>}
         <div className="space-y-4">
-          {items.map((it, i) => {
-            const line = i + 1;
-            const c = calc.data?.lines[i];
-            const v = c?.values;
-            const lineIssues = [...(c?.issues ?? []), ...issues.filter((x) => x.line === line)];
-            const err = (f: string) => lineIssues.find((x) => x.field === f && x.level === 'error')?.message ?? null;
-            const salesTaxEditable = !autoCalc || v?.rateKind === 'UNKNOWN';
-            return (
-              <fieldset key={i} className="rounded-xl border border-ink-200 p-3">
-                <legend className="flex items-center gap-2 px-1 text-xs font-semibold text-ink-600">
-                  Item {line}
-                  {it.fbr?.error && <Badge tone="red">FBR {it.fbr.errorCode}: {it.fbr.error}</Badge>}
-                </legend>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                  <Field label="Saved product" className="lg:col-span-2">
-                    <select className="input" value={it.productId ?? ''} onChange={(e) => pickProduct(i, e.target.value)}>
-                      <option value="">— none —</option>
-                      {products.data?.rows.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.sku} · {p.description}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-                  <ComboInput label="Sale type" required className="lg:col-span-2" value={it.saleType} onChange={(e) => setItem(i, { saleType: e.target.value })} suggestions={L.saleTypes.values} error={err('saleType')} />
-                  <TextInput label="HS code" required value={it.hsCode} placeholder="0000.0000" onChange={(e) => setItem(i, { hsCode: e.target.value.trim() })} error={err('hsCode')} />
-                  <ComboInput label="Tax rate" required value={it.rate} onChange={(e) => setItem(i, { rate: e.target.value })} suggestions={L.rates.values} error={err('rate')} hint={v?.rateKind === 'UNKNOWN' ? 'Not auto-calculable' : undefined} />
-                  <TextInput label="Product description" required className="lg:col-span-3" value={it.productDescription} onChange={(e) => setItem(i, { productDescription: e.target.value })} error={err('productDescription')} />
-                  <ComboInput label="UOM" required value={it.uom} onChange={(e) => setItem(i, { uom: e.target.value })} suggestions={L.uoms.values} error={err('uom')} />
-                  <TextInput label="Quantity" required inputMode="decimal" value={it.quantity ?? ''} onChange={(e) => setItem(i, { quantity: e.target.value })} error={err('quantity')} />
-                  <TextInput label="Unit price (excl. tax)" required={autoCalc} inputMode="decimal" value={it.unitPrice ?? ''} onChange={(e) => setItem(i, { unitPrice: e.target.value })} error={err('unitPrice')} />
-                  <TextInput label="Discount" inputMode="decimal" value={it.discount ?? ''} onChange={(e) => setItem(i, { discount: e.target.value })} error={err('discount')} hint="Amount; deducted once" />
-                  <NumOut label="Value of sales (excl. tax)" auto={autoCalc} value={autoCalc ? v?.valueSalesExcludingST : it.valueSalesExcludingST} onChange={(x) => setItem(i, { valueSalesExcludingST: x })} />
-                  <NumOut label="Sales tax" auto={!salesTaxEditable} value={salesTaxEditable ? it.salesTaxApplicable : v?.salesTaxApplicable} onChange={(x) => setItem(i, { salesTaxApplicable: x })} error={err('salesTaxApplicable')} />
-                  <TextInput label="Retail price / unit" inputMode="decimal" value={it.retailPricePerUnit ?? ''} onChange={(e) => setItem(i, { retailPricePerUnit: e.target.value })} hint="Third Schedule goods" />
-                  <NumOut label="Fixed / notified value or retail price" auto={autoCalc && !!it.retailPricePerUnit} value={autoCalc && it.retailPricePerUnit ? v?.fixedNotifiedValueOrRetailPrice : it.fixedNotifiedValueOrRetailPrice} onChange={(x) => setItem(i, { fixedNotifiedValueOrRetailPrice: x })} error={err('fixedNotifiedValueOrRetailPrice')} />
-                  <Field label="Extra tax">
-                    <input className="input" inputMode="decimal" disabled={it.extraTaxEmpty} value={it.extraTaxEmpty ? '' : it.extraTax ?? ''} onChange={(e) => setItem(i, { extraTax: e.target.value })} />
-                    <label className="mt-1 flex items-center gap-1 text-[11px] text-ink-500">
-                      <input type="checkbox" checked={it.extraTaxEmpty} onChange={(e) => setItem(i, { extraTaxEmpty: e.target.checked, extraTax: '' })} /> Send as empty (FBR 0091)
-                    </label>
-                  </Field>
-                  <Field label="Further tax">
-                    <input className="input" inputMode="decimal" value={it.furtherTax ?? ''} onChange={(e) => setItem(i, { furtherTax: e.target.value })} />
-                    {helperRate && h.buyerRegistrationType === 'UNREGISTERED' && v && (
-                      <button type="button" className="mt-1 text-[11px] text-brand-700 hover:underline" onClick={() => setItem(i, { furtherTax: (Math.round(Number(v.valueSalesExcludingST) * Number(helperRate)) / 100).toFixed(2) })}>
-                        Apply {helperRate}% (your helper rate)
-                      </button>
-                    )}
-                  </Field>
-                  <TextInput label="FED payable" inputMode="decimal" value={it.fedPayable ?? ''} onChange={(e) => setItem(i, { fedPayable: e.target.value })} />
-                  <TextInput label="ST withheld at source" inputMode="decimal" value={it.salesTaxWithheldAtSource ?? ''} onChange={(e) => setItem(i, { salesTaxWithheldAtSource: e.target.value })} hint="0 or equal to sales tax" />
-                  <TextInput label="SRO / schedule no." value={it.sroScheduleNo} onChange={(e) => setItem(i, { sroScheduleNo: e.target.value })} error={err('sroScheduleNo')} />
-                  <TextInput label="Item S. No." value={it.sroItemSerialNo} onChange={(e) => setItem(i, { sroItemSerialNo: e.target.value })} error={err('sroItemSerialNo')} />
-                  <NumOut label="Total (incl. taxes)" auto={autoCalc} value={autoCalc ? v?.totalValues : it.totalValues} onChange={(x) => setItem(i, { totalValues: x })} />
-                  <FbrItemAssist line={it} invoiceDate={h.invoiceDate} sellerProvince={business.data?.province ?? ''} onChange={(patch) => setItem(i, patch)} />
-                </div>
-                {lineIssues.filter((x) => x.level === 'warning').length > 0 && (
-                  <ul className="mt-2 space-y-0.5 text-xs text-amber-700">
-                    {lineIssues.filter((x) => x.level === 'warning').map((x, k) => <li key={k}>⚠ {x.message}</li>)}
-                  </ul>
-                )}
-                {items.length > 1 && (
-                  <div className="mt-2 text-right">
-                    <Button size="sm" variant="ghost" onClick={() => setItems(items.filter((_, k) => k !== i))} aria-label={`Remove item ${line}`}>
-                      <Trash2 className="h-3.5 w-3.5" /> Remove
-                    </Button>
-                  </div>
-                )}
-              </fieldset>
-            );
-          })}
+          {items.map((it, i) => (
+            <ItemLine
+              key={i}
+              index={i}
+              it={it}
+              calc={calc.data?.lines[i]}
+              issues={issues}
+              autoCalc={autoCalc}
+              L={L}
+              products={products.data?.rows ?? []}
+              onPickProduct={(pid) => pickProduct(i, pid)}
+              onChange={(patch) => setItem(i, patch)}
+              onRemove={items.length > 1 ? () => setItems(items.filter((_, k) => k !== i)) : undefined}
+              helperRate={helperRate}
+              buyerUnregistered={h.buyerRegistrationType === 'UNREGISTERED'}
+              invoiceDate={h.invoiceDate}
+              sellerProvince={business.data?.province ?? ''}
+            />
+          ))}
         </div>
       </Card>
 
@@ -349,14 +294,29 @@ export default function InvoiceBuilder() {
           <Button variant="secondary" onClick={() => nav(-1)}>
             Cancel
           </Button>
-          <Button variant="secondary" onClick={() => save.mutate('stay')} loading={save.isPending} disabled={!editable || !!dateError || !me}>
-            Save draft
+          <Button variant="secondary" onClick={() => save.mutate('stay')} loading={save.isPending && save.variables === 'stay'} disabled={!editable || !!dateError || !me || save.isPending}>
+            <Save className="h-4 w-4" /> Save as draft
           </Button>
-          <Button onClick={() => save.mutate('validate')} loading={save.isPending} disabled={!editable || !!dateError || !!regMismatch}>
-            Save & validate with FBR
+          <Button variant="secondary" onClick={() => save.mutate('validate')} loading={save.isPending && save.variables === 'validate'} disabled={!editable || !!dateError || !!regMismatch || !fbrReady || save.isPending} title={fbrReady ? 'Save, then check the invoice with FBR without submitting it' : 'Enable production first'}>
+            <FileCheck2 className="h-4 w-4" /> Validate
+          </Button>
+          <Button onClick={() => setConfirmSubmit(true)} loading={save.isPending && save.variables === 'submit'} disabled={!editable || !!dateError || !!regMismatch || !fbrReady || save.isPending || !can('submit')} title={fbrReady ? 'Save, validate with FBR and submit' : 'Enable production first'}>
+            <Send className="h-4 w-4" /> Submit to FBR
           </Button>
         </div>
       </div>
+      <ConfirmDialog
+        open={confirmSubmit}
+        onClose={() => setConfirmSubmit(false)}
+        title={env === 'PRODUCTION' ? 'Submit this invoice to FBR?' : 'Submit to the FBR sandbox?'}
+        confirmLabel={env === 'PRODUCTION' ? 'Save, validate and submit' : 'Submit to sandbox'}
+        danger={env === 'PRODUCTION'}
+        onConfirm={() => {
+          setConfirmSubmit(false);
+          save.mutate('submit');
+        }}
+        message={env === 'PRODUCTION' ? 'The invoice is saved, validated with FBR and — only if FBR reports it valid — submitted as a real tax invoice. Once FBR accepts it, it cannot be changed or submitted again.' : 'The invoice is saved, validated and submitted to the FBR sandbox (testing only).'}
+      />
     </div>
   );
 }
@@ -400,4 +360,100 @@ function cleanItem(it: InvoiceItem) {
     sroItemSerialNo: it.sroItemSerialNo,
     totalValues: n(it.totalValues),
   };
+}
+
+/** One invoice line. FBR dropdown lists are loaded per line (sale type → rate → SRO → item, HS → UOM). */
+function ItemLine({ index, it, calc, issues, autoCalc, L, products, onPickProduct, onChange, onRemove, helperRate, buyerUnregistered, invoiceDate, sellerProvince }: {
+  index: number;
+  it: InvoiceItem;
+  calc: CalcLine | undefined;
+  issues: Issue[];
+  autoCalc: boolean;
+  L: Lookups;
+  products: Product[];
+  onPickProduct: (id: string) => void;
+  onChange: (patch: Partial<InvoiceItem>) => void;
+  onRemove?: () => void;
+  helperRate: string | null | undefined;
+  buyerUnregistered: boolean;
+  invoiceDate: string;
+  sellerProvince: string;
+}) {
+  const line = index + 1;
+  const v = calc?.values;
+  const lineIssues = [...(calc?.issues ?? []), ...issues.filter((x) => x.line === line)];
+  const err = (f: string) => lineIssues.find((x) => x.field === f && x.level === 'error')?.message ?? null;
+  const salesTaxEditable = !autoCalc || v?.rateKind === 'UNKNOWN';
+  const o = useLineOptions({ saleType: it.saleType, hsCode: it.hsCode, uom: it.uom, rate: it.rate, sroScheduleNo: it.sroScheduleNo, invoiceDate, sellerProvince }, L);
+  const hs = useHsSearch(it.hsCode);
+  return (
+    <fieldset className="animate-fade-up rounded-xl border border-ink-200 bg-white p-3 transition-shadow hover:shadow-md hover:shadow-ink-900/5">
+      <legend className="flex items-center gap-2 px-1 text-xs font-semibold text-ink-600">
+        Item {line}
+        {it.fbr?.error && <Badge tone="red">FBR {it.fbr.errorCode}: {it.fbr.error}</Badge>}
+      </legend>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+        <Combobox
+          label="Saved product"
+          className="lg:col-span-2"
+          value={products.find((p) => p.id === it.productId) ? `${products.find((p) => p.id === it.productId)!.sku} · ${products.find((p) => p.id === it.productId)!.description}` : ''}
+          options={products.map((p) => ({ value: `${p.sku} · ${p.description}`, description: `${p.hsCode} · ${p.saleType}` }))}
+          onChange={(val, opt) => {
+            if (!opt) return;
+            const p = products.find((x) => `${x.sku} · ${x.description}` === opt.value);
+            if (p) onPickProduct(p.id);
+          }}
+          allowCustom={false}
+          placeholder="Choose a saved product (optional)"
+          emptyText="No saved products yet — add them under Products"
+        />
+        <Combobox label="Sale type" required className="lg:col-span-2" value={it.saleType} options={o.saleTypes.options} source={o.saleTypes.source} onChange={(val, opt) => onChange(opt ? { saleType: val, rate: '', sroScheduleNo: '', sroItemSerialNo: '' } : { saleType: val })} error={err('saleType')} placeholder="Choose the sale type" />
+        <Combobox label="HS code" required value={it.hsCode} options={hs.options} onQuery={hs.onQuery} loading={hs.loading} source="Search by code or description" onChange={(val, opt) => onChange({ hsCode: val.trim(), ...(opt?.description && !it.productDescription ? { productDescription: opt.description.slice(0, 200) } : {}) })} error={err('hsCode')} placeholder="0000.0000" />
+        <Combobox label="Tax rate" required value={it.rate} options={o.rates.options} source={o.rates.source} loading={o.rates.loading} onChange={(val, opt) => onChange(opt ? { rate: val, sroScheduleNo: '', sroItemSerialNo: '' } : { rate: val })} error={err('rate')} hint={v?.rateKind === 'UNKNOWN' ? 'Not auto-calculable — enter the sales tax' : undefined} placeholder="e.g. 18%" />
+        <TextInput label="Product description" required className="lg:col-span-3" value={it.productDescription} onChange={(e) => onChange({ productDescription: e.target.value })} error={err('productDescription')} />
+        <Combobox label="UOM" required value={it.uom} options={o.uoms.options} source={o.uoms.source} loading={o.uoms.loading} onChange={(val) => onChange({ uom: val })} error={err('uom') ?? (o.uomMismatch ? `FBR expects ${o.uomMismatch.join(' or ')} for this HS code` : null)} placeholder="Unit of measure" />
+        <TextInput label="Quantity" required inputMode="decimal" value={it.quantity ?? ''} onChange={(e) => onChange({ quantity: e.target.value })} error={err('quantity')} />
+        <TextInput label="Unit price (excl. tax)" required={autoCalc} inputMode="decimal" value={it.unitPrice ?? ''} onChange={(e) => onChange({ unitPrice: e.target.value })} error={err('unitPrice')} />
+        <TextInput label="Discount" inputMode="decimal" value={it.discount ?? ''} onChange={(e) => onChange({ discount: e.target.value })} error={err('discount')} hint="Amount; deducted once" />
+        <NumOut label="Value of sales (excl. tax)" auto={autoCalc} value={autoCalc ? v?.valueSalesExcludingST : it.valueSalesExcludingST} onChange={(x) => onChange({ valueSalesExcludingST: x })} />
+        <NumOut label="Sales tax" auto={!salesTaxEditable} value={salesTaxEditable ? it.salesTaxApplicable : v?.salesTaxApplicable} onChange={(x) => onChange({ salesTaxApplicable: x })} error={err('salesTaxApplicable')} />
+        <TextInput label="Retail price / unit" inputMode="decimal" value={it.retailPricePerUnit ?? ''} onChange={(e) => onChange({ retailPricePerUnit: e.target.value })} hint="Third Schedule goods" />
+        <NumOut label="Fixed / notified value or retail price" auto={autoCalc && !!it.retailPricePerUnit} value={autoCalc && it.retailPricePerUnit ? v?.fixedNotifiedValueOrRetailPrice : it.fixedNotifiedValueOrRetailPrice} onChange={(x) => onChange({ fixedNotifiedValueOrRetailPrice: x })} error={err('fixedNotifiedValueOrRetailPrice')} />
+        <Field label="Extra tax">
+          <input className="input" inputMode="decimal" disabled={it.extraTaxEmpty} value={it.extraTaxEmpty ? '' : it.extraTax ?? ''} onChange={(e) => onChange({ extraTax: e.target.value })} />
+          <label className="mt-1 flex items-center gap-1 text-[11px] text-ink-500">
+            <input type="checkbox" checked={it.extraTaxEmpty} onChange={(e) => onChange({ extraTaxEmpty: e.target.checked, extraTax: '' })} /> Send as empty (FBR 0091)
+          </label>
+        </Field>
+        <Field label="Further tax">
+          <input className="input" inputMode="decimal" value={it.furtherTax ?? ''} onChange={(e) => onChange({ furtherTax: e.target.value })} />
+          {helperRate && buyerUnregistered && v && (
+            <button type="button" className="mt-1 text-[11px] text-brand-700 hover:underline" onClick={() => onChange({ furtherTax: (Math.round(Number(v.valueSalesExcludingST) * Number(helperRate)) / 100).toFixed(2) })}>
+              Apply {helperRate}% (your helper rate)
+            </button>
+          )}
+        </Field>
+        <TextInput label="FED payable" inputMode="decimal" value={it.fedPayable ?? ''} onChange={(e) => onChange({ fedPayable: e.target.value })} />
+        <TextInput label="ST withheld at source" inputMode="decimal" value={it.salesTaxWithheldAtSource ?? ''} onChange={(e) => onChange({ salesTaxWithheldAtSource: e.target.value })} hint="0 or equal to sales tax" />
+        <Combobox label="SRO / schedule no." value={it.sroScheduleNo} options={o.sros.options} source={o.sros.source} loading={o.sros.loading} onChange={(val, opt) => onChange(opt ? { sroScheduleNo: val, sroItemSerialNo: '' } : { sroScheduleNo: val })} error={err('sroScheduleNo')} placeholder="If an SRO applies" />
+        <Combobox label="Item S. No." value={it.sroItemSerialNo} options={o.sroItems.options} source={o.sroItems.source} loading={o.sroItems.loading} onChange={(val) => onChange({ sroItemSerialNo: val })} error={err('sroItemSerialNo')} placeholder="SRO item serial" />
+        <NumOut label="Total (incl. taxes)" auto={autoCalc} value={autoCalc ? v?.totalValues : it.totalValues} onChange={(x) => onChange({ totalValues: x })} />
+      </div>
+      {o.fbrOff && index === 0 && (
+        <p className="mt-2 text-xs text-ink-500">Lists show common values. <Link to="/app/fbr" className="text-brand-700 hover:underline">Add your FBR token</Link> to get FBR’s official sale types, rates, SROs and UOMs.</p>
+      )}
+      {lineIssues.filter((x) => x.level === 'warning').length > 0 && (
+        <ul className="mt-2 space-y-0.5 text-xs text-amber-700">
+          {lineIssues.filter((x) => x.level === 'warning').map((x, k) => <li key={k}>⚠ {x.message}</li>)}
+        </ul>
+      )}
+      {onRemove && (
+        <div className="mt-2 text-right">
+          <Button size="sm" variant="ghost" onClick={onRemove} aria-label={`Remove item ${line}`}>
+            <Trash2 className="h-3.5 w-3.5" /> Remove
+          </Button>
+        </div>
+      )}
+    </fieldset>
+  );
 }

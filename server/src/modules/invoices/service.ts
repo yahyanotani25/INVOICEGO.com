@@ -267,10 +267,8 @@ export async function createInvoice(
   input: InvoiceInput,
   opts: { environment: FbrEnvironment; source?: InvoiceSource; importJobId?: string; importRef?: string; rawTemplateDiff?: unknown },
 ) {
+  // Production drafts may be prepared at any time; sending to FBR is gated in validate/submit.
   const business = await loadBusiness(ctx.businessId);
-  if (opts.environment === 'PRODUCTION' && !business.productionEnabled) {
-    throw conflict('Production submission is not enabled for this business. Configure and verify the production token first.', undefined, 'PRODUCTION_DISABLED');
-  }
   monthGuard(input.invoiceDate);
   const customerId = await assertCustomer(ctx, input.customerId);
   const { rows, issues } = prepareItems(input.items, input.autoCalc);
@@ -514,9 +512,19 @@ export interface FbrActionResult {
   rawResponse: string | null;
 }
 
+/** Production invoices reach FBR only after the business enabled production (tested production token). */
+async function assertEnvironmentEnabled(ctx: Ctx, env: FbrEnvironment) {
+  if (env !== 'PRODUCTION') return;
+  const business = await loadBusiness(ctx.businessId);
+  if (!business.productionEnabled) {
+    throw conflict('Production is not enabled for this business yet. Save the production token from IRIS under FBR integration, verify the connection and enable production. Your draft is saved.', undefined, 'PRODUCTION_DISABLED');
+  }
+}
+
 export async function validateWithFbr(ctx: Ctx, id: string): Promise<FbrActionResult> {
   const inv = await getInvoice(ctx, id);
   if (!EDITABLE.includes(inv.status)) throw conflict(`An invoice in status ${inv.status} cannot be validated`, undefined, 'INVALID_STATE');
+  await assertEnvironmentEnabled(ctx, inv.environment);
   const pf = preflight(inv);
   blockOnErrors(pf.issues);
   const bc = await checkBuyer(ctx, pf.payload);
@@ -575,6 +583,7 @@ export async function submitToFbr(ctx: Ctx, id: string, opts: { retryOfId?: stri
   if (inv.status === 'ACCEPTED') throw conflict(`Already accepted by FBR (${inv.fbrInvoiceNumber}). It cannot be submitted again.`, undefined, 'ALREADY_ACCEPTED');
   if (inv.status === 'RECONCILIATION_REQUIRED') throw conflict('The previous submission outcome is uncertain. Reconcile it before any reattempt.', undefined, 'RECONCILIATION_REQUIRED');
   if (inv.status === 'SUBMITTING' || inv.status === 'VALIDATING') throw conflict('A submission is already in progress for this invoice.', undefined, 'BUSY');
+  await assertEnvironmentEnabled(ctx, inv.environment);
   const pf = preflight(inv);
   // Recheck the current-month rule immediately before submission (old drafts must not bypass it).
   blockOnErrors(pf.issues);

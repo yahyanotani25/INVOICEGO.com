@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
-import { api, ApiError, qs } from '@/lib/api';
+import { api, ApiError, qs, type Issue } from '@/lib/api';
+import { useHsSearch, useLineOptions } from '@/lib/fbrOptions';
+import { Combobox } from '@/components/Combobox';
 import { useAuth } from '@/lib/auth';
 import { pkr } from '@/lib/format';
 import type { Lookups, Product } from '@/lib/types';
-import { Alert, Button, Card, ComboInput, ConfirmDialog, Dialog, EmptyState, ErrorBanner, PageHeader, Pagination, SortTh, Spinner, Table, TextInput, issueFor, useToast } from '@/components/ui';
+import { Alert, Button, Card, ConfirmDialog, Dialog, EmptyState, ErrorBanner, PageHeader, Pagination, SortTh, Spinner, Table, TextInput, issueFor, useToast } from '@/components/ui';
 
 const blank = { sku: '', description: '', hsCode: '', uom: '', saleType: '', rate: '', unitPrice: '', retailPrice: '', sroScheduleNo: '', sroItemSerialNo: '' };
 
@@ -25,7 +27,6 @@ export default function Products() {
   const [hsHint, setHsHint] = useState<string | null>(null);
   const lookups = useQuery({ queryKey: ['lookups'], queryFn: () => api<Lookups>('/api/app/lookups') });
   const list = useQuery({ queryKey: ['products', search, page, sort, dir], queryFn: () => api<{ total: number; rows: Product[] }>(`/api/app/products${qs({ q: search, page, pageSize: 20, sort, dir })}`), placeholderData: (p) => p });
-  const hsLookup = useQuery({ queryKey: ['hs-one', form?.v.hsCode], queryFn: () => api<{ rows: { code: string; description: string }[] }>(`/api/app/hs-codes${qs({ q: form?.v.hsCode, pageSize: 5 })}`), enabled: !!form && /^\d{4}\.\d{4}$/.test(form.v.hsCode) });
 
   const save = useMutation({
     mutationFn: (f: NonNullable<typeof form>) => api<Product & { warning: string | null }>(f.id ? `/api/app/products/${f.id}` : '/api/app/products', { method: f.id ? 'PUT' : 'POST', body: { ...f.v, rate: f.v.rate || null, retailPrice: f.v.retailPrice || null, sroScheduleNo: f.v.sroScheduleNo || null, sroItemSerialNo: f.v.sroItemSerialNo || null } }),
@@ -92,13 +93,8 @@ export default function Products() {
             <TextInput label="Product code (SKU)" required value={form.v.sku} onChange={(e) => setForm({ ...form, v: { ...form.v, sku: e.target.value } })} error={issueFor(issues, 'sku')} />
             <TextInput label="Item sale price (PKR, excl. tax)" required inputMode="decimal" value={form.v.unitPrice} onChange={(e) => setForm({ ...form, v: { ...form.v, unitPrice: e.target.value } })} error={issueFor(issues, 'unitPrice')} />
             <TextInput label="Description" required className="sm:col-span-2" value={form.v.description} onChange={(e) => setForm({ ...form, v: { ...form.v, description: e.target.value } })} error={issueFor(issues, 'description')} />
-            <TextInput label="HS code" required value={form.v.hsCode} placeholder="0101.2100" onChange={(e) => { setHsHint(null); setForm({ ...form, v: { ...form.v, hsCode: e.target.value.trim() } }); }} error={issueFor(issues, 'hsCode') ?? hsHint} hint={hsLookup.data?.rows[0]?.code === form.v.hsCode ? hsLookup.data.rows[0].description : <Link to="/app/hs-codes" target="_blank" className="text-brand-700 underline">Search HS / PCT codes</Link>} />
-            <ComboInput label="UOM" required value={form.v.uom} onChange={(e) => setForm({ ...form, v: { ...form.v, uom: e.target.value } })} suggestions={L?.uoms.values ?? []} error={issueFor(issues, 'uom')} hint={L?.uoms.source} />
-            <ComboInput label="Sale type" required value={form.v.saleType} onChange={(e) => setForm({ ...form, v: { ...form.v, saleType: e.target.value } })} suggestions={L?.saleTypes.values ?? []} error={issueFor(issues, 'saleType')} />
-            <ComboInput label="Default tax rate" value={form.v.rate} onChange={(e) => setForm({ ...form, v: { ...form.v, rate: e.target.value } })} suggestions={L?.rates.values ?? []} />
+            <ProductReferenceFields v={form.v} onChange={(patch) => setForm({ ...form, v: { ...form.v, ...patch } })} issues={issues} L={L} hsHint={hsHint} onHsTyped={() => setHsHint(null)} />
             <TextInput label="Retail price / unit (3rd Schedule)" inputMode="decimal" value={form.v.retailPrice} onChange={(e) => setForm({ ...form, v: { ...form.v, retailPrice: e.target.value } })} />
-            <TextInput label="SRO / schedule no." value={form.v.sroScheduleNo} onChange={(e) => setForm({ ...form, v: { ...form.v, sroScheduleNo: e.target.value } })} />
-            <TextInput label="SRO item S. No." value={form.v.sroItemSerialNo} onChange={(e) => setForm({ ...form, v: { ...form.v, sroItemSerialNo: e.target.value } })} />
             <button type="submit" className="hidden" />
           </form>
         )}
@@ -113,5 +109,29 @@ export default function Products() {
       </Dialog>
       <ConfirmDialog open={!!del} onClose={() => setDel(null)} title="Delete product?" danger confirmLabel="Delete" loading={remove.isPending} onConfirm={() => del && remove.mutate(del)} message={<>Delete <strong>{del?.sku}</strong>? Existing invoices are not affected.</>} />
     </div>
+  );
+}
+
+/** HS code, UOM, sale type, rate, SRO and SRO item as dropdowns fed by FBR's lists (fallbacks when unavailable). */
+function ProductReferenceFields({ v, onChange, issues, L, hsHint, onHsTyped }: { v: typeof blank; onChange: (patch: Partial<typeof blank>) => void; issues: Issue[]; L: Lookups | undefined; hsHint: string | null; onHsTyped: () => void }) {
+  const business = useQuery({ queryKey: ['business'], queryFn: () => api<{ province: string }>('/api/app/business') });
+  const o = useLineOptions({ saleType: v.saleType, hsCode: v.hsCode, uom: v.uom, rate: v.rate, sroScheduleNo: v.sroScheduleNo, invoiceDate: L?.today.date ?? '', sellerProvince: business.data?.province ?? '' }, L);
+  const hs = useHsSearch(v.hsCode);
+  return (
+    <>
+      <Combobox label="HS code" required value={v.hsCode} options={hs.options} onQuery={hs.onQuery} loading={hs.loading} source="Search by code or description" placeholder="0101.2100"
+        onChange={(val, opt) => { onHsTyped(); onChange({ hsCode: val.trim(), ...(opt?.description && !v.description ? { description: opt.description.slice(0, 200) } : {}) }); }}
+        error={issueFor(issues, 'hsCode') ?? hsHint} hint={hs.options.find((x) => x.value === v.hsCode)?.description} />
+      <Combobox label="UOM" required value={v.uom} options={o.uoms.options} source={o.uoms.source} loading={o.uoms.loading} onChange={(val) => onChange({ uom: val })} placeholder="Unit of measure"
+        error={issueFor(issues, 'uom') ?? (o.uomMismatch ? `FBR expects ${o.uomMismatch.join(' or ')} for this HS code` : null)} />
+      <Combobox label="Sale type" required value={v.saleType} options={o.saleTypes.options} source={o.saleTypes.source} placeholder="Choose the sale type"
+        onChange={(val, opt) => onChange(opt ? { saleType: val, rate: '', sroScheduleNo: '', sroItemSerialNo: '' } : { saleType: val })} error={issueFor(issues, 'saleType')} />
+      <Combobox label="Default tax rate" value={v.rate} options={o.rates.options} source={o.rates.source} loading={o.rates.loading} placeholder="e.g. 18%"
+        onChange={(val, opt) => onChange(opt ? { rate: val, sroScheduleNo: '', sroItemSerialNo: '' } : { rate: val })} />
+      <Combobox label="SRO / schedule no." value={v.sroScheduleNo} options={o.sros.options} source={o.sros.source} loading={o.sros.loading} placeholder="If an SRO applies"
+        onChange={(val, opt) => onChange(opt ? { sroScheduleNo: val, sroItemSerialNo: '' } : { sroScheduleNo: val })} />
+      <Combobox label="SRO item S. No." value={v.sroItemSerialNo} options={o.sroItems.options} source={o.sroItems.source} loading={o.sroItems.loading} placeholder="SRO item serial" onChange={(val) => onChange({ sroItemSerialNo: val })} />
+      {o.fbrOff && <p className="text-xs text-ink-500 sm:col-span-2">Lists show common values. <Link to="/app/fbr" className="text-brand-700 hover:underline">Add your FBR token</Link> to get FBR’s official lists.</p>}
+    </>
   );
 }

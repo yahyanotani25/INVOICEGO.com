@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { CalendarCheck, Lock, ShieldCheck } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { api, ApiError, setCsrf } from '@/lib/api';
 import { useAuth, type Me, type MfaPending } from '@/lib/auth';
@@ -10,16 +11,45 @@ export const ACTIVITIES = ['Manufacturer', 'Importer', 'Distributor', 'Wholesale
 export const SECTORS = ['All Other Sectors', 'Steel', 'FMCG', 'Textile', 'Telecom', 'Petroleum', 'Electricity Distribution', 'Gas Distribution', 'Services', 'Automobile', 'CNG Stations', 'Pharmaceuticals', 'Wholesale / Retails'];
 export const PROVINCES = ['Punjab', 'Sindh', 'Khyber Pakhtunkhwa', 'Balochistan', 'Capital Territory', 'Gilgit Baltistan', 'Azad Jammu and Kashmir'];
 
+const SHELL_POINTS = [
+  { icon: ShieldCheck, text: 'Every invoice is checked with FBR before it is submitted' },
+  { icon: CalendarCheck, text: 'Current-month rule and buyer registration checks built in' },
+  { icon: Lock, text: 'FBR tokens are encrypted and never reach the browser' },
+];
+
 function Shell({ title, subtitle, children, wide }: { title: string; subtitle?: ReactNode; children: ReactNode; wide?: boolean }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-ink-50 px-4 py-10">
-      <Link to="/" className="mb-6 flex items-center gap-2">
-        <BrandMark size="lg" />
-      </Link>
-      <div className={`card w-full ${wide ? 'max-w-2xl' : 'max-w-md'} p-6 sm:p-8`}>
-        <h1 className="text-xl font-semibold text-ink-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-ink-500">{subtitle}</p>}
-        <div className="mt-6">{children}</div>
+    <div className="grid min-h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-navy via-brand-800 to-brand-600 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 h-80 w-80 animate-blob rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-24 left-10 h-72 w-72 animate-blob rounded-full bg-sky-300/20 blur-3xl [animation-delay:-6s]" />
+        </div>
+        <Link to="/" className="relative flex items-center gap-2 [&_span]:!text-white">
+          <BrandMark size="lg" />
+        </Link>
+        <div className="relative animate-fade-up">
+          <h2 className="text-3xl font-semibold leading-tight tracking-tight">FBR Digital Invoicing,<br />done carefully.</h2>
+          <ul className="mt-8 space-y-4">
+            {SHELL_POINTS.map((p, i) => (
+              <li key={p.text} className="flex animate-fade-up items-start gap-3 text-sm text-white/90" style={{ animationDelay: `${150 + i * 90}ms` }}>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20"><p.icon className="h-4 w-4" aria-hidden /></span>
+                <span className="pt-1.5">{p.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p className="relative text-xs text-white/60">InvoiceGO is independent software. It is not FBR-certified or FBR-approved.</p>
+      </aside>
+      <div className="flex flex-col items-center justify-center px-4 py-10">
+        <Link to="/" className="mb-6 flex items-center gap-2 lg:hidden">
+          <BrandMark size="lg" />
+        </Link>
+        <div className={`card w-full animate-dialog-in ${wide ? 'max-w-2xl' : 'max-w-md'} p-6 shadow-lift sm:p-8`}>
+          <h1 className="text-xl font-semibold text-ink-900">{title}</h1>
+          {subtitle && <p className="mt-1 text-sm text-ink-500">{subtitle}</p>}
+          <div className="mt-6">{children}</div>
+        </div>
       </div>
     </div>
   );

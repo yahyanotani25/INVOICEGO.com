@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import clsx from 'clsx';
-import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Info, Loader2, X, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Inbox, Info, Loader2, X, XCircle } from 'lucide-react';
 import type { Tone } from '@/lib/format';
 import { ApiError, type Issue } from '@/lib/api';
 
@@ -12,11 +12,11 @@ export function Button({ variant = 'primary', size = 'md', loading, className, c
       {...p}
       disabled={disabled || loading}
       className={clsx(
-        'inline-flex items-center justify-center gap-1.5 rounded-lg font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center gap-1.5 rounded-lg font-medium transition duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100',
         size === 'sm' ? 'px-2.5 py-1.5 text-xs' : 'px-3.5 py-2 text-sm',
-        variant === 'primary' && 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm',
+        variant === 'primary' && 'bg-gradient-to-b from-brand-500 to-brand-600 text-white shadow-sm hover:from-brand-600 hover:to-brand-700 hover:shadow-glow',
         variant === 'success' && 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
-        variant === 'secondary' && 'border border-ink-200 bg-white text-ink-800 hover:bg-ink-50 shadow-sm',
+        variant === 'secondary' && 'border border-ink-200 bg-white text-ink-800 shadow-sm hover:border-ink-300 hover:bg-ink-50',
         variant === 'danger' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
         variant === 'ghost' && 'text-ink-600 hover:bg-ink-100',
         className,
@@ -152,9 +152,9 @@ export function EnvBadge({ env }: { env: 'SANDBOX' | 'PRODUCTION' | string }) {
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="mb-5 flex animate-fade-up flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink-900">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink-900 sm:text-[1.7rem]">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-ink-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -162,17 +162,28 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
   );
 }
 
+/** Loading placeholder: shimmering skeleton rows instead of a bare spinner. */
 export function Spinner({ label = 'Loading…' }: { label?: string }) {
   return (
-    <div role="status" className="flex items-center justify-center gap-2 py-10 text-sm text-ink-500">
-      <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> {label}
+    <div role="status" aria-live="polite" className="animate-fade-in space-y-3 py-6">
+      <span className="sr-only">{label}</span>
+      <div className="skeleton h-5 w-1/3" />
+      <div className="skeleton h-4 w-full" />
+      <div className="skeleton h-4 w-11/12" />
+      <div className="skeleton h-4 w-4/6" />
+      <div className="flex items-center gap-2 pt-1 text-xs text-ink-400" aria-hidden>
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> {label}
+      </div>
     </div>
   );
 }
 
 export function EmptyState({ title, children, action }: { title: string; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+    <div className="flex animate-fade-in flex-col items-center justify-center gap-2 py-10 text-center">
+      <span className="mb-1 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100" aria-hidden>
+        <Inbox className="h-6 w-6" />
+      </span>
       <p className="text-sm font-medium text-ink-800">{title}</p>
       {children && <div className="max-w-md text-sm text-ink-500">{children}</div>}
       {action}
@@ -264,6 +275,11 @@ export function Pagination({ page, pageSize, total, onPage }: { page: number; pa
 export function Dialog({ open, onClose, title, children, footer, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  // Callers usually pass a new onClose function on every render (e.g. while typing in a field).
+  // Keep the latest one in a ref so focus handling runs only when the dialog opens or closes;
+  // otherwise every keystroke would move focus back to the first button.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
@@ -271,7 +287,7 @@ export function Dialog({ open, onClose, title, children, footer, wide }: { open:
     const focusables = () => Array.from(el?.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') ?? []).filter((x) => !x.hasAttribute('disabled'));
     focusables()[0]?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
       if (e.key === 'Tab') {
         const f = focusables();
         if (!f.length) return;
@@ -289,11 +305,11 @@ export function Dialog({ open, onClose, title, children, footer, wide }: { open:
       document.removeEventListener('keydown', onKey);
       prev?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink-900/40 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={ref} role="dialog" aria-modal="true" aria-labelledby={titleId} className={clsx('max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white shadow-xl sm:rounded-2xl', wide ? 'sm:max-w-3xl' : 'sm:max-w-lg')}>
+    <div className="fixed inset-0 z-50 flex animate-fade-in items-end justify-center bg-ink-900/45 p-0 backdrop-blur-[2px] sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div ref={ref} role="dialog" aria-modal="true" aria-labelledby={titleId} className={clsx('max-h-[92vh] w-full animate-dialog-in overflow-y-auto rounded-t-2xl bg-white shadow-2xl ring-1 ring-ink-900/5 sm:rounded-2xl', wide ? 'sm:max-w-3xl' : 'sm:max-w-lg')}>
         <div className="flex items-center justify-between border-b border-ink-100 px-5 py-3.5">
           <h2 id={titleId} className="text-base font-semibold text-ink-900">
             {title}
@@ -347,9 +363,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div aria-live="polite" className="no-print fixed bottom-4 right-4 z-[60] flex w-[min(92vw,380px)] flex-col gap-2">
         {items.map((t) => (
-          <Alert key={t.id} tone={t.tone} className="shadow-lg">
-            {t.text}
-          </Alert>
+          <div key={t.id} className="animate-toast-in">
+            <Alert tone={t.tone} className="shadow-lift">
+              {t.text}
+            </Alert>
+          </div>
         ))}
       </div>
     </ToastCtx.Provider>
@@ -359,7 +377,7 @@ export const useToast = () => useContext(ToastCtx);
 
 export function Stat({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'green' | 'red' | 'amber' }) {
   return (
-    <div className="card p-4">
+    <div className="card card-hover animate-fade-up p-4">
       <p className="text-xs font-medium uppercase tracking-wide text-ink-500">{label}</p>
       <p className={clsx('mt-1 text-2xl font-semibold tabular-nums', tone === 'green' && 'text-emerald-700', tone === 'red' && 'text-red-700', tone === 'amber' && 'text-amber-700', !tone && 'text-ink-900')}>{value}</p>
       {sub && <p className="mt-0.5 text-xs text-ink-500">{sub}</p>}
@@ -371,7 +389,7 @@ export function Tabs({ tabs, active, onChange }: { tabs: { id: string; label: Re
   return (
     <div role="tablist" className="flex gap-1 overflow-x-auto border-b border-ink-200">
       {tabs.map((t) => (
-        <button key={t.id} role="tab" aria-selected={active === t.id} onClick={() => onChange(t.id)} className={clsx('whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium', active === t.id ? 'border-brand-600 text-brand-700' : 'border-transparent text-ink-500 hover:text-ink-800')}>
+        <button key={t.id} role="tab" aria-selected={active === t.id} onClick={() => onChange(t.id)} className={clsx('whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors duration-200', active === t.id ? 'border-brand-600 text-brand-700' : 'border-transparent text-ink-500 hover:border-ink-300 hover:text-ink-800')}>
           {t.label}
         </button>
       ))}
@@ -389,7 +407,7 @@ export function BarChart({ data, format = (v: number) => v.toLocaleString() }: {
         <div key={d.label} role="listitem" className="grid grid-cols-[88px_1fr_auto] items-center gap-2 text-xs">
           <span className="truncate text-ink-500">{d.label}</span>
           <div className="h-3 rounded bg-ink-100">
-            <div className="h-3 rounded bg-brand-500" style={{ width: `${(d.value / max) * 100}%` }} />
+            <div className="h-3 rounded bg-gradient-to-r from-brand-400 to-brand-600 transition-[width] duration-700 ease-out" style={{ width: `${(d.value / max) * 100}%` }} />
           </div>
           <span className="tabular-nums text-ink-700">{format(d.value)}</span>
         </div>

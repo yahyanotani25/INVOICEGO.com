@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Combobox } from '@/components/Combobox';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { dateTime } from '@/lib/format';
 import type { Lookups } from '@/lib/types';
-import { Alert, Badge, Button, Card, Checkbox, ComboInput, ConfirmDialog, Dialog, ErrorBanner, PageHeader, SelectInput, Spinner, Table, Tabs, TextInput, issueFor, useToast } from '@/components/ui';
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Dialog, ErrorBanner, PageHeader, SelectInput, Spinner, Table, Tabs, TextInput, issueFor, useToast } from '@/components/ui';
 
 interface Biz { id: string; name: string; ntnCnic: string; strn: string | null; address: string; province: string; phone: string | null; email: string | null; businessActivities: string[]; sector: string; retailerRegistered: boolean; officialScenarioIds: string[]; hasLogo: boolean; invoicePrefix: string; furtherTaxHelperRate: string | null }
 
@@ -78,7 +79,7 @@ function BusinessTab() {
           <TextInput label="NTN / CNIC" required value={b.ntnCnic} onChange={set('ntnCnic')} disabled={ro} error={issueFor(issues, 'ntnCnic')} hint="Used as sellerNTNCNIC on every invoice" />
           <TextInput label="STRN" value={b.strn ?? ''} onChange={set('strn')} disabled={ro} />
           <TextInput label="Business address" required className="lg:col-span-2" value={b.address} onChange={set('address')} disabled={ro} />
-          <ComboInput label="Province" required value={b.province} onChange={set('province')} suggestions={lookups.data.provinces.values} disabled={ro} />
+          <Combobox label="Province" required value={b.province} onChange={(val) => setB({ ...b, province: val })} options={lookups.data.provinces.values.map((p) => ({ value: p }))} allowCustom={false} disabled={ro} placeholder="Choose the province" />
           <TextInput label="Phone" value={b.phone ?? ''} onChange={set('phone')} disabled={ro} />
           <TextInput label="Email" type="email" value={b.email ?? ''} onChange={set('email')} disabled={ro} />
           <TextInput label="Internal invoice prefix" value={b.invoicePrefix} onChange={set('invoicePrefix')} disabled={ro} hint="Production numbering, e.g. INV-2026-000001" error={issueFor(issues, 'invoicePrefix')} />

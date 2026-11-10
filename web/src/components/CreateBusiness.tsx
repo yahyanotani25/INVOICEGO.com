@@ -29,7 +29,7 @@ export default function CreateBusiness({ firstBusiness }: { firstBusiness: boole
       setMe(m);
       // The active business changed: drop cached data from the previous business.
       qc.removeQueries({ predicate: (query) => query.queryKey[0] !== 'me' });
-      nav('/app/onboarding', { replace: true });
+      nav('/app/fbr', { replace: true });
     } catch (e2) {
       setErr(e2);
     } finally {

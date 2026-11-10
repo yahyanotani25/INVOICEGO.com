@@ -73,10 +73,23 @@ export default function InvoiceView() {
   });
 
   useEffect(() => {
-    if (sp.get('action') === 'validate' && q.data && !autoRan.current && ['DRAFT', 'VALIDATION_FAILED', 'REJECTED', 'VALIDATED'].includes(q.data.status)) {
+    const action = sp.get('action');
+    if ((action === 'validate' || action === 'submit') && q.data && !autoRan.current && ['DRAFT', 'VALIDATION_FAILED', 'REJECTED', 'VALIDATED'].includes(q.data.status)) {
       autoRan.current = true;
       setSp({}, { replace: true });
-      act.mutate('VALIDATE');
+      if (action === 'validate') {
+        act.mutate('VALIDATE');
+        return;
+      }
+      // "Submit to FBR" from the builder (already confirmed there): validate first, and submit
+      // only when FBR reports the invoice valid. Anything else stops here with the result shown.
+      act
+        .mutateAsync('VALIDATE')
+        .then((x) => {
+          if (x.r.outcome === 'VALID' && x.r.invoice.status === 'VALIDATED') act.mutate('POST');
+          else toast('amber', 'Not submitted: fix the problems FBR reported, then submit again.');
+        })
+        .catch(() => {});
     }
   }, [sp, q.data]); // eslint-disable-line react-hooks/exhaustive-deps
 

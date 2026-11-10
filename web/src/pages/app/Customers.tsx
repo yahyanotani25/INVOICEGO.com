@@ -3,9 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, Pencil, Plus, ShieldCheck, Trash2 } from 'lucide-react';
 import { api, ApiError, qs } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { Combobox } from '@/components/Combobox';
 import { dateTime, regLabel } from '@/lib/format';
 import type { Customer, Lookups } from '@/lib/types';
-import { Alert, Badge, Button, Card, Checkbox, ComboInput, ConfirmDialog, Dialog, EmptyState, ErrorBanner, PageHeader, Pagination, SelectInput, SortTh, Spinner, Table, TextInput, issueFor, useToast } from '@/components/ui';
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Dialog, EmptyState, ErrorBanner, PageHeader, Pagination, SelectInput, SortTh, Spinner, Table, TextInput, issueFor, useToast } from '@/components/ui';
 
 const blank = { name: '', ntnCnic: '', strn: '', province: '', address: '', registrationType: 'UNREGISTERED' as 'REGISTERED' | 'UNREGISTERED', phone: '', email: '', category: '' };
 
@@ -107,7 +108,7 @@ export default function Customers() {
             <SelectInput label="Registration" required value={form.v.registrationType} onChange={(e) => setForm({ ...form, v: { ...form.v, registrationType: e.target.value as 'REGISTERED' } })} options={[{ value: 'REGISTERED', label: 'Registered' }, { value: 'UNREGISTERED', label: 'Unregistered' }]} />
             <TextInput label="NTN / CNIC" required={form.v.registrationType === 'REGISTERED'} inputMode="numeric" value={form.v.ntnCnic} onChange={(e) => setForm({ ...form, v: { ...form.v, ntnCnic: e.target.value.trim() } })} error={issueFor(issues, 'ntnCnic')} hint="7-digit NTN or 13-digit CNIC; required for registered buyers" />
             <TextInput label="STRN" value={form.v.strn} onChange={(e) => setForm({ ...form, v: { ...form.v, strn: e.target.value } })} />
-            <ComboInput label="Province" required value={form.v.province} onChange={(e) => setForm({ ...form, v: { ...form.v, province: e.target.value } })} suggestions={lookups.data?.provinces.values ?? []} error={issueFor(issues, 'province')} />
+            <Combobox label="Province" required value={form.v.province} onChange={(val) => setForm({ ...form, v: { ...form.v, province: val } })} options={(lookups.data?.provinces.values ?? []).map((p) => ({ value: p }))} allowCustom={false} error={issueFor(issues, 'province')} placeholder="Choose the province" />
             <TextInput label="Category" value={form.v.category} onChange={(e) => setForm({ ...form, v: { ...form.v, category: e.target.value } })} placeholder="e.g. Wholesale" />
             <TextInput label="Address" required className="sm:col-span-2" value={form.v.address} onChange={(e) => setForm({ ...form, v: { ...form.v, address: e.target.value } })} error={issueFor(issues, 'address')} />
             <TextInput label="Phone" value={form.v.phone} onChange={(e) => setForm({ ...form, v: { ...form.v, phone: e.target.value } })} />

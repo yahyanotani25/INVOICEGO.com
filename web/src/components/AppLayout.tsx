@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { Bell, BookOpen, Boxes, ClipboardCheck, FileSpreadsheet, FilePlus2, FileText, FlaskConical, Hash, LayoutDashboard, LifeBuoy, LogOut, Menu, PlugZap, Settings as SettingsIcon, Users, BarChart3, AlertOctagon, X } from 'lucide-react';
+import { Bell, BookOpen, Boxes, FilePlus2, FileText, FlaskConical, Hash, LayoutDashboard, LogOut, Menu, PlugZap, Settings as SettingsIcon, Users, BarChart3, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import { Badge } from './ui';
@@ -14,7 +14,6 @@ const NAV = [
     { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
     { to: '/app/invoices/new', label: 'Create invoice', icon: FilePlus2 },
     { to: '/app/invoices', label: 'Invoices', icon: FileText, end: true },
-    { to: '/app/bulk', label: 'Excel bulk upload', icon: FileSpreadsheet },
     { to: '/app/customers', label: 'Customers', icon: Users },
     { to: '/app/products', label: 'Products', icon: Boxes },
     { to: '/app/hs-codes', label: 'HS / PCT codes', icon: Hash },
@@ -23,11 +22,8 @@ const NAV = [
   { section: 'FBR', items: [
     { to: '/app/sandbox', label: 'Sandbox scenarios', icon: FlaskConical },
     { to: '/app/fbr', label: 'FBR integration', icon: PlugZap },
-    { to: '/app/onboarding', label: 'Onboarding checklist', icon: ClipboardCheck },
-    { to: '/app/error-codes', label: 'FBR error codes', icon: AlertOctagon },
   ] },
   { section: 'Account', items: [
-    { to: '/app/support', label: 'Help & support', icon: LifeBuoy },
     { to: '/app/settings', label: 'Settings', icon: SettingsIcon },
   ] },
 ];
@@ -36,6 +32,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const { me, logout, setMe } = useAuth();
   const qc = useQueryClient();
   const nav = useNavigate();
+  const loc = useLocation();
   const [open, setOpen] = useState(false);
   const notif = useQuery({ enabled: !!me?.business, queryKey: ['notifications'], queryFn: () => api<{ unread: number; announcements: { id: string; kind: string; title: string; body: string }[] }>('/api/app/notifications'), refetchInterval: 60_000 });
   const b = me?.business;
@@ -46,7 +43,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <BrandMark />
       </Link>
       {b && (
-        <div className="rounded-xl border border-ink-200 bg-ink-50 p-3">
+        <div className="rounded-xl border border-brand-100 bg-gradient-to-br from-brand-50 via-white to-white p-3 shadow-sm">
           <p className="truncate text-sm font-semibold text-ink-900" title={b.name}>
             {b.name}
           </p>
@@ -91,10 +88,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   to={it.to}
                   end={it.end}
                   onClick={() => setOpen(false)}
-                  className={({ isActive }) => clsx('flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm', isActive ? 'bg-brand-50 font-medium text-brand-700' : 'text-ink-700 hover:bg-ink-100')}
+                  className={({ isActive }) =>
+                    clsx(
+                      'group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-all duration-200',
+                      isActive ? 'bg-gradient-to-r from-brand-50 to-transparent font-medium text-brand-700' : 'text-ink-700 hover:translate-x-0.5 hover:bg-ink-100/70',
+                    )
+                  }
                 >
-                  <it.icon className="h-4 w-4" aria-hidden />
-                  {it.label}
+                  {({ isActive }) => (
+                    <>
+                      <span className={clsx('absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand-600 transition-all duration-300', isActive ? 'opacity-100' : 'opacity-0')} aria-hidden />
+                      <it.icon className={clsx('h-4 w-4 transition-colors', isActive ? 'text-brand-600' : 'text-ink-400 group-hover:text-ink-600')} aria-hidden />
+                      {it.label}
+                    </>
+                  )}
                 </NavLink>
               </li>
             ))}
@@ -110,11 +117,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="no-print sticky top-0 hidden h-screen border-r border-ink-200 bg-white lg:block">{sidebar}</aside>
+      <aside className="no-print sticky top-0 hidden h-screen border-r border-ink-200/80 bg-white/90 backdrop-blur lg:block">{sidebar}</aside>
       {open && (
         <div className="no-print fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-ink-900/40" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-white shadow-xl">
+          <div className="absolute inset-0 animate-fade-in bg-ink-900/40 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 w-72 animate-slide-in-left bg-white shadow-2xl">
             <button className="absolute right-2 top-2 rounded p-2 text-ink-500" onClick={() => setOpen(false)} aria-label="Close menu">
               <X className="h-5 w-5" />
             </button>
@@ -131,12 +138,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2">
             <Link to="/app/notifications" className="relative rounded-lg p-2 text-ink-600 hover:bg-ink-100" aria-label={`Notifications${notif.data?.unread ? `, ${notif.data.unread} unread` : ''}`}>
               <Bell className="h-5 w-5" />
-              {!!notif.data?.unread && <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />}
+              {!!notif.data?.unread && (
+                <span className="absolute right-1.5 top-1.5 flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                </span>
+              )}
             </Link>
             <div className="hidden text-right sm:block">
               <p className="text-sm font-medium text-ink-900">{me?.user.name}</p>
               <p className="text-xs text-ink-500">{me?.user.email}</p>
             </div>
+            <Link to="/app/settings" className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-semibold text-white shadow-sm ring-2 ring-white transition hover:shadow-glow" aria-label="Account settings" title="Account settings">
+              {(me?.user.name ?? '?').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('')}
+            </Link>
             <button
               onClick={async () => {
                 await logout();
@@ -155,7 +170,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <strong>{a.kind === 'MAINTENANCE' ? 'Maintenance: ' : ''}{a.title}</strong> — {a.body}
           </div>
         ))}
-        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">{b ? children : <CreateBusiness firstBusiness />}</main>
+        <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">
+          {/* Re-keyed per page so every page change fades in. */}
+          <div key={loc.pathname} className="animate-fade-up">{b ? children : <CreateBusiness firstBusiness />}</div>
+        </main>
       </div>
     </div>
   );
